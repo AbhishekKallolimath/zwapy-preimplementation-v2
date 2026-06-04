@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Account | Zwapy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #f7f3eb;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    header h1 {
+      font-size: 24px;
+      color: #333;
+    }
+    nav a {
+      margin-left: 20px;
+      color: #555;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #000;
+    }
+    main {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .account-box {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .account-box img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #ccc;
+    }
+    .account-box h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .account-box p {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    .logout-btn {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background-color: #dc2626;
+    }
+    footer {
+      background-color: #ffffff;
+      padding: 15px 30px;
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      border-top: 1px solid #e5e5e5;
+    }
+    .change-password-link {
+      display: inline-block;
+      margin: 10px 0 20px;
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .change-password-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Zwapy</h1>
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Basic Info Box -->
+  <div class="account-box">
+    <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profile Picture" />
+    <h2 id="user-name">Loading...</h2>
+    <p id="user-email">Loading email...</p>
+    <a href="changepassword.html" class="change-password-link">Change Password</a>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+  </div>
+
+  <!-- Extra Details Box -->
+  <div class="account-box" id="extra-details-box" style="display: none;">
+    <h2>Additional Details</h2>
+    <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
+    <p><strong>University:</strong> <span id="university"></span></p>
+    <p><strong>Skills:</strong> <span id="skills"></span></p>
+    <p><strong>Interests:</strong> <span id="interests"></span></p>
+  </div>
+</main>
+
+<footer>
+  © 2025 Zwapy. All rights reserved.
+</footer>
+
+<!-- Firebase SDK Modules -->
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      document.getElementById("user-name").textContent = user.displayName || "Anonymous";
+      document.getElementById("user-email").textContent = user.email;
+      document.getElementById("profile-pic").src = user.photoURL || "https://via.placeholder.com/100";
+
+      // Fetch extra details from Firestore
+      try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("dob").textContent = data.dob || "Not provided";
+          document.getElementById("university").textContent = data.university || "Not provided";
+          document.getElementById("skills").textContent = (data.skills || []).join(", ");
+          document.getElementById("interests").textContent = (data.interests || []).join(", ");
+          document.getElementById("extra-details-box").style.display = "block";
+        } else {
+          console.log("No extra details found.");
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  window.logout = function () {
+    signOut(auth).then(() => {
+      alert("Logged out!");
+      window.location.href = "login.html";
+    });
+  };
+</script>
+
+
+</body>
+</html>

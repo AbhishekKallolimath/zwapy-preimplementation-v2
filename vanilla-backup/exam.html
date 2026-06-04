@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<title>Skill Assessment | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--border:rgba(0,212,255,0.12);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden;user-select:none;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 50% 40% at 30% 20%,rgba(0,212,255,0.05) 0%,transparent 60%);}
+.layout{position:relative;z-index:10;max-width:600px;margin:0 auto;padding:28px 18px 60px;}
+
+/* Load / Generating */
+.gen-screen{text-align:center;padding:60px 20px;}
+.gen-icon{font-size:3rem;margin-bottom:16px;animation:spin 2s linear infinite;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.gen-title{font-size:1.4rem;font-weight:900;font-style:italic;margin-bottom:8px;}
+.gen-sub{font-size:.76rem;color:var(--dim);line-height:1.6;}
+.gen-bar{width:200px;height:3px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;margin:16px auto 0;}
+.gen-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:100px;animation:gf 2s ease infinite;}
+@keyframes gf{0%{width:0;}50%{width:80%;}100%{width:100%;}}
+
+/* Header */
+.exam-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
+.exam-title-wrap .exam-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-bottom:3px;}
+.exam-title-wrap h2{font-size:1.3rem;font-weight:900;font-style:italic;}
+.timer-wrap{text-align:right;}
+.timer{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--cyan);}
+.timer.urgent{color:var(--red);animation:blink .5s ease infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+.timer-label{font-size:.58rem;color:var(--muted);}
+
+/* Progress */
+.exam-progress{margin-bottom:20px;}
+.ep-info{display:flex;justify-content:space-between;font-size:.66rem;color:var(--muted);margin-bottom:6px;}
+.ep-bar{height:4px;background:rgba(255,255,255,0.07);border-radius:100px;overflow:hidden;}
+.ep-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:100px;transition:width .4s ease;}
+
+/* Skill badge */
+.skill-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:100px;padding:5px 13px;font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px;}
+
+/* Question card */
+.q-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:14px;transition:border-color .3s;}
+.q-num{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.q-text{font-size:.92rem;font-weight:700;line-height:1.5;margin-bottom:18px;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;font-size:.82rem;line-height:1.4;display:flex;align-items:flex-start;gap:10px;}
+.option:hover{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.04);}
+.option.selected{border-color:var(--cyan);background:rgba(0,212,255,0.08);}
+.option.correct{border-color:var(--green);background:rgba(16,185,129,0.08);pointer-events:none;}
+.option.wrong{border-color:var(--red);background:rgba(239,68,68,0.07);pointer-events:none;}
+.option.disabled{pointer-events:none;opacity:.7;}
+.opt-letter{font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;color:var(--muted);flex-shrink:0;margin-top:1px;}
+
+.next-btn{width:100%;background:var(--cyan);color:#000;border:none;border-radius:12px;padding:13px;font-size:.86rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;transition:all .22s;display:none;}
+.next-btn:hover{box-shadow:0 0 20px rgba(0,212,255,.3);}
+.skip-btn{width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);border-radius:12px;padding:11px;font-size:.76rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;transition:all .22s;margin-top:8px;}
+.skip-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--dim);}
+
+/* Anti-cheat warning */
+.anti-cheat-banner{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.22);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.72rem;color:var(--red);display:none;line-height:1.5;}
+.anti-cheat-banner.show{display:block;}
+.tab-count{font-weight:800;}
+
+/* Results */
+.results-screen{display:none;text-align:center;padding:20px 0;}
+.rs-icon{font-size:3rem;margin-bottom:12px;}
+.rs-score{font-family:'Space Mono',monospace;font-size:3rem;font-weight:700;color:var(--cyan);margin-bottom:4px;}
+.rs-out{font-size:.8rem;color:var(--muted);margin-bottom:16px;}
+.rs-breakdown{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:20px;text-align:left;}
+.rbd-title{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.rbd-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:.76rem;}
+.rbd-row:last-child{border-bottom:none;}
+.rbd-skill{color:var(--dim);}
+.rbd-score{font-weight:700;font-family:'Space Mono',monospace;}
+.score-green{color:var(--green);}
+.score-amber{color:var(--amber);}
+.score-red{color:var(--red);}
+.rs-note{font-size:.72rem;color:var(--dim);line-height:1.6;margin-bottom:20px;}
+.rs-btn{width:100%;background:var(--cyan);color:#000;border:none;border-radius:12px;padding:14px;font-size:.86rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.e{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.28);color:var(--red);}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+  <!-- Generating screen -->
+  <div class="gen-screen" id="genScreen">
+    <div class="gen-icon">⚡</div>
+    <div class="gen-title">Generating Your Exam</div>
+    <p class="gen-sub">Creating personalized questions based on your skills and levels. This takes a few seconds.</p>
+    <div class="gen-bar"><div class="gen-fill"></div></div>
+  </div>
+
+  <!-- Exam screen -->
+  <div id="examScreen" style="display:none;">
+    <div class="anti-cheat-banner" id="antiCheatBanner">
+      ⚠️ Tab switch detected! Warning <span class="tab-count" id="tabCount">1</span>/3.
+      After 3 switches your exam will be void and you'll score 0.
+    </div>
+
+    <div class="exam-header">
+      <div class="exam-title-wrap">
+        <div class="exam-label">// Skill Assessment</div>
+        <h2>Prove Your Skills</h2>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer" id="timer">30</div>
+        <div class="timer-label">seconds left</div>
+      </div>
+    </div>
+
+    <div class="exam-progress">
+      <div class="ep-info">
+        <span id="qProgress">Question 1 of 10</span>
+        <span id="skillProgress"></span>
+      </div>
+      <div class="ep-bar"><div class="ep-fill" id="epFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="skill-badge" id="currentSkillBadge">📚 Skill</div>
+
+    <div class="q-card" id="questionCard">
+      <div class="q-num" id="qNum">Q1</div>
+      <div class="q-text" id="qText">Loading question...</div>
+      <div class="options" id="optionsContainer"></div>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    <button class="skip-btn" id="skipBtn" onclick="skipQuestion()">Skip this question</button>
+  </div>
+
+  <!-- Results screen -->
+  <div class="results-screen" id="resultsScreen">
+    <div class="rs-icon" id="rsIcon">🎉</div>
+    <div class="rs-score" id="rsScore">0%</div>
+    <div class="rs-out" id="rsOut">Overall Score</div>
+    <div class="rs-breakdown" id="rsBreakdown"></div>
+    <p class="rs-note" id="rsNote">Your score is now visible on your Zwapy profile. Other students can see how skilled you are before requesting a skill exchange.</p>
+    <button class="rs-btn" id="rsBtn" onclick="finishExam()">Enter Zwapy →</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+const $=id=>document.getElementById(id);
+let currentUser=null;
+let allQuestions=[]; // flat array of all questions across all skills
+let currentQIndex=0;
+let answers=[]; // {skill, correct, skipped}
+let tabSwitches=0;
+let timerInterval=null;
+let timeLeft=30;
+let examVoided=false;
+let isNewUser=false;
+
+function toast(msg,type='s'){
+  const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;
+  setTimeout(()=>t.className='toast',3000);
+}
+
+// ── ANTI-CHEAT ──
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&$('examScreen').style.display!=='none'&&!examVoided){
+    tabSwitches++;
+    $('antiCheatBanner').classList.add('show');
+    $('tabCount').textContent=tabSwitches;
+    if(tabSwitches>=3){
+      examVoided=true;
+      $('antiCheatBanner').innerHTML='🚫 Exam voided — too many tab switches. Score recorded as 0.';
+      clearInterval(timerInterval);
+      setTimeout(()=>showResults(true),2000);
+    }
+  }
+});
+document.addEventListener('copy',e=>e.preventDefault());
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','v','u','a'].includes(e.key.toLowerCase()))e.preventDefault();
+  if(e.key==='F12')e.preventDefault();
+});
+
+// ── GENERATE QUESTIONS via Claude API ──
+async function generateQuestions(skills){
+  const prompt=`Generate exactly 5 MCQ questions for each of these skills: ${skills.map(s=>s.name+'('+s.level+')').join(', ')}.
+
+Format response as valid JSON only — no markdown, no extra text:
+{
+  "questions": [
+    {
+      "skill": "Python",
+      "level": "beginner",
+      "question": "What is a variable in Python?",
+      "options": ["A. A fixed value", "B. A container to store data", "C. A function", "D. A loop"],
+      "correct": 1
+    }
+  ]
+}
+
+Rules:
+- 5 questions per skill
+- Questions must match the EXACT level (beginner=basic concepts, intermediate=practical usage, advanced=deep technical)
+- correct is the 0-based index of the right answer (0=A, 1=B, 2=C, 3=D)
+- Vary which option is correct — not always B
+- No trick questions — clear and fair`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:3000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'{}';
+    const clean=text.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    return parsed.questions||[];
+  }catch(e){
+    console.error('AI question generation failed:',e);
+    return generateFallbackQuestions(skills);
+  }
+}
+
+// Fallback hardcoded questions if AI fails
+function generateFallbackQuestions(skills){
+  const pool=[
+    {question:"What does a variable do?",options:["A. Stores data","B. Runs a program","C. Shows output","D. Connects internet"],correct:0},
+    {question:"Which is used for repetition in programming?",options:["A. if statement","B. loop","C. variable","D. function"],correct:1},
+    {question:"What is a function?",options:["A. A loop","B. A variable","C. Reusable block of code","D. A data type"],correct:2},
+    {question:"What does debugging mean?",options:["A. Adding features","B. Finding and fixing errors","C. Writing new code","D. Deleting code"],correct:1},
+    {question:"What is an algorithm?",options:["A. A programming language","B. Step-by-step instructions to solve a problem","C. A type of variable","D. A network protocol"],correct:1}
+  ];
+  const questions=[];
+  skills.forEach(sk=>{
+    pool.forEach((q,i)=>{
+      questions.push({skill:sk.name,level:sk.level,...q});
+    });
+  });
+  return questions;
+}
+
+// ── RENDER QUESTION ──
+function renderQuestion(){
+  if(currentQIndex>=allQuestions.length){showResults(false);return;}
+  const q=allQuestions[currentQIndex];
+  const total=allQuestions.length;
+  $('qProgress').textContent=`Question ${currentQIndex+1} of ${total}`;
+  $('skillProgress').textContent=`Skill: ${q.skill}`;
+  $('currentSkillBadge').textContent=`${q.skill} · ${q.level}`;
+  $('qNum').textContent=`Q${currentQIndex+1}`;
+  $('qText').textContent=q.question;
+  $('epFill').style.width=`${((currentQIndex)/total)*100}%`;
+  $('nextBtn').style.display='none';
+  $('skipBtn').style.display='block';
+  $('optionsContainer').innerHTML=q.options.map((opt,i)=>`
+    <div class="option" onclick="selectOption(${i})" id="opt${i}">
+      <span class="opt-letter">${String.fromCharCode(65+i)}.</span>
+      <span>${opt.replace(/^[A-D]\.\s*/,'')}</span>
+    </div>
+  `).join('');
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft=30;
+  $('timer').textContent=timeLeft;
+  $('timer').className='timer';
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    $('timer').textContent=timeLeft;
+    if(timeLeft<=10)$('timer').className='timer urgent';
+    if(timeLeft<=0){
+      clearInterval(timerInterval);
+      autoSkip();
+    }
+  },1000);
+}
+
+function autoSkip(){
+  answers.push({skill:allQuestions[currentQIndex]?.skill,correct:false,skipped:true});
+  currentQIndex++;
+  renderQuestion();
+}
+
+window.skipQuestion=function(){
+  clearInterval(timerInterval);
+  answers.push({skill:allQuestions[currentQIndex]?.skill,correct:false,skipped:true});
+  currentQIndex++;
+  renderQuestion();
+};
+
+window.selectOption=function(idx){
+  if(examVoided)return;
+  clearInterval(timerInterval);
+  const q=allQuestions[currentQIndex];
+  const opts=document.querySelectorAll('.option');
+  opts.forEach(o=>o.classList.add('disabled'));
+  if(idx===q.correct){
+    opts[idx].classList.add('correct');
+    answers.push({skill:q.skill,correct:true,skipped:false});
+  }else{
+    opts[idx].classList.add('wrong');
+    if(opts[q.correct])opts[q.correct].classList.add('correct');
+    answers.push({skill:q.skill,correct:false,skipped:false});
+  }
+  $('skipBtn').style.display='none';
+  $('nextBtn').style.display='block';
+};
+
+window.nextQuestion=function(){
+  currentQIndex++;
+  renderQuestion();
+};
+
+// ── SHOW RESULTS ──
+async function showResults(voided){
+  clearInterval(timerInterval);
+  $('examScreen').style.display='none';
+  $('resultsScreen').style.display='block';
+
+  if(voided){
+    $('rsIcon').textContent='🚫';
+    $('rsScore').textContent='0%';
+    $('rsOut').textContent='Exam voided — tab switch detected';
+    $('rsNote').textContent='Your exam was voided due to multiple tab switches. Score recorded as 0 on your profile. You can retake later from your profile settings.';
+    await saveExamResults({},0,true);
+    return;
+  }
+
+  // Calculate per-skill scores
+  const skillMap={};
+  answers.forEach(a=>{
+    if(!skillMap[a.skill]) skillMap[a.skill]={correct:0,total:0};
+    skillMap[a.skill].total++;
+    if(a.correct) skillMap[a.skill].correct++;
+  });
+
+  const skillScores=Object.entries(skillMap).map(([skill,data])=>({
+    skill,pct:Math.round((data.correct/data.total)*100),correct:data.correct,total:data.total
+  }));
+  const overall=answers.length>0?Math.round((answers.filter(a=>a.correct).length/answers.length)*100):0;
+
+  $('rsScore').textContent=overall+'%';
+  $('rsOut').textContent=`${answers.filter(a=>a.correct).length} of ${answers.length} correct`;
+  $('rsIcon').textContent=overall>=70?'🏆':overall>=40?'📚':'💪';
+
+  // Breakdown
+  $('rsBreakdown').innerHTML=`<div class="rbd-title">// Score by Skill</div>`+
+    skillScores.map(s=>`
+      <div class="rbd-row">
+        <span class="rbd-skill">${s.skill}</span>
+        <span class="rbd-score ${s.pct>=70?'score-green':s.pct>=40?'score-amber':'score-red'}">${s.pct}% (${s.correct}/${s.total})</span>
+      </div>
+    `).join('');
+
+  if(overall>=70){
+    $('rsNote').textContent='Excellent! Your verified score is now on your profile. Students can see you\'re an expert before requesting a skill exchange from you.';
+  }else if(overall>=40){
+    $('rsNote').textContent='Good effort! Your score is saved. You can retake this exam anytime from your profile to improve your score.';
+  }else{
+    $('rsNote').textContent='Keep learning! Your score is saved on your profile. Practice more and retake from your profile settings whenever you\'re ready.';
+  }
+
+  // Award coins based on score + skill level
+  let coinsEarned=0;
+  skillScores.forEach(s=>{
+    const sk=allQuestions.find(q=>q.skill===s.skill);
+    const level=sk?.level||'beginner';
+    if(s.pct>=70){
+      coinsEarned+=level==='advanced'?15:level==='intermediate'?10:5;
+    }
+  });
+
+  if(coinsEarned>0){
+    $('rsNote').textContent+=' You earned '+coinsEarned+' Skill Coins for passing!';
+  }
+
+  await saveExamResults(skillScores,overall,false,coinsEarned);
+}
+
+async function saveExamResults(skillScores,overall,voided,coinsEarned=0){
+  if(!currentUser)return;
+  try{
+    const updates={
+      examScores:{
+        overall,
+        skillBreakdown:skillScores,
+        voided,
+        takenAt:serverTimestamp()
+      },
+      examTaken:true
+    };
+    if(coinsEarned>0) updates.coins=increment(coinsEarned);
+    await updateDoc(doc(db,'users',currentUser.uid),updates);
+    if(coinsEarned>0){
+      // Update platform cert count
+      await updateDoc(doc(db,'stats','platform'),{totalCerts:increment(1)}).catch(()=>{});
+    }
+  }catch(e){console.error('Save exam results:',e);}
+}
+
+window.finishExam=function(){
+  // First time → thank you page. Returning → dashboard.
+  if(isNewUser){
+    window.location.href='thankyou.html';
+  }else{
+    window.location.href='dashboard.html';
+  }
+};
+
+// ── INIT ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const snap=await getDoc(doc(db,'users',user.uid));
+  if(!snap.exists()){window.location.href='extra-details.html';return;}
+  const ud=snap.data();
+  isNewUser=!ud.examTaken;
+
+  const skills=ud.skillsKnown||[];
+  if(!skills.length){
+    // No skills — skip exam
+    window.location.href=isNewUser?'thankyou.html':'dashboard.html';
+    return;
+  }
+
+  // Generate questions
+  try{
+    allQuestions=await generateQuestions(skills);
+    if(!allQuestions.length){
+      window.location.href=isNewUser?'thankyou.html':'dashboard.html';
+      return;
+    }
+    // Shuffle
+    for(let i=allQuestions.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [allQuestions[i],allQuestions[j]]=[allQuestions[j],allQuestions[i]];
+    }
+    $('genScreen').style.display='none';
+    $('examScreen').style.display='block';
+    renderQuestion();
+  }catch(e){
+    console.error(e);
+    window.location.href=isNewUser?'thankyou.html':'dashboard.html';
+  }
+});
+</script>
+</body>
+</html>

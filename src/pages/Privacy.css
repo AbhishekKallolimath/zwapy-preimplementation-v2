@@ -1,0 +1,130 @@
+.legal-body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: white;
+  min-height: 100vh;
+  padding: 40px 20px 80px;
+  position: relative;
+}
+
+.legal-body .glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+  z-index: 0;
+}
+
+.legal-body .wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.legal-body .logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.legal-body .logo span {
+  font-size: 1.3rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.legal-body .doc-label {
+  font-family: 'Space Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  opacity: .65;
+  margin-bottom: 8px;
+}
+
+.legal-body h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -.02em;
+  margin-bottom: 8px;
+}
+
+.legal-body .last-updated {
+  font-size: .74rem;
+  color: var(--muted);
+  margin-bottom: 40px;
+  font-family: 'Space Mono', monospace;
+}
+
+.legal-body .section {
+  margin-bottom: 32px;
+}
+
+.legal-body h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--cyan);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.legal-body p {
+  font-size: .86rem;
+  color: var(--dim);
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.legal-body ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.legal-body li {
+  font-size: .86rem;
+  color: var(--dim);
+  line-height: 1.8;
+  margin-bottom: 4px;
+}
+
+.legal-body .contact-box {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.14);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-top: 8px;
+}
+
+.legal-body .contact-box p {
+  margin-bottom: 4px;
+}
+
+.legal-body .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--dim);
+  text-decoration: none;
+  transition: all .2s;
+  margin-bottom: 40px;
+}
+
+.legal-body .back:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}

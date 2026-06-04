@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>Network | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.1);--bg:#010114;--border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.3);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(0,212,255,0.04) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 90% 80%,rgba(129,140,248,0.04) 0%,transparent 60%);}
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.load-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:var(--cyan);border-radius:100px;animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.layout{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 22px 120px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.93);backdrop-filter:blur(24px);margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;gap:12px;}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:38px;height:38px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.25rem;font-weight:900;font-style:italic;}
+.back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .2s;}
+.back-btn:hover{border-color:var(--border-h);color:white;}
+.page-head{margin-bottom:24px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:5px;}
+.page-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;}
+.page-title span{color:var(--cyan);}
+.page-sub{font-size:.8rem;color:var(--dim);margin-top:7px;}
+.stats-strip{display:flex;gap:11px;margin-bottom:24px;flex-wrap:wrap;}
+.stat-chip{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:14px;padding:14px 18px;flex:1;min-width:80px;}
+.sc-val{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--cyan);line-height:1;margin-bottom:3px;}
+.sc-label{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.filter-bar{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;align-items:center;}
+.search-wrap{flex:1;min-width:180px;position:relative;}
+.si{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none;}
+.search-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:11px 14px 11px 36px;font-size:.84rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{border-color:var(--cyan);}
+.filter-tabs{display:flex;gap:7px;flex-wrap:wrap;}
+.ftab{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:7px 13px;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted);white-space:nowrap;}
+.ftab.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);color:var(--cyan);}
+.ftab:hover:not(.active){border-color:rgba(255,255,255,0.2);color:white;}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-title{font-size:.9rem;font-weight:800;font-style:italic;text-transform:uppercase;}
+.sec-badge{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.12em;background:var(--cyan-dim);border:1px solid rgba(0,212,255,.16);color:var(--cyan);border-radius:100px;padding:3px 9px;}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.person-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:20px;padding:22px;position:relative;overflow:hidden;transition:all .3s;cursor:pointer;}
+.person-card:hover{border-color:var(--border-h);transform:translateY(-3px);}
+.person-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);transform:scaleX(0);transition:transform .4s;}
+.person-card:hover::before{transform:scaleX(1);}
+.person-top{display:flex;align-items:center;gap:13px;margin-bottom:14px;}
+.person-av{width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid rgba(0,212,255,0.2);flex-shrink:0;}
+.person-card:hover .person-av{border-color:var(--cyan);}
+.person-av img{width:100%;height:100%;object-fit:cover;}
+.person-info{flex:1;min-width:0;}
+.person-name{font-size:.92rem;font-weight:800;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.person-role{font-size:.65rem;color:var(--cyan);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px;}
+.person-uni{font-size:.62rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.you-badge{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.22);color:var(--cyan);border-radius:100px;padding:2px 8px;font-size:.52rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;}
+.person-bio{font-size:.74rem;color:var(--dim);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;min-height:22px;}
+.skill-tag{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);color:var(--cyan);}
+.skill-tag.learn{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2);color:var(--amber);}
+.cert-hint{display:flex;align-items:center;gap:5px;margin-bottom:10px;font-size:.62rem;color:var(--amber);font-family:'Space Mono',monospace;}
+.person-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.person-stats{display:flex;gap:12px;}
+.pstat{font-size:.62rem;color:var(--muted);display:flex;align-items:center;gap:4px;}
+.connect-btn{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.22);border-radius:9px;padding:7px 15px;font-size:.7rem;font-weight:800;color:var(--cyan);cursor:pointer;transition:all .22s;font-family:'Sora',sans-serif;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.connect-btn:hover{background:rgba(0,212,255,0.18);}
+.connect-btn.pending{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.25);color:var(--amber);cursor:default;pointer-events:none;}
+.connect-btn.connected{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.22);color:var(--green);cursor:default;pointer-events:none;}
+.connect-btn.self{background:transparent;border-color:transparent;color:var(--muted);cursor:default;pointer-events:none;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:rgba(4,2,40,0.99);border:1px solid rgba(0,212,255,0.18);border-radius:26px;width:100%;max-width:500px;position:relative;transform:translateY(24px) scale(.97);transition:transform .3s;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
+.modal-bg.open .modal{transform:translateY(0) scale(1);}
+.modal-accent-bar{height:3px;background:linear-gradient(90deg,var(--cyan),var(--indigo),transparent);flex-shrink:0;}
+.modal-scroll{overflow-y:auto;flex:1;padding:24px;}
+.modal-scroll::-webkit-scrollbar{width:3px;}
+.modal-scroll::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.16);border-radius:100px;}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.75rem;color:var(--muted);transition:all .2s;z-index:10;}
+.modal-close:hover{border-color:#ef4444;color:#ef4444;}
+.modal-profile-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;}
+.modal-av{width:68px;height:68px;border-radius:50%;overflow:hidden;border:3px solid rgba(0,212,255,0.25);}
+.modal-av img{width:100%;height:100%;object-fit:cover;}
+.modal-name{font-size:1.25rem;font-weight:900;font-style:italic;margin-bottom:3px;}
+.modal-role{font-size:.65rem;color:var(--cyan);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;}
+.modal-uni{font-size:.7rem;color:var(--muted);}
+.modal-sec-label{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;margin-top:18px;display:flex;align-items:center;gap:8px;}
+.modal-sec-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.05);}
+.modal-bio{font-size:.8rem;color:var(--dim);line-height:1.75;}
+.modal-skills-group{display:flex;flex-wrap:wrap;gap:6px;}
+.modal-skill{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:100px;}
+.modal-skill.know{background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);color:var(--cyan);}
+.modal-skill.learn{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.22);color:var(--amber);}
+.modal-skill.empty{font-size:.7rem;color:var(--muted);font-family:'Sora',sans-serif;letter-spacing:0;background:none;border:none;padding:0;}
+.cert-list{display:flex;flex-direction:column;gap:8px;}
+.cert-item{display:flex;align-items:center;gap:10px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.14);border-radius:12px;padding:11px 13px;}
+.cert-icon{font-size:1.1rem;flex-shrink:0;}
+.cert-info{flex:1;min-width:0;}
+.cert-name{font-size:.78rem;font-weight:700;color:white;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cert-link{font-size:.62rem;color:var(--cyan);text-decoration:none;border:1px solid rgba(0,212,255,0.2);border-radius:6px;padding:3px 8px;white-space:nowrap;flex-shrink:0;transition:all .2s;}
+.cert-link:hover{background:rgba(0,212,255,0.08);}
+.no-certs{font-size:.74rem;color:var(--muted);font-style:italic;}
+.modal-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.msr{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px;text-align:center;}
+.msr-val{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--cyan);line-height:1;margin-bottom:3px;}
+.msr-label{font-size:.5rem;color:var(--muted);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.08em;}
+.modal-actions{display:flex;flex-direction:column;gap:9px;margin-top:18px;}
+.modal-connect-btn{width:100%;background:var(--cyan);color:#000;border:none;border-radius:11px;padding:13px;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .25s;font-family:'Sora',sans-serif;}
+.modal-connect-btn:hover:not([disabled]){box-shadow:0 0 20px rgba(0,212,255,.4);}
+.modal-connect-btn.pending{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,.25);color:var(--amber);cursor:default;}
+.modal-connect-btn.connected{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.25);color:var(--green);cursor:default;}
+.modal-connect-btn.self-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--dim);}
+.modal-linkedin{display:flex;align-items:center;justify-content:center;gap:9px;padding:11px 14px;background:rgba(10,102,194,0.08);border:1px solid rgba(10,102,194,0.25);border-radius:11px;text-decoration:none;color:#60a5fa;font-size:.76rem;font-weight:700;transition:all .22s;}
+.modal-linkedin:hover{background:rgba(10,102,194,0.18);color:white;}
+.modal-linkedin svg{width:16px;height:16px;flex-shrink:0;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.3;}
+.empty-text{font-size:.8rem;line-height:1.6;}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);border-radius:100px;padding:10px 22px;font-size:.76rem;font-weight:700;z-index:4000;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,.28);color:var(--red);}
+.bottom-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:rgba(2,0,36,0.95);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:7px 12px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.nav-item{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .22s;text-decoration:none;color:var(--muted);font-size:1.1rem;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,212,255,.28);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}.d4{transition-delay:.2s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.16);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div id="loadScreen">
+  <div class="load-logo">ZWAPY</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-text">Loading network...</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="profileModal">
+  <div class="modal">
+    <div class="modal-accent-bar"></div>
+    <div class="modal-scroll">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-profile-top">
+        <div class="modal-av"><img id="mAv" src="" alt=""></div>
+        <div style="flex:1;min-width:0;margin-left:16px;">
+          <div class="modal-name" id="mName"></div>
+          <div class="modal-role" id="mRole"></div>
+          <div class="modal-uni" id="mUni"></div>
+        </div>
+      </div>
+      <div class="modal-sec-label">About</div>
+      <div class="modal-bio" id="mBio"></div>
+      <div class="modal-sec-label">Skills I Know</div>
+      <div class="modal-skills-group" id="mSkillsKnow"></div>
+      <div class="modal-sec-label">Skills I Want to Learn</div>
+      <div class="modal-skills-group" id="mSkillsLearn"></div>
+      <div class="modal-sec-label">Certificates</div>
+      <div class="cert-list" id="mCerts"></div>
+      <div class="modal-sec-label">Activity</div>
+      <div class="modal-stats-row" id="mStats"></div>
+      <div class="modal-actions">
+        <button class="modal-connect-btn" id="mConnectBtn"></button>
+        <a class="modal-linkedin" id="mLinkedin" href="#" target="_blank" rel="noopener noreferrer" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          View LinkedIn Profile
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-logo">
+      <div class="logo-node"><img src="assets/zwapy-logo.png" style="width:26px;height:26px;object-fit:contain;"></div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+  </header>
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Student Network</div>
+    <h1 class="page-title">The <span>Network</span></h1>
+    <p class="page-sub">Connect with students. Only accepted connections show in your network.</p>
+  </div>
+  <div class="stats-strip fade-up d1">
+    <div class="stat-chip"><div class="sc-val" id="statTotal">0</div><div class="sc-label">Students</div></div>
+    <div class="stat-chip"><div class="sc-val" id="statConnected" style="color:var(--green);">0</div><div class="sc-label">Connected</div></div>
+    <div class="stat-chip"><div class="sc-val" id="statSkills" style="color:var(--amber);">0</div><div class="sc-label">Skills Listed</div></div>
+    <div class="stat-chip"><div class="sc-val" id="statCerts" style="color:var(--indigo);">0</div><div class="sc-label">Certificates</div></div>
+  </div>
+  <div class="filter-bar fade-up d2">
+    <div class="search-wrap">
+      <span class="si">🔍</span>
+      <input class="search-input" id="searchInput" placeholder="Search by name, skill, or university..."/>
+    </div>
+    <div class="filter-tabs">
+      <div class="ftab active" data-f="all">All</div>
+      <div class="ftab" data-f="Founder">Founders</div>
+      <div class="ftab" data-f="Developer">Developers</div>
+      <div class="ftab" data-f="Designer">Designers</div>
+      <div class="ftab" data-f="Marketer">Marketers</div>
+      <div class="ftab" data-f="Creator">Creators</div>
+    </div>
+  </div>
+  <div class="sec-head fade-up d3">
+    <div class="sec-title">Students</div>
+    <div class="sec-badge" id="peopleCount">0</div>
+  </div>
+  <div class="people-grid fade-up d3" id="peopleGrid">
+    <div class="empty-state"><div class="empty-icon">👥</div><p class="empty-text">Loading network...</p></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">🏠</a>
+  <a href="clubs.html" class="nav-item">🏛️</a>
+  <a href="network.html" class="nav-item active">🧑‍🤝‍🧑</a>
+  <a href="discover.html" class="nav-item">🔍</a>
+  <a href="profile.html" class="nav-item">
+    <div class="nav-av"><img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""></div>
+  </a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import {
+  getFirestore,
+  collection, getDocs, doc, getDoc,
+  setDoc, updateDoc, addDoc,
+  arrayUnion, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+const $ = id => document.getElementById(id);
+
+// ── TOAST ──
+function toast(msg, type='ok'){
+  const t=$('toast');
+  t.textContent=msg;
+  t.className='toast show'+(type==='err'?' err':'');
+  setTimeout(()=>t.className='toast',3000);
+}
+
+let allPeople   = [];
+let myFriends   = []; // UIDs of accepted connections
+let pendingSent = []; // UIDs I sent a pending request to (stored in Firestore on my user doc)
+let currentUser = null;
+let userData    = {};
+let activeFilter= 'all';
+let searchQ     = '';
+let openPerson  = null;
+
+function connStatus(uid){
+  if(myFriends.includes(uid))  return 'connected';
+  if(pendingSent.includes(uid)) return 'pending';
+  return 'none';
+}
+
+// ── RENDER ──
+function render(){
+  let list=allPeople.filter(p=>p.uid!==currentUser?.uid);
+  if(activeFilter!=='all') list=list.filter(p=>(p.role||'Student')===activeFilter);
+  if(searchQ) list=list.filter(p=>
+    (p.name||'').toLowerCase().includes(searchQ)||
+    (p.university||'').toLowerCase().includes(searchQ)||
+    (p.skillsKnown||[]).some(s=>(typeof s==='string'?s:(s.name||'')).toLowerCase().includes(searchQ))||
+    (p.skillsLearn||[]).some(s=>s.toLowerCase().includes(searchQ))||
+    (p.bio||'').toLowerCase().includes(searchQ)
+  );
+  $('peopleCount').textContent=list.length;
+  if(!list.length){
+    $('peopleGrid').innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><p class="empty-text">No students found.</p></div>`;
+    return;
+  }
+  $('peopleGrid').innerHTML=list.map(p=>{
+    const isMe=p.uid===currentUser?.uid;
+    const st=connStatus(p.uid);
+    const av=p.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.name||p.uid)}`;
+    const rawKnown=(p.skillsKnown||[]);
+    const knowSkills=rawKnown.slice(0,3).map(s=>typeof s==='string'?s:(s.name||''));
+    const learnSkills=(p.skillsLearn||[]).slice(0,2);
+    const certCount=rawKnown.filter(s=>typeof s==='object'&&s.certUrl).length;
+    let btnHtml='';
+    if(isMe)             btnHtml=`<button class="connect-btn self">Your Profile</button>`;
+    else if(st==='connected') btnHtml=`<button class="connect-btn connected">✓ Connected</button>`;
+    else if(st==='pending')   btnHtml=`<button class="connect-btn pending">⏳ Pending</button>`;
+    else btnHtml=`<button class="connect-btn" onclick="event.stopPropagation();handleConnect('${p.uid}')">+ Connect</button>`;
+    return`<div class="person-card" onclick="openProfile('${p.uid}')">
+      <div class="person-top">
+        <div class="person-av"><img src="${av}" alt="" loading="lazy"></div>
+        <div class="person-info">
+          <div class="person-name">${p.name||'Student'}${isMe?'<span class="you-badge">You</span>':''}</div>
+          <div class="person-role">${p.role||'Student'}</div>
+          <div class="person-uni">${p.university||'—'}</div>
+        </div>
+      </div>
+      ${p.bio?`<div class="person-bio">${p.bio}</div>`:''}
+      <div class="skills-wrap">
+        ${knowSkills.map(s=>`<span class="skill-tag">${s}</span>`).join('')}
+        ${rawKnown.length>3?`<span class="skill-tag">+${rawKnown.length-3}</span>`:''}
+        ${learnSkills.map(s=>`<span class="skill-tag learn">↑ ${s}</span>`).join('')}
+      </div>
+      ${certCount>0?`<div class="cert-hint">🏅 ${certCount} cert${certCount>1?'s':''}</div>`:''}
+      <div class="person-footer">
+        <div class="person-stats">
+          <span class="pstat">💰 ${p.coins||0}</span>
+          <span class="pstat">🔄 ${p.exchanges||0}</span>
+        </div>
+        ${btnHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── SEND CONNECTION REQUEST ──
+// All 3 bugs fixed:
+// 1. setDoc with merge:true so pendingRequestsSent works even on first write
+// 2. activityDocId saved inside connections doc so dashboard can find it
+// 3. pendingSent saved to Firestore so it survives page refresh
+window.handleConnect=async function(uid){
+  if(!currentUser)return;
+  const st=connStatus(uid);
+  if(st==='connected'){toast('Already connected!');return;}
+  if(st==='pending'){toast('Request already sent','err');return;}
+
+  try{
+    const myName=userData.name||'Someone';
+
+    // STEP 1: Write activity doc to receiver — get its ID back
+    const actRef=await addDoc(collection(db,'users',uid,'activity'),{
+      type:       'connection_request',
+      title:      `${myName} sent you a connection request`,
+      desc:       'Accept or decline from your dashboard activity feed',
+      senderId:   currentUser.uid,
+      senderName: myName,
+      status:     'pending',
+      createdAt:  serverTimestamp()
+    });
+
+    // STEP 2: Save connection doc with the activityDocId stored inside
+    // So dashboard accept/decline can find it without any query
+    await addDoc(collection(db,'connections'),{
+      senderId:      currentUser.uid,
+      senderName:    myName,
+      receiverId:    uid,
+      status:        'pending',
+      activityDocId: actRef.id,   // ← stores receiver's activity doc ID
+      createdAt:     serverTimestamp()
+    });
+
+    // STEP 3: Save sent UIDs to MY user doc using setDoc merge:true
+    // This avoids "No document to update" error + survives page refresh
+    await setDoc(doc(db,'users',currentUser.uid),{
+      pendingRequestsSent: arrayUnion(uid)
+    },{merge:true});
+
+    pendingSent.push(uid);
+    render();
+    if(openPerson?.uid===uid) openProfile(uid);
+    toast('✅ Connection request sent!');
+  }catch(e){
+    console.error('[Zwapy Connect Error]',e);
+    toast('Error: '+e.message,'err');
+  }
+};
+
+// ── OPEN MODAL ──
+window.openProfile=function(uid){
+  const p=allPeople.find(x=>x.uid===uid);
+  if(!p)return;
+  openPerson=p;
+  const isMe=uid===currentUser?.uid;
+  const st=connStatus(uid);
+  const av=p.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.name||uid)}`;
+  $('mAv').src=av;
+  $('mName').textContent=p.name||'Student';
+  $('mRole').textContent=p.role||'Student';
+  $('mUni').textContent=p.university||'—';
+  $('mBio').textContent=p.bio||'No bio added yet.';
+
+  const rawKnown=(p.skillsKnown||[]);
+  const knowArr=rawKnown.map(s=>typeof s==='string'?s:(s.name||''));
+  $('mSkillsKnow').innerHTML=knowArr.length
+    ?knowArr.map(s=>`<span class="modal-skill know">${s}</span>`).join('')
+    :'<span class="modal-skill empty">No skills listed yet</span>';
+
+  const learnArr=(p.skillsLearn||[]);
+  $('mSkillsLearn').innerHTML=learnArr.length
+    ?learnArr.map(s=>`<span class="modal-skill learn">${s}</span>`).join('')
+    :'<span class="modal-skill empty">Nothing listed yet</span>';
+
+  const certs=rawKnown.filter(s=>typeof s==='object'&&s.certUrl);
+  $('mCerts').innerHTML=certs.length
+    ?certs.map(c=>`<div class="cert-item"><div class="cert-icon">🏅</div><div class="cert-info"><div class="cert-name">${c.name||'Certificate'}</div></div><a class="cert-link" href="${c.certUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></div>`).join('')
+    :'<p class="no-certs">No certificates added yet</p>';
+
+  $('mStats').innerHTML=`
+    <div class="msr"><div class="msr-val">${p.coins||0}</div><div class="msr-label">Coins</div></div>
+    <div class="msr"><div class="msr-val">${p.exchanges||0}</div><div class="msr-label">Exchanges</div></div>
+    <div class="msr"><div class="msr-val">${p.clubs||0}</div><div class="msr-label">Clubs</div></div>`;
+
+  const btn=$('mConnectBtn');
+  if(isMe){
+    btn.textContent='Edit Your Profile';btn.className='modal-connect-btn self-btn';
+    btn.onclick=()=>window.location.href='profile.html';
+  }else if(st==='connected'){
+    btn.textContent='✓ Connected';btn.className='modal-connect-btn connected';btn.onclick=null;
+  }else if(st==='pending'){
+    btn.textContent='⏳ Request Sent';btn.className='modal-connect-btn pending';btn.onclick=null;
+  }else{
+    btn.textContent='+ Connect';btn.className='modal-connect-btn';
+    btn.onclick=()=>handleConnect(uid);
+  }
+
+  const li=$('mLinkedin');
+  if(p.linkedin&&p.linkedin.trim()){
+    let url=p.linkedin.trim();
+    if(!url.startsWith('http'))url='https://'+url;
+    li.href=url;li.style.display='flex';
+    li.onclick=e=>{e.preventDefault();e.stopPropagation();window.open(url,'_blank','noopener,noreferrer');};
+  }else{li.style.display='none';li.onclick=null;}
+  $('profileModal').classList.add('open');
+};
+
+$('modalClose').addEventListener('click',()=>{$('profileModal').classList.remove('open');openPerson=null;});
+$('profileModal').addEventListener('click',e=>{if(e.target===$('profileModal')){$('profileModal').classList.remove('open');openPerson=null;}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('profileModal').classList.remove('open');openPerson=null;}});
+document.querySelectorAll('.ftab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');activeFilter=t.dataset.f;render();
+  });
+});
+$('searchInput').addEventListener('input',e=>{searchQ=e.target.value.toLowerCase().trim();render();});
+
+// ── AUTH + LOAD ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const us=await getDoc(doc(db,'users',user.uid));
+  if(us.exists()){
+    userData=us.data();
+    $('navAvatar').src=userData.photoURL||user.photoURL||
+      `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userData.name||'user')}`;
+    // Read both from Firestore so state persists on refresh
+    myFriends   = userData.friends||userData.connections||[];
+    pendingSent = userData.pendingRequestsSent||[];
+    $('statConnected').textContent=myFriends.length;
+  }
+
+  const snap=await getDocs(collection(db,'users'));
+  allPeople=[];
+  let totalSkills=0,totalCerts=0;
+  snap.forEach(d=>{
+    const ud=d.data();
+    if(ud.role==='super_admin')return;
+    allPeople.push({uid:d.id,...ud});
+    totalSkills+=(ud.skillsKnown||[]).length+(ud.skillsLearn||[]).length;
+    totalCerts+=(ud.skillsKnown||[]).filter(s=>typeof s==='object'&&s.certUrl).length;
+  });
+  allPeople.sort((a,b)=>{
+    const aC=myFriends.includes(a.uid)?1:0;
+    const bC=myFriends.includes(b.uid)?1:0;
+    if(bC!==aC)return bC-aC;
+    return(b.coins||0)-(a.coins||0);
+  });
+  $('statTotal').textContent=allPeople.filter(p=>p.uid!==user.uid).length;
+  $('statSkills').textContent=totalSkills;
+  $('statCerts').textContent=totalCerts;
+  render();
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},500);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

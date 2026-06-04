@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>You're In 🚀 | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cyan:#00D4FF;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;
+  --bg:#010114;--border:rgba(0,212,255,0.12);--muted:#64748b;--dim:#94a3b8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden;}
+
+/* Scanline */
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.018) 2px,rgba(0,0,0,0.018) 4px);pointer-events:none;z-index:9999;}
+
+/* Background glows */
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-glow::before{content:'';position:absolute;top:-20%;left:-10%;width:60%;height:60%;background:radial-gradient(ellipse,rgba(0,212,255,0.08) 0%,transparent 65%);}
+.bg-glow::after{content:'';position:absolute;bottom:-10%;right:-10%;width:50%;height:50%;background:radial-gradient(ellipse,rgba(16,185,129,0.06) 0%,transparent 65%);}
+
+/* Stars */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle ease infinite;}
+@keyframes twinkle{0%,100%{opacity:.1;transform:scale(1);}50%{opacity:.6;transform:scale(1.4);}}
+
+.layout{position:relative;z-index:10;max-width:600px;margin:0 auto;padding:40px 20px 60px;}
+
+/* TOP BADGE */
+.top-badge{display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
+.badge-pill{display:flex;align-items:center;gap:8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:100px;padding:8px 18px;}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 1.8s ease infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.7);}60%{box-shadow:0 0 0 7px rgba(0,212,255,0);}}
+.badge-text{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:36px;}
+.rocket{font-size:3.2rem;display:block;margin-bottom:12px;animation:launch 3s ease infinite;}
+@keyframes launch{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-12px) rotate(5deg);}}
+.hero h1{font-size:clamp(2rem,7vw,3rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1.05;margin-bottom:10px;}
+.hero h1 span{color:var(--cyan);}
+.hero .sub{font-size:.86rem;color:var(--dim);line-height:1.7;max-width:400px;margin:0 auto;}
+.hero .sub strong{color:white;}
+
+/* WHAT NEXT */
+.what-next{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px;}
+.wn-title{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-bottom:16px;}
+.steps{display:flex;flex-direction:column;gap:12px;}
+.step{display:flex;align-items:flex-start;gap:13px;}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;color:var(--cyan);flex-shrink:0;margin-top:1px;}
+.step-info h4{font-size:.84rem;font-weight:700;margin-bottom:2px;}
+.step-info p{font-size:.7rem;color:var(--dim);line-height:1.5;}
+
+/* COMMUNITY CARDS */
+.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+@media(max-width:440px){.community-grid{grid-template-columns:1fr;}}
+
+.comm-card{border-radius:18px;padding:20px;text-align:center;cursor:pointer;transition:all .25s;text-decoration:none;display:block;}
+.comm-card:hover{transform:translateY(-3px);}
+
+.comm-card.whatsapp{background:linear-gradient(135deg,rgba(37,211,102,0.1),rgba(1,1,20,0.9));border:1px solid rgba(37,211,102,0.25);}
+.comm-card.whatsapp:hover{border-color:rgba(37,211,102,0.5);box-shadow:0 8px 32px rgba(37,211,102,.12);}
+
+.comm-card.instagram{background:linear-gradient(135deg,rgba(225,48,108,0.1),rgba(1,1,20,0.9));border:1px solid rgba(225,48,108,0.2);}
+.comm-card.instagram:hover{border-color:rgba(225,48,108,0.4);box-shadow:0 8px 32px rgba(225,48,108,.1);}
+
+.comm-icon{font-size:1.8rem;margin-bottom:8px;display:block;}
+.comm-label{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px;}
+.comm-card.whatsapp .comm-label{color:#25d366;}
+.comm-card.instagram .comm-label{color:#e1306c;}
+.comm-name{font-size:.82rem;font-weight:800;margin-bottom:8px;}
+
+/* QR codes */
+.qr-wrap{width:88px;height:88px;background:white;border-radius:10px;padding:5px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.qr-wrap img{width:100%;height:100%;object-fit:contain;display:block;}
+
+.comm-btn{display:inline-flex;align-items:center;gap:5px;border-radius:100px;padding:6px 14px;font-size:.64rem;font-weight:800;font-family:'Sora',sans-serif;letter-spacing:.04em;transition:all .2s;}
+.comm-card.whatsapp .comm-btn{background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.3);color:#25d366;}
+.comm-card.instagram .comm-btn{background:rgba(225,48,108,0.1);border:1px solid rgba(225,48,108,0.25);color:#e1306c;}
+
+/* AMBASSADOR CARD */
+.ambassador-card{background:linear-gradient(135deg,rgba(245,158,11,0.07),rgba(1,1,20,0.95));border:1px solid rgba(245,158,11,0.22);border-radius:20px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;}
+.ambassador-card::before{content:'AMBASSADOR';position:absolute;right:-14px;top:16px;font-family:'Space Mono',monospace;font-size:.38rem;letter-spacing:.2em;color:rgba(245,158,11,0.15);transform:rotate(90deg);transform-origin:right center;white-space:nowrap;}
+.amb-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.amb-icon{width:44px;height:44px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.amb-title-wrap{}
+.amb-label{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);opacity:.8;margin-bottom:2px;}
+.amb-title{font-size:1rem;font-weight:800;font-style:italic;}
+.amb-perks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+@media(max-width:400px){.amb-perks{grid-template-columns:1fr;}}
+.perk{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.14);border-radius:11px;padding:10px 12px;}
+.perk-val{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--amber);line-height:1;margin-bottom:2px;}
+.perk-label{font-size:.62rem;color:var(--dim);}
+.amb-desc{font-size:.74rem;color:var(--dim);line-height:1.6;margin-bottom:14px;}
+.amb-desc strong{color:white;}
+.amb-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:11px;padding:12px;font-size:.76rem;font-weight:800;color:var(--amber);cursor:pointer;font-family:'Sora',sans-serif;text-decoration:none;transition:all .25s;}
+.amb-btn:hover{background:rgba(245,158,11,0.22);}
+
+/* REFERRAL CARD */
+.referral-card{background:rgba(129,140,248,0.06);border:1px solid rgba(129,140,248,0.2);border-radius:20px;padding:22px;margin-bottom:16px;}
+.ref-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.ref-title{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);opacity:.8;}
+.ref-badge{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.25);border-radius:100px;padding:4px 12px;font-family:'Space Mono',monospace;font-size:.58rem;font-weight:700;color:var(--indigo);}
+.ref-desc{font-size:.76rem;color:var(--dim);line-height:1.6;margin-bottom:12px;}
+.ref-desc strong{color:white;}
+.ref-link-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:11px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.ref-link-text{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--cyan);word-break:break-all;flex:1;}
+.copy-btn{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);border-radius:8px;padding:7px 13px;font-size:.66rem;font-weight:800;color:var(--cyan);cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .2s;}
+.copy-btn:hover{background:rgba(0,212,255,0.2);}
+
+/* Dashboard CTA */
+.dashboard-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--cyan);color:#000;border:none;border-radius:13px;padding:15px;font-size:.9rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;text-decoration:none;transition:all .25s;position:relative;overflow:hidden;margin-bottom:16px;}
+.dashboard-btn::before{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:rgba(255,255,255,.25);transform:skewX(-20deg);animation:glint 3s ease infinite;}
+@keyframes glint{0%,70%,100%{left:-60%;}40%{left:120%;}}
+.dashboard-btn:hover{box-shadow:0 0 28px rgba(0,212,255,.4);transform:translateY(-1px);}
+
+.footer-note{text-align:center;font-size:.66rem;color:var(--muted);line-height:1.7;}
+.footer-note strong{color:white;}
+
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(10px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+
+/* Fade in animations */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}.d4{transition-delay:.4s;}.d5{transition-delay:.5s;}.d6{transition-delay:.6s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="stars" id="stars"></div>
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+
+  <!-- TOP BADGE -->
+  <div class="top-badge fade-up d1">
+    <div class="badge-pill">
+      <div class="badge-dot"></div>
+      <span class="badge-text">You're now part of Zwapy</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero fade-up d1">
+    <span class="rocket">🚀</span>
+    <h1>You're <span>Early.</span><br>That matters.</h1>
+    <p class="sub">
+      You're one of the <strong>first students</strong> on Zwapy at Presidency University.<br>
+      The people who join first build the culture. That's you now.
+    </p>
+  </div>
+
+  <!-- WHAT'S NEXT -->
+  <div class="what-next fade-up d2">
+    <div class="wn-title">// What happens next</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <h4>Join the WhatsApp group</h4>
+          <p>Stay updated, meet other early members, get announcements directly from the Zwapy team.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <h4>Follow us on Instagram</h4>
+          <p>We post platform updates, skill exchange highlights, and early member shoutouts.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <h4>Invite your friends</h4>
+          <p>Share your referral link. You get +2 Skill Coins for every person who joins through you.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-info">
+          <h4>Do your first skill exchange</h4>
+          <p>Go to the dashboard, post a skill, and connect with someone. That's how you earn coins and certificates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY — WhatsApp + Instagram -->
+  <div class="community-grid fade-up d3">
+
+    <!-- WhatsApp -->
+    <a href="https://chat.whatsapp.com/CWKXSgQGGTlFIAPNWph4YE" target="_blank" rel="noopener" class="comm-card whatsapp">
+      <span class="comm-icon">💬</span>
+      <div class="comm-label">WhatsApp Group</div>
+      <div class="comm-name">ZWAPY 🚀</div>
+      <!-- Embedded QR as image from the uploaded file -->
+      <div class="qr-wrap">
+        <img src="assets/whatsapp-qr.png" alt="WhatsApp QR"
+             onerror="this.parentElement.innerHTML='<div style=\'font-size:.5rem;color:#25d366;text-align:center;padding:4px;word-break:break-all;font-family:monospace;\'>Scan QR in WhatsApp</div>'"/>
+      </div>
+      <span class="comm-btn">Join Group →</span>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/zwapy.official_?igsh=MThvaDJwbjJjaG11aA==" target="_blank" rel="noopener" class="comm-card instagram">
+      <span class="comm-icon">📸</span>
+      <div class="comm-label">Instagram</div>
+      <div class="comm-name">@zwapy.official_</div>
+      <div class="qr-wrap">
+        <img src="assets/instagram-qr.png" alt="Instagram QR"
+             onerror="this.parentElement.innerHTML='<div style=\'font-size:.55rem;color:#e1306c;text-align:center;padding:6px;font-family:monospace;\'>@zwapy.official_</div>'"/>
+      </div>
+      <span class="comm-btn">Follow Us →</span>
+    </a>
+
+  </div>
+
+  <!-- AMBASSADOR PROGRAM -->
+  <div class="ambassador-card fade-up d4">
+    <div class="amb-top">
+      <div class="amb-icon">⚡</div>
+      <div class="amb-title-wrap">
+        <div class="amb-label">Limited Positions</div>
+        <div class="amb-title">Become a Campus Ambassador</div>
+      </div>
+    </div>
+    <div class="amb-perks">
+      <div class="perk"><div class="perk-val">5</div><div class="perk-label">Open positions</div></div>
+      <div class="perk"><div class="perk-val">20%</div><div class="perk-label">Subscription discount</div></div>
+      <div class="perk"><div class="perk-val">+20</div><div class="perk-label">Skill Coins bonus</div></div>
+      <div class="perk"><div class="perk-val">1st</div><div class="perk-label">Access to new features</div></div>
+    </div>
+    <p class="amb-desc">
+      We're looking for <strong>5 students</strong> at Presidency who want to be the face of Zwapy on campus.
+      Ambassadors spread the word, help onboard new students, and get exclusive perks in return.
+      You don't need experience — you need to believe in what Zwapy is building.
+    </p>
+    <a href="https://chat.whatsapp.com/LjWMyKWBunFGK4PeoottAP?mode=gi_t" target="_blank" rel="noopener" class="amb-btn">
+      🙋 Apply via WhatsApp →
+    </a>
+  </div>
+
+  <!-- REFERRAL -->
+  <div class="referral-card fade-up d5">
+    <div class="ref-top">
+      <div class="ref-title">// Invite & Earn</div>
+      <div class="ref-badge">💰 You get +2 coins per invite</div>
+    </div>
+    <p class="ref-desc">
+      Share your personal invite link. When a friend signs up using your link,
+      <strong>you get +2 Skill Coins</strong> and they get +1 as a welcome bonus.
+      The more people you bring, the more coins you stack.
+    </p>
+    <div class="ref-link-box">
+      <span class="ref-link-text" id="refLinkText">Sign in to see your link</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyRef()">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CTA -->
+  <a href="dashboard.html" class="dashboard-btn fade-up d6">
+    🏠 &nbsp; Go to My Dashboard →
+  </a>
+
+  <p class="footer-note fade-up d6">
+    Questions? Message us on <strong>WhatsApp</strong> or DM <strong>@zwapy.official_</strong> on Instagram.<br>
+    We read every message. Welcome to Zwapy 🚀
+  </p>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+// Stars background
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<60;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+0.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:-${Math.random()*4}s;`;
+    c.appendChild(s);
+  }
+})();
+
+// Animate elements in
+setTimeout(()=>{
+  document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+},100);
+
+let refCode='';
+
+// Load referral code from Firestore
+onAuthStateChanged(auth,async user=>{
+  if(!user)return;
+  try{
+    const snap=await getDoc(doc(db,'users',user.uid));
+    if(snap.exists()){
+      const d=snap.data();
+      refCode=d.referralCode||user.uid.substring(0,8).toUpperCase();
+      document.getElementById('refLinkText').textContent=`https://zwapy.com/signup.html?ref=${refCode}`;
+    }
+  }catch(e){}
+});
+
+// Copy referral link
+window.copyRef=function(){
+  const link=`https://zwapy.com/signup.html?ref=${refCode}`;
+  try{
+    navigator.clipboard.writeText(link).then(()=>toast('✅ Invite link copied!'));
+  }catch(e){
+    const ta=document.createElement('textarea');ta.value=link;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);toast('✅ Link copied!');
+  }
+};
+
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast s show';
+  setTimeout(()=>t.className='toast',3000);
+}
+</script>
+</body>
+</html>

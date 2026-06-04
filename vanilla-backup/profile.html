@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>Profile | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cyan:#00D4FF;--bg:#010114;--navy:#020024;
+  --border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.32);
+  --muted:#64748b;--dim:#94a3b8;
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--indigo:#818cf8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.018) 2px,rgba(0,0,0,0.018) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 15% 20%,rgba(0,212,255,0.05) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 85% 80%,rgba(129,140,248,0.04) 0%,transparent 55%);}
+
+/* LOAD */
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.ls-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.ls-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.ls-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));animation:lf .9s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.ls-text{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+
+/* LAYOUT */
+.layout{position:relative;z-index:10;max-width:920px;margin:0 auto;padding:0 16px 110px;}
+@media(min-width:700px){.layout{padding:0 28px 110px;}}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:24px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.95);backdrop-filter:blur(24px);margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;gap:10px;}
+@media(min-width:700px){.topbar{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px;}}
+.topbar-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:32px;height:32px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.1rem;font-weight:900;font-style:italic;}
+.back-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:100px;padding:7px 14px;font-size:.7rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap;}
+.back-btn:hover{border-color:rgba(0,212,255,0.3);color:white;}
+
+/* PAGE HEADER */
+.page-head{margin-bottom:24px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:5px;}
+.page-title{font-size:clamp(1.7rem,6vw,2.5rem);font-weight:900;font-style:italic;letter-spacing:-.02em;line-height:1;}
+
+/* HERO CARD */
+.hero-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:22px;padding:24px;margin-bottom:14px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+.av-wrap{position:relative;flex-shrink:0;}
+.av-img{width:80px;height:80px;border-radius:50%;border:3px solid rgba(0,212,255,0.25);object-fit:cover;}
+@media(min-width:500px){.av-img{width:96px;height:96px;}}
+.av-app{position:absolute;bottom:-4px;right:-4px;background:rgba(1,1,20,0.9);border:1px solid rgba(0,212,255,0.2);border-radius:100px;padding:2px 8px;font-family:'Space Mono',monospace;font-size:.42rem;color:var(--cyan);}
+.hero-info{flex:1;min-width:180px;}
+.hero-name{font-size:1.3rem;font-weight:900;font-style:italic;letter-spacing:-.02em;margin-bottom:3px;}
+.hero-role{font-size:.76rem;color:var(--dim);margin-bottom:8px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.htag{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.htag-cyan{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--cyan);}
+.htag-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:var(--green);}
+.htag-indigo{background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);color:var(--indigo);}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+@media(min-width:480px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:all .25s;}
+.stat-card:hover{border-color:rgba(0,212,255,0.2);transform:translateY(-2px);}
+.sv{font-family:'Space Mono',monospace;font-size:1.4rem;font-weight:700;line-height:1;margin-bottom:3px;}
+.sv.c{color:var(--cyan);}.sv.g{color:var(--green);}.sv.i{color:var(--indigo);}.sv.a{color:var(--amber);}
+.sl{font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+
+/* CARD */
+.card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:14px;transition:border-color .3s;}
+.card:hover{border-color:rgba(0,212,255,0.14);}
+.card-title{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-title-line{flex:1;height:1px;background:rgba(0,212,255,0.08);}
+
+/* READ-ONLY ROWS */
+.ro-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);gap:12px;flex-wrap:wrap;}
+.ro-row:last-child{border-bottom:none;padding-bottom:0;}
+.ro-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-top:2px;min-width:90px;}
+.ro-val{font-size:.8rem;font-weight:600;color:white;text-align:right;word-break:break-all;}
+.ro-note{font-size:.58rem;color:var(--muted);text-align:right;margin-top:2px;}
+
+/* EDIT FORM */
+.field{margin-bottom:14px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:flex;align-items:center;justify-content:space-between;font-size:.58rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.field-optional{font-size:.54rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:12px 14px;font-size:.86rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan);}
+.field input:disabled,.field select:disabled,.field textarea:disabled{opacity:.42;cursor:not-allowed;}
+.field select option{background:#020024;}
+.field textarea{resize:vertical;min-height:74px;line-height:1.5;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:460px){.field-row{grid-template-columns:1fr;}}
+.field-hint{font-size:.58rem;color:var(--muted);margin-top:4px;line-height:1.5;}
+.field-hint.ok{color:var(--green);}
+.field-hint.err{color:var(--red);}
+
+/* Skills chips */
+.skills-wrap{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:9px 11px;min-height:48px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;cursor:text;transition:border-color .2s;}
+.skills-wrap:focus-within{border-color:var(--cyan);}
+.skills-wrap.disabled{opacity:.42;cursor:not-allowed;pointer-events:none;}
+.skill-chip{display:flex;align-items:center;gap:5px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:100px;padding:3px 10px;font-size:.66rem;font-weight:700;color:var(--cyan);}
+.skill-chip button{background:none;border:none;color:var(--cyan);cursor:pointer;font-size:.7rem;padding:0;opacity:.55;}
+.skill-chip button:hover{opacity:1;}
+.skill-chip-learn{background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);color:var(--indigo);}
+.skill-chip-learn button{color:var(--indigo);}
+.skill-input-el{background:none;border:none;outline:none;color:white;font-family:'Sora',sans-serif;font-size:.84rem;min-width:100px;flex:1;}
+.skill-input-el::placeholder{color:var(--muted);}
+
+/* LinkedIn validated */
+.linkedin-wrap{display:flex;align-items:center;gap:8px;}
+.li-icon{width:32px;height:32px;background:rgba(0,119,181,0.12);border:1px solid rgba(0,119,181,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.linkedin-wrap input{flex:1;}
+
+/* 24hr lock banner */
+.lock-banner{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:13px;padding:13px 15px;margin-bottom:14px;display:none;align-items:flex-start;gap:10px;}
+.lock-banner.show{display:flex;}
+.lock-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+.lock-text h4{font-size:.78rem;font-weight:800;color:var(--amber);margin-bottom:2px;}
+.lock-text p{font-size:.66rem;color:var(--dim);line-height:1.5;}
+.lock-countdown{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--amber);font-weight:700;margin-top:4px;}
+
+/* SAVE BUTTON */
+.save-btn{width:100%;background:linear-gradient(135deg,var(--cyan),#0099bb);color:#000;border:none;border-radius:12px;padding:14px;font-size:.88rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;transition:all .25s;margin-top:4px;}
+.save-btn:hover{box-shadow:0 0 24px rgba(0,212,255,.35);}
+.save-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Referral */
+.ref-card{background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(1,1,20,0.95));border:1px solid rgba(245,158,11,0.18);border-radius:20px;padding:22px;margin-bottom:14px;}
+.ref-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:8px;}
+.ref-title{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);opacity:.8;}
+.ref-badge{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.22);border-radius:100px;padding:3px 11px;font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;color:var(--amber);}
+.ref-desc{font-size:.72rem;color:var(--dim);line-height:1.6;margin-bottom:12px;}
+.ref-desc strong{color:white;}
+.ref-link-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.ref-link-txt{font-family:'Space Mono',monospace;font-size:.64rem;color:var(--cyan);flex:1;word-break:break-all;}
+.copy-btn{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.24);border-radius:8px;padding:7px 14px;font-size:.68rem;font-weight:800;color:var(--cyan);cursor:pointer;font-family:'Sora',sans-serif;flex-shrink:0;transition:all .2s;}
+.copy-btn:hover{background:rgba(0,212,255,0.2);}
+.ref-stats{display:flex;gap:9px;flex-wrap:wrap;}
+.rsb{flex:1;min-width:90px;background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.14);border-radius:11px;padding:11px;text-align:center;}
+.rsb-val{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--amber);line-height:1;margin-bottom:2px;}
+.rsb-label{font-size:.56rem;color:var(--muted);}
+
+/* Sign out */
+.signout-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:20px 22px;margin-bottom:14px;}
+.so-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.so-text h4{font-size:.86rem;font-weight:700;margin-bottom:2px;}
+.so-text p{font-size:.7rem;color:var(--muted);}
+.so-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:9px 16px;font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--dim);cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s;}
+.so-btn:hover{background:rgba(255,255,255,0.07);color:white;border-color:rgba(255,255,255,0.18);}
+
+/* Toast */
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(14px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.e{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.28);color:var(--red);}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:360px;background:rgba(2,0,36,0.96);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:5px 10px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 28px rgba(0,0,0,.6);}
+.nav-item{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .2s;text-decoration:none;color:var(--muted);font-size:1rem;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-item:hover{background:rgba(0,212,255,0.07);color:var(--cyan);}
+.nav-av{width:24px;height:24px;border-radius:50%;border:2px solid rgba(0,212,255,.25);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+
+/* Desktop 2-col */
+@media(min-width:800px){
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+  .two-col .card,.two-col .ref-card{margin-bottom:0;}
+}
+
+.fade-up{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}
+.d4{transition-delay:.2s;}.d5{transition-delay:.25s;}.d6{transition-delay:.3s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div id="loadScreen"><div class="ls-logo">ZWAPY</div><div class="ls-bar"><div class="ls-fill"></div></div><div class="ls-text">Loading profile...</div></div>
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-logo">
+      <div class="logo-node"><img src="assets/zwapy-logo.png" style="width:20px;height:20px;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+  </header>
+
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Your Identity</div>
+    <h1 class="page-title">Profile</h1>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero-card fade-up d1">
+    <div class="av-wrap">
+      <img id="avImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" class="av-img" alt=""/>
+      <span class="av-app">Photo · App</span>
+    </div>
+    <div class="hero-info">
+      <div class="hero-name" id="heroName">—</div>
+      <div class="hero-role" id="heroRole">Student </div>
+      <div class="hero-tags">
+        <span class="htag htag-cyan" id="heroEmail">—</span>
+        <span class="htag htag-green" id="heroUni" style="display:none;"></span>
+        <span class="htag htag-indigo" id="heroCourse" style="display:none;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-up d2">
+    <div class="stat-card"><div class="sv c" id="stCoins">0</div><div class="sl">Coins</div></div>
+    <div class="stat-card"><div class="sv g" id="stExchanges">0</div><div class="sl">Exchanges</div></div>
+    <div class="stat-card"><div class="sv i" id="stRank">#—</div><div class="sl">Rank</div></div>
+    <div class="stat-card" id="stScoreCard" style="display:none;"><div class="sv a" id="stScore">—</div><div class="sl">Exam Score</div></div>
+  </div>
+
+  <!-- 24hr LOCK BANNER -->
+  <div class="lock-banner" id="lockBanner">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-text">
+      <h4>Profile editing is locked</h4>
+      <p>You can edit your profile once every 24 hours to keep information accurate.</p>
+      <div class="lock-countdown" id="lockCountdown">Unlocks in: calculating...</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- LEFT COL: Read-only + Edit -->
+    <div>
+      <!-- READ-ONLY INFO -->
+      <div class="card fade-up d2">
+        <div class="card-title">// Account Info <div class="card-title-line"></div></div>
+        <div class="ro-row"><div class="ro-label">Name</div><div class="ro-val" id="roName">—</div></div>
+        <div class="ro-row"><div class="ro-label">Email</div><div><div class="ro-val" id="roEmail">—</div><div class="ro-note">Login email — cannot change</div></div></div>
+        <div class="ro-row"><div class="ro-label">Uni Email</div><div><div class="ro-val" id="roUniEmail">—</div><div class="ro-note" id="roUniStatus">—</div></div></div>
+        <div class="ro-row"><div class="ro-label">University</div><div class="ro-val" id="roUni">—</div></div>
+        <div class="ro-row"><div class="ro-label">Phone</div><div class="ro-val" id="roPhone">—</div></div>
+        <div class="ro-row"><div class="ro-label">Version</div><div><div class="ro-val" id="roVersion">—</div><div class="ro-note">Auto-updates with Zwapy</div></div></div>
+      </div>
+
+      <!-- EDITABLE PROFILE -->
+      <div class="card fade-up d3">
+        <div class="card-title">// Edit Profile <div class="card-title-line"></div></div>
+
+        <div class="field">
+          <label>Role / Title</label>
+          <select id="fRole">
+            <option value="Student">Student</option>
+            <option value="Founder">Founder</option>
+            <option value="Designer">Designer</option>
+            <option value="Developer">Developer</option>
+            <option value="Marketer">Marketer</option>
+            <option value="Creator">Creator</option>
+            <option value="Researcher">Researcher</option>
+            <option value="Entrepreneur">Entrepreneur</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Course</label>
+            <select id="fCourse">
+              <option value="">Select</option>
+              <optgroup label="Engineering">
+                <option>B.Tech CSE</option><option>B.Tech CSE (IoT)</option>
+                <option>B.Tech CSE (AI & ML)</option><option>B.Tech CSE (Data Science)</option>
+                <option>B.Tech CSE (Cyber Security)</option><option>B.Tech CSE (Cloud)</option>
+                <option>B.Tech ECE</option><option>B.Tech Mechanical</option>
+                <option>B.Tech Civil</option><option>B.Tech EEE</option>
+                <option>B.Tech ISE</option><option>M.Tech CSE</option>
+              </optgroup>
+              <optgroup label="Management">
+                <option>BBA</option><option>BBA Finance</option><option>MBA</option><option>MBA Finance</option>
+              </optgroup>
+              <optgroup label="Commerce & Arts">
+                <option>B.Com</option><option>BCA</option><option>MCA</option>
+                <option>B.Sc Computer Science</option><option>BA Economics</option>
+              </optgroup>
+              <optgroup label="Law">
+                <option>BA LLB</option><option>BBA LLB</option><option>LLM</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option>B.Arch</option><option>B.Des</option><option>PhD</option><option>Other</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="field">
+            <label>Passout Year</label>
+            <select id="fYear">
+              <option value="">Year</option>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option>
+              <option>2029</option><option>2030</option><option>2031</option><option>2032</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Date of Birth <span class="field-optional">(optional)</span></label>
+          <input type="date" id="fDob"/>
+        </div>
+
+        <div class="field">
+          <label>LinkedIn <span class="field-optional">(mandatory on Zwapy)</span></label>
+          <div class="linkedin-wrap">
+            <div class="li-icon">in</div>
+            <input type="url" id="fLinkedin" placeholder="https://" oninput="checkLI()"/>
+          </div>
+          <div class="field-hint" id="liHint">e.g. linkedin.com/in/jayashankar-r</div>
+        </div>
+
+        <div class="field">
+          <label>Bio <span class="field-optional">(optional)</span></label>
+          <textarea id="fBio" placeholder="Tell others what you're building, learning or interested in..."></textarea>
+        </div>
+
+        <!-- Startup interest -->
+        <div class="field">
+          <label>Startup / Project Interest</label>
+          <select id="fStartup">
+            <option value="">Select</option>
+            <option value="startup">🚀 Building a startup</option>
+            <option value="project">⚙️ Open source / College projects</option>
+            <option value="both">💡 Both startups and projects</option>
+            <option value="none">📚 Just learning and exchanging skills</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Skills I Know <span class="field-optional">(Enter or comma)</span></label>
+          <div class="skills-wrap" id="skillsKnownWrap">
+            <input class="skill-input-el" id="skillKnownInput" placeholder="Add skill..."/>
+          </div>
+          <div class="field-hint">Beginner, intermediate, advanced — just add the skill name</div>
+        </div>
+
+        <div class="field">
+          <label>Skills I Want to Learn <span class="field-optional">(Enter or comma)</span></label>
+          <div class="skills-wrap" id="skillsLearnWrap">
+            <input class="skill-input-el" id="skillLearnInput" placeholder="Add skill..."/>
+          </div>
+        </div>
+
+        <button class="save-btn" id="saveBtn" type="button" onclick="saveProfile()">
+          Save Profile Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT COL: Referral + Sign out -->
+    <div>
+      <!-- REFERRAL -->
+      <div class="ref-card fade-up d4">
+        <div class="ref-head">
+          <div class="ref-title">// Invite & Earn</div>
+          <div class="ref-badge">+2 for you · +1 for friend</div>
+        </div>
+        <p class="ref-desc">Share your invite link. When someone new joins Zwapy through your link, <strong>you earn +2 coins</strong> and <strong>they get +1 coin</strong>.</p>
+        <div class="ref-link-box">
+          <span class="ref-link-txt" id="refLinkTxt">Generating...</span>
+          <button class="copy-btn" id="copyRefBtn">📋 Copy</button>
+        </div>
+        <div class="ref-stats">
+          <div class="rsb"><div class="rsb-val" id="refCount">0</div><div class="rsb-label">Invited</div></div>
+          <div class="rsb"><div class="rsb-val" id="refCoins">+0</div><div class="rsb-label">Coins Earned</div></div>
+        </div>
+      </div>
+
+      <!-- SKILL SCORES (if exam taken) -->
+      <div class="card fade-up d4" id="examScoreCard" style="display:none;">
+        <div class="card-title">// Verified Skill Scores <div class="card-title-line"></div></div>
+        <div id="examScoreList"></div>
+        <a href="exam.html" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);border-radius:9px;padding:8px;font-size:.7rem;font-weight:800;color:var(--cyan);text-decoration:none;transition:all .2s;">🔄 Retake Exam</a>
+      </div>
+
+      <!-- SIGN OUT -->
+      <div class="signout-card fade-up d5">
+        <div class="so-row">
+          <div class="so-text">
+            <h4>Sign Out</h4>
+            <p>Your coins and data are saved. Sign back in anytime with the same Google account.</p>
+          </div>
+          <button class="so-btn" id="signOutBtn">🚪 Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">🏠</a>
+  <a href="clubs.html" class="nav-item">🏛️</a>
+  <a href="network.html" class="nav-item">🧑‍🤝‍🧑</a>
+  <a href="discover.html" class="nav-item">🔍</a>
+  <a href="profile.html" class="nav-item active"><div class="nav-av"><img id="navAv" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""/></div></a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, updateDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const EDIT_COOLDOWN_HOURS = 24;
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const $    = id => document.getElementById(id);
+
+let currentUser = null;
+let userData    = {};
+let skillsKnown = []; // strings
+let skillsLearn = []; // strings
+let isLocked    = false;
+
+function toast(msg, type='s') {
+  const t=$('toast'); t.textContent=msg; t.className='toast '+type+' show';
+  setTimeout(()=>{ t.className='toast'; }, 3200);
+}
+const fmt = n => Number(n||0).toLocaleString();
+
+/* ── LINKEDIN VALIDATION ── */
+const _liPat=/^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9][a-zA-Z0-9_.-]{2,99}\/?$/;
+const _liBlock=['profile','yourprofile','username','yourname','test','demo','admin','fake','null','me'];
+window.checkLI = function() {
+  const v=($('fLinkedin').value||'').trim();
+  const h=$('liHint');
+  if(!v){h.style.color='';h.textContent='e.g. linkedin.com/in/jayashankar-r';return;}
+  const ok=_liPat.test(v)&&!_liBlock.some(b=>v.toLowerCase().includes('/in/'+b));
+  h.style.color=ok?'var(--green)':'var(--red)';
+  h.textContent=ok?'✅ Valid LinkedIn URL':'❌ Must be linkedin.com/in/your-real-username';
+};
+
+/* ── SKILL CHIPS ── */
+function addSkillKnown(val) {
+  const s=val.trim().replace(/,$/,'').trim();
+  if(!s||skillsKnown.includes(s))return;
+  skillsKnown.push(s); renderSkillsKnown(); $('skillKnownInput').value='';
+}
+function renderSkillsKnown() {
+  document.querySelectorAll('.sk-chip-k').forEach(c=>c.remove());
+  skillsKnown.forEach(s=>{
+    const chip=document.createElement('div');
+    chip.className='skill-chip sk-chip-k';
+    chip.innerHTML=`${s}<button type="button">✕</button>`;
+    chip.querySelector('button').addEventListener('click',()=>{ skillsKnown=skillsKnown.filter(x=>x!==s); chip.remove(); });
+    $('skillsKnownWrap').insertBefore(chip,$('skillKnownInput'));
+  });
+}
+$('skillKnownInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();addSkillKnown($('skillKnownInput').value);}
+  if(e.key===','){e.preventDefault();addSkillKnown($('skillKnownInput').value);}
+  if(e.key==='Backspace'&&!$('skillKnownInput').value&&skillsKnown.length){skillsKnown.pop();renderSkillsKnown();}
+});
+$('skillKnownInput').addEventListener('blur',()=>{ if($('skillKnownInput').value.trim()) addSkillKnown($('skillKnownInput').value); });
+$('skillsKnownWrap').addEventListener('click',()=>$('skillKnownInput').focus());
+
+function addSkillLearn(val) {
+  const s=val.trim().replace(/,$/,'').trim();
+  if(!s||skillsLearn.includes(s))return;
+  skillsLearn.push(s); renderSkillsLearn(); $('skillLearnInput').value='';
+}
+function renderSkillsLearn() {
+  document.querySelectorAll('.sk-chip-l').forEach(c=>c.remove());
+  skillsLearn.forEach(s=>{
+    const chip=document.createElement('div');
+    chip.className='skill-chip skill-chip-learn sk-chip-l';
+    chip.innerHTML=`${s}<button type="button">✕</button>`;
+    chip.querySelector('button').addEventListener('click',()=>{ skillsLearn=skillsLearn.filter(x=>x!==s); chip.remove(); });
+    $('skillsLearnWrap').insertBefore(chip,$('skillLearnInput'));
+  });
+}
+$('skillLearnInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();addSkillLearn($('skillLearnInput').value);}
+  if(e.key===','){e.preventDefault();addSkillLearn($('skillLearnInput').value);}
+  if(e.key==='Backspace'&&!$('skillLearnInput').value&&skillsLearn.length){skillsLearn.pop();renderSkillsLearn();}
+});
+$('skillLearnInput').addEventListener('blur',()=>{ if($('skillLearnInput').value.trim()) addSkillLearn($('skillLearnInput').value); });
+$('skillsLearnWrap').addEventListener('click',()=>$('skillLearnInput').focus());
+
+/* ── 24HR LOCK ── */
+function checkLock(ud) {
+  const lastEdit = ud.lastProfileEdit ? ud.lastProfileEdit.toMillis() : null;
+  if(!lastEdit) return false; // never edited — allow
+  const msAgo = Date.now() - lastEdit;
+  const hoursAgo = msAgo / (1000*60*60);
+  return hoursAgo < EDIT_COOLDOWN_HOURS;
+}
+
+function showLock(ud) {
+  const lastEdit = ud.lastProfileEdit ? ud.lastProfileEdit.toMillis() : Date.now();
+  const unlockAt = lastEdit + EDIT_COOLDOWN_HOURS*60*60*1000;
+
+  $('lockBanner').classList.add('show');
+  isLocked = true;
+
+  // Disable all edit fields
+  ['fRole','fCourse','fYear','fDob','fLinkedin','fBio','fStartup'].forEach(id=>{
+    const el=$(id); if(el){ el.disabled=true; }
+  });
+  $('skillsKnownWrap').classList.add('disabled');
+  $('skillsLearnWrap').classList.add('disabled');
+  $('saveBtn').disabled=true;
+  $('saveBtn').textContent='Editing locked (24hr cooldown)';
+
+  // Countdown
+  function tick() {
+    const remaining = unlockAt - Date.now();
+    if(remaining<=0){$('lockCountdown').textContent='Unlocked! Refresh to edit.';return;}
+    const h=Math.floor(remaining/3600000);
+    const m=Math.floor((remaining%3600000)/60000);
+    const s=Math.floor((remaining%60000)/1000);
+    $('lockCountdown').textContent=`Unlocks in: ${h}h ${m}m ${s}s`;
+    setTimeout(tick,1000);
+  }
+  tick();
+}
+
+/* ── EXAM SCORES ── */
+function buildExamScores(ud) {
+  const skills=ud.skillsKnown||[];
+  if(!skills.length||!ud.examTaken)return;
+  $('examScoreCard').style.display='block';
+  const bd=(ud.examScores?.skillBreakdown)||[];
+  $('examScoreList').innerHTML=skills.map(sk=>{
+    const sd=bd.find(b=>b.skill===(sk.name||sk));
+    const pct=sd?sd.pct:null;
+    const color=pct==null?'rgba(255,255,255,0.1)':pct>=70?'#10b981':pct>=40?'#f59e0b':'#ef4444';
+    return`<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
+      <span style="font-size:.78rem;font-weight:700;flex:1;">${sk.name||sk}</span>
+      ${pct!=null?`
+        <div style="width:70px;height:4px;background:rgba(255,255,255,0.07);border-radius:100px;overflow:hidden;flex-shrink:0;">
+          <div style="height:100%;width:${pct}%;background:${color};border-radius:100px;"></div>
+        </div>
+        <span style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--dim);flex-shrink:0;min-width:30px;text-align:right;">${pct}%</span>
+      `:''}
+    </div>`;
+  }).join('');
+  if(ud.examScores?.overall){
+    $('stScoreCard').style.display='block';
+    $('stScore').textContent=ud.examScores.overall+'%';
+  }
+}
+
+/* ── SAVE ── */
+window.saveProfile = async function() {
+  if(!currentUser){toast('Not logged in','e');return;}
+  if(isLocked){toast('Profile editing is locked for 24 hours','e');return;}
+
+  const linkedin=($('fLinkedin').value||'').trim();
+  if(linkedin&&!_liPat.test(linkedin)){toast('Enter a valid LinkedIn URL','e');return;}
+
+  const btn=$('saveBtn');btn.disabled=true;btn.textContent='Saving...';
+
+  try{
+    const updates={
+      role:       $('fRole').value||'Student',
+      course:     $('fCourse').value||'',
+      yearOfPassout: $('fYear').value?parseInt($('fYear').value):0,
+      dob:        $('fDob').value||'',
+      linkedin,
+      bio:        ($('fBio').value||'').trim(),
+      startupInterest: $('fStartup').value||'',
+      // Save skills as objects with name (cert comes from app)
+      skillsKnown: skillsKnown.map(name=>({name, level:'beginner', certUrl:''})),
+      skillsLearn,
+      profileComplete: true,
+      lastProfileEdit: serverTimestamp(),
+      updatedAt:       serverTimestamp()
+    };
+
+    await updateDoc(doc(db,'users',currentUser.uid), updates);
+
+    // Update hero display
+    $('heroRole').textContent = (updates.role||'Student')+' · Zwapy';
+    if(updates.course){ $('heroCourse').textContent=updates.course; $('heroCourse').style.display='inline-block'; }
+
+    toast('✅ Profile saved!');
+
+    // Lock after save
+    setTimeout(()=>{
+      isLocked=true;
+      $('lockBanner').classList.add('show');
+      $('lockCountdown').textContent='Unlocks in: 24h 0m 0s';
+      btn.disabled=true;
+      btn.textContent='Editing locked (24hr cooldown)';
+    },500);
+
+  }catch(err){
+    console.error(err);
+    toast('Error: '+err.message,'e');
+    btn.disabled=false;
+    btn.textContent='Save Profile Changes';
+  }
+};
+
+/* ── AUTH ── */
+onAuthStateChanged(auth, async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const snap=await getDoc(doc(db,'users',user.uid));
+  if(!snap.exists()||!snap.data().name){window.location.href='extra-details.html';return;}
+  userData=snap.data();
+
+  const name     = userData.name||user.displayName||'Student';
+  const role     = userData.role||'Student';
+  const coins    = userData.coins||0;
+  const exchanges= userData.exchanges||0;
+  const photo    = userData.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
+  const refCode  = userData.referralCode||user.uid.substring(0,8).toUpperCase();
+  const referrals= userData.referrals||0;
+
+  // Ensure referralCode saved
+  if(!userData.referralCode){
+    try{await updateDoc(doc(db,'users',user.uid),{referralCode:refCode});}catch(e){}
+  }
+
+  // Hero
+  $('avImg').src=photo; $('navAv').src=photo;
+  $('heroName').textContent=name;
+  $('heroRole').textContent=role+' · Zwapy';
+  $('heroEmail').textContent=user.email;
+  if(userData.university){$('heroUni').textContent=userData.university;$('heroUni').style.display='inline-block';}
+  if(userData.course){$('heroCourse').textContent=userData.course;$('heroCourse').style.display='inline-block';}
+
+  // Stats — rank done without fetching all users to prevent crash
+  $('stCoins').textContent=fmt(coins);
+  $('stExchanges').textContent=fmt(exchanges);
+  $('stRank').textContent='#—'; // rank shown as — to avoid getDocs all users crash
+
+  // Read-only
+  $('roName').textContent=name;
+  $('roEmail').textContent=user.email;
+  $('roUniEmail').textContent=userData.universityEmail||'Not set';
+  $('roUniStatus').textContent=userData.universityEmailVerified?'✅ Verified':'—';
+  $('roUni').textContent=userData.university||'Not set';
+  $('roPhone').textContent=userData.phone||'Not set';
+  $('roVersion').textContent='v'+(userData.profileVersion||1);
+
+  // Pre-fill edit fields
+  $('fRole').value=role;
+  if(userData.course)        $('fCourse').value=userData.course;
+  if(userData.yearOfPassout) $('fYear').value=userData.yearOfPassout;
+  if(userData.dob)           $('fDob').value=userData.dob;
+  if(userData.linkedin)     {$('fLinkedin').value=userData.linkedin;checkLI();}
+  if(userData.bio)           $('fBio').value=userData.bio;
+  if(userData.startupInterest) $('fStartup').value=userData.startupInterest;
+
+  // Skills
+  const rawSkills=userData.skillsKnown||[];
+  skillsKnown=rawSkills.map(s=>typeof s==='string'?s:(s.name||''));
+  renderSkillsKnown();
+  skillsLearn=[...(userData.skillsLearn||[])];
+  renderSkillsLearn();
+
+  // 24hr lock check
+  if(checkLock(userData)) showLock(userData);
+
+  // Exam scores
+  buildExamScores(userData);
+
+  // Referral
+  const refLink=`https://zwapy.com/signup.html?ref=${refCode}`;
+  $('refLinkTxt').textContent=refLink;
+  $('refCount').textContent=referrals;
+  $('refCoins').textContent=`+${referrals*2}`;
+  $('copyRefBtn').addEventListener('click',()=>{
+    try{navigator.clipboard.writeText(refLink);}catch(e){
+      const ta=document.createElement('textarea');ta.value=refLink;
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    }
+    toast('✅ Invite link copied!');
+  });
+
+  // Sign out
+  $('signOutBtn').addEventListener('click',async()=>{
+    await signOut(auth);
+    window.location.href='login.html';
+  });
+
+  // Hide loader
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{ try{$('loadScreen').remove();}catch(e){} },400);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

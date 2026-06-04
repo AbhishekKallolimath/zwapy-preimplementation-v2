@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<title>Clubs Calendar | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.1);--bg:#010114;--navy:#020024;--border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.3);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 10% 20%,rgba(0,212,255,0.04) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 90% 80%,rgba(129,140,248,0.04) 0%,transparent 60%);}
+
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.load-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:var(--cyan);border-radius:100px;animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+.layout{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:0 22px 120px;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.93);backdrop-filter:blur(24px);margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;gap:12px;}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:38px;height:38px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.25rem;font-weight:900;font-style:italic;}
+.back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .2s;}
+.back-btn:hover{border-color:var(--border-h);color:white;}
+
+.page-head{margin-bottom:22px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:5px;}
+.page-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;}
+.page-title span{color:var(--cyan);}
+.page-sub{font-size:.8rem;color:var(--dim);margin-top:7px;}
+
+/* Notif banner */
+.notif-banner{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.16);border-radius:14px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.notif-banner.hide{display:none;}
+.notif-text{font-size:.76rem;color:var(--dim);flex:1;}
+.notif-text strong{color:white;}
+.notif-allow{background:var(--cyan);color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;}
+.notif-dismiss{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;}
+
+/* Calendar card */
+.cal-card{background:rgba(2,0,36,0.7);border:1px solid var(--border);border-radius:22px;padding:22px;margin-bottom:18px;}
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.month-arrow{width:34px;height:34px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:1rem;color:var(--cyan);}
+.month-arrow:hover{border-color:var(--cyan);background:rgba(0,212,255,0.07);}
+.month-label{text-align:center;}
+.month-name{font-size:1.2rem;font-weight:900;font-style:italic;}
+.month-year{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--cyan);margin-top:2px;}
+.day-headers{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:5px;}
+.day-hdr{text-align:center;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:5px 0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-cell{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:5px 3px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02);border:1px solid transparent;}
+.cal-cell:hover:not(.other-month){background:rgba(0,212,255,0.05);border-color:rgba(0,212,255,0.18);}
+.cal-cell.today{background:rgba(0,212,255,0.07);border-color:rgba(0,212,255,0.28);}
+.cal-cell.today .cnum{color:var(--cyan);font-weight:900;}
+.cal-cell.other-month{opacity:.2;cursor:default;}
+.cal-cell.selected{background:rgba(0,212,255,0.12);border-color:var(--cyan);}
+.cnum{font-size:.78rem;font-weight:700;line-height:1;margin-bottom:2px;}
+.cdots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;}
+.cdot{width:4px;height:4px;border-radius:50%;}
+
+/* Events panel */
+.events-panel{background:rgba(2,0,36,0.7);border:1px solid var(--border);border-radius:22px;padding:22px;margin-bottom:18px;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.panel-title{font-size:.88rem;font-weight:800;font-style:italic;text-transform:uppercase;}
+.panel-date{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--cyan);letter-spacing:.08em;}
+
+.event-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;margin-bottom:10px;transition:border-color .3s;}
+.event-item:hover{border-color:rgba(0,212,255,0.2);}
+.event-item:last-child{margin-bottom:0;}
+.event-bar{height:3px;}
+.event-body{padding:14px;}
+.event-pill{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px;display:inline-block;margin-bottom:8px;}
+.event-title{font-size:.92rem;font-weight:800;margin-bottom:4px;line-height:1.3;}
+.event-club{font-size:.66rem;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.event-poster{width:100%;max-height:160px;object-fit:cover;border-radius:9px;margin-bottom:10px;}
+.event-desc{font-size:.74rem;color:var(--dim);line-height:1.6;margin-bottom:10px;}
+.event-meta{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.emr{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--muted);}
+.event-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.join-btn{background:var(--cyan);color:#000;border:none;border-radius:8px;padding:8px 18px;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s;}
+.join-btn:hover{box-shadow:0 0 12px rgba(0,212,255,.35);transform:translateY(-1px);}
+.join-btn.joined{background:var(--green);color:#000;}
+.link-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 14px;font-size:.7rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .2s;}
+.link-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* Upcoming */
+.upcoming-card{background:rgba(2,0,36,0.7);border:1px solid var(--border);border-radius:22px;padding:22px;}
+.upcoming-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.upcoming-title{font-size:.88rem;font-weight:800;font-style:italic;text-transform:uppercase;}
+.upcoming-badge{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.12em;background:var(--cyan-dim);border:1px solid rgba(0,212,255,.16);color:var(--cyan);border-radius:100px;padding:3px 9px;}
+.up-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:opacity .2s;}
+.up-item:last-child{border-bottom:none;}
+.up-item:hover{opacity:.8;}
+.up-date{width:42px;height:42px;border-radius:11px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.16);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.up-day{font-family:'Space Mono',monospace;font-size:.9rem;font-weight:700;color:var(--cyan);line-height:1;}
+.up-month{font-family:'Space Mono',monospace;font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.up-info{flex:1;min-width:0;}
+.up-title{font-size:.82rem;font-weight:700;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.up-club{font-size:.64rem;color:var(--muted);}
+.up-pill{font-family:'Space Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:100px;flex-shrink:0;}
+
+/* Empty */
+.empty{text-align:center;padding:28px 20px;color:var(--muted);}
+.empty-i{font-size:2rem;margin-bottom:8px;opacity:.3;}
+.empty p{font-size:.76rem;line-height:1.6;}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);border-radius:100px;padding:10px 22px;font-size:.76rem;font-weight:700;color:var(--green);z-index:4000;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.bottom-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:rgba(2,0,36,0.95);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:7px 12px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.nav-item{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .22s;text-decoration:none;color:var(--muted);font-size:1.1rem;position:relative;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-item:hover{background:rgba(0,212,255,0.08);color:var(--cyan);}
+.nav-badge{position:absolute;top:6px;right:6px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:2px solid var(--bg);}
+.nav-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,212,255,.28);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}.d4{transition-delay:.2s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.16);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div id="loadScreen">
+  <div class="load-logo">ZWAPY</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-text">Loading club calendar...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-logo">
+      <div class="logo-node">
+        <img src="assets/zwapy-logo.png" style="width:26px;height:26px;object-fit:contain;">
+      </div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+  </header>
+
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Campus Events</div>
+    <h1 class="page-title">Club <span>Calendar</span></h1>
+    <p class="page-sub">All events, hackathons and announcements from your campus clubs.</p>
+  </div>
+
+  <!-- NOTIF BANNER -->
+  <div class="notif-banner fade-up d1" id="notifBanner">
+    <div class="notif-text"><strong>🔔 Get notified</strong> when clubs post new events and hackathons.</div>
+    <button class="notif-allow" id="notifAllow">Enable</button>
+    <button class="notif-dismiss" id="notifDismiss">✕</button>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="cal-card fade-up d2">
+    <div class="month-nav">
+      <div class="month-arrow" id="prevM">‹</div>
+      <div class="month-label">
+        <div class="month-name" id="mName"></div>
+        <div class="month-year" id="mYear"></div>
+      </div>
+      <div class="month-arrow" id="nextM">›</div>
+    </div>
+    <div class="day-headers">
+      <div class="day-hdr">Sun</div><div class="day-hdr">Mon</div><div class="day-hdr">Tue</div>
+      <div class="day-hdr">Wed</div><div class="day-hdr">Thu</div><div class="day-hdr">Fri</div>
+      <div class="day-hdr">Sat</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- EVENTS FOR SELECTED DAY -->
+  <div class="events-panel fade-up d3">
+    <div class="panel-head">
+      <div class="panel-title">Events</div>
+      <div class="panel-date" id="panelDate">Tap a date</div>
+    </div>
+    <div id="eventsList">
+      <div class="empty"><div class="empty-i">📅</div><p>Tap any date to see events.</p></div>
+    </div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="upcoming-card fade-up d4">
+    <div class="upcoming-head">
+      <div class="upcoming-title">Upcoming Events</div>
+      <div class="upcoming-badge" id="upCount">0</div>
+    </div>
+    <div id="upList">
+      <div class="empty"><div class="empty-i">🗓️</div><p>No upcoming events yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">🏠</a>
+  <a href="clubs.html" class="nav-item active">🏛️</a>
+  <a href="network.html" class="nav-item">🧑‍🤝‍🧑<span class="nav-badge"></span></a>
+  <a href="discover.html" class="nav-item">🔍</a>
+  <a href="profile.html" class="nav-item">
+    <div class="nav-av"><img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""></div>
+  </a>
+</nav>
+
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+
+const $ = id => document.getElementById(id);
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function toast(msg, col='#10b981'){
+  const t=$('toast');t.textContent=msg;t.style.color=col;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);
+}
+function typeColor(t){
+  if(t==='hackathon') return '#f59e0b';
+  if(t==='announcement') return '#818cf8';
+  return '#00D4FF';
+}
+function toDateStr(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmtFull(s){
+  if(!s)return'';
+  return new Date(s+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+function fmtShort(s){
+  if(!s)return{day:'',month:''};
+  const d=new Date(s+'T00:00:00');
+  return{day:d.getDate(),month:d.toLocaleString('en-IN',{month:'short'})};
+}
+
+let curr         = new Date();
+let allPosts     = [];
+let joinedEvents = [];
+let selectedDate = null;
+let currentUser  = null;
+let userData     = {};
+
+// ── CALENDAR ──
+function buildCal(){
+  const y=curr.getFullYear(), m=curr.getMonth();
+  $('mName').textContent = MONTHS[m];
+  $('mYear').textContent = y;
+
+  const firstDay = new Date(y,m,1).getDay();
+  const lastDate = new Date(y,m+1,0).getDate();
+  const prevLast = new Date(y,m,0).getDate();
+  const today    = new Date();
+
+  // date → posts map
+  const map={};
+  allPosts.forEach(p=>{if(p.date){if(!map[p.date])map[p.date]=[];map[p.date].push(p);}});
+
+  let html='';
+  // Prev month
+  for(let i=firstDay-1;i>=0;i--)
+    html+=`<div class="cal-cell other-month"><span class="cnum">${prevLast-i}</span></div>`;
+
+  // Current month
+  for(let d=1;d<=lastDate;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=d===today.getDate()&&m===today.getMonth()&&y===today.getFullYear();
+    const isSel=ds===selectedDate;
+    const posts=map[ds]||[];
+    const dots=posts.slice(0,3).map(p=>`<div class="cdot" style="background:${typeColor(p.type)}"></div>`).join('');
+    html+=`<div class="cal-cell${isToday?' today':''}${isSel?' selected':''}${posts.length?' has-events':''}" onclick="selDate('${ds}')">
+      <span class="cnum">${d}</span>
+      ${posts.length?`<div class="cdots">${dots}</div>`:''}
+    </div>`;
+  }
+
+  // Next month
+  const total=firstDay+lastDate;
+  const rem=total%7===0?0:7-(total%7);
+  for(let i=1;i<=rem;i++)
+    html+=`<div class="cal-cell other-month"><span class="cnum">${i}</span></div>`;
+
+  $('calGrid').innerHTML=html;
+}
+
+// ── SELECT DATE ──
+window.selDate = function(ds){
+  selectedDate=ds;
+  buildCal();
+  $('panelDate').textContent=fmtFull(ds);
+  const posts=allPosts.filter(p=>p.date===ds);
+  if(!posts.length){
+    $('eventsList').innerHTML=`<div class="empty"><div class="empty-i">📭</div><p>No events on this day.</p></div>`;
+    return;
+  }
+  $('eventsList').innerHTML=posts.map(p=>{
+    const col=typeColor(p.type);
+    const jned=joinedEvents.includes(p.id);
+    return `
+    <div class="event-item">
+      <div class="event-bar" style="background:linear-gradient(90deg,${col},transparent)"></div>
+      <div class="event-body">
+        <span class="event-pill" style="background:${col}18;border:1px solid ${col}33;color:${col};">${p.type||'event'}</span>
+        ${p.posterUrl?`<img class="event-poster" src="${p.posterUrl}" alt="poster" onload="this.style.display='block'" onerror="this.style.display='none'">`:''}
+        <div class="event-title">${p.title||'Untitled'}</div>
+        <div class="event-club">🛡️ ${p.clubName||'Club'}</div>
+        ${p.desc?`<div class="event-desc">${p.desc}</div>`:''}
+        <div class="event-meta">
+          ${p.time?`<div class="emr">🕐 ${p.time}</div>`:''}
+          ${p.venue?`<div class="emr">📍 ${p.venue}</div>`:''}
+        </div>
+        <div class="event-actions">
+          <button class="join-btn${jned?' joined':''}" onclick="joinEv('${p.id}')">
+            ${jned?'✓ Joined':'Join Event'}
+          </button>
+          ${p.link?`<a href="${p.link}" target="_blank" rel="noopener" class="link-btn">Details →</a>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+// ── JOIN EVENT ──
+window.joinEv = async function(postId){
+  if(!currentUser)return;
+  if(joinedEvents.includes(postId)){toast('Already joined','#94a3b8');return;}
+  joinedEvents.push(postId);
+  const p=allPosts.find(x=>x.id===postId);
+  await updateDoc(doc(db,'users',currentUser.uid),{joinedEvents:arrayUnion(postId)});
+  await addDoc(collection(db,'users',currentUser.uid,'activity'),{
+    title:'Joined an event',desc:`— ${p?.title||''}`,createdAt:serverTimestamp()
+  });
+  if(selectedDate) selDate(selectedDate);
+  toast('✅ Joined! You will be notified about updates.');
+};
+
+// ── UPCOMING ──
+function buildUpcoming(){
+  const today=toDateStr(new Date());
+  const up=allPosts.filter(p=>p.date&&p.date>=today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+  $('upCount').textContent=up.length;
+  if(!up.length){$('upList').innerHTML=`<div class="empty"><div class="empty-i">🗓️</div><p>No upcoming events yet.</p></div>`;return;}
+  $('upList').innerHTML=up.map(p=>{
+    const col=typeColor(p.type);
+    const s=fmtShort(p.date);
+    return `<div class="up-item" onclick="selDate('${p.date}')">
+      <div class="up-date"><div class="up-day">${s.day}</div><div class="up-month">${s.month}</div></div>
+      <div class="up-info"><div class="up-title">${p.title||'Untitled'}</div><div class="up-club">${p.clubName||'Club'}${p.time?' · '+p.time:''}</div></div>
+      <span class="up-pill" style="background:${col}18;border:1px solid ${col}33;color:${col};">${p.type||'event'}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── FCM ──
+async function enableNotifications(){
+  if(!('Notification' in window)){toast('Notifications not supported on this browser','#94a3b8');return;}
+  const perm=await Notification.requestPermission();
+  if(perm!=='granted'){toast('Notification permission denied','#94a3b8');return;}
+  try{
+    // Dynamic import FCM only after permission granted
+    const {getMessaging,getToken}=await import("https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging.js");
+    const messaging=getMessaging(app);
+    // VAPID key from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+    const token=await getToken(messaging,{vapidKey:'YOUR_VAPID_KEY_HERE'});
+    if(token){
+      await updateDoc(doc(db,'users',currentUser.uid),{fcmToken:token});
+      toast('🔔 Notifications enabled!');
+      $('notifBanner').style.display='none';
+    }
+  }catch(err){
+    toast('Could not enable notifications: '+err.message,'#94a3b8');
+  }
+}
+
+// ── MONTH NAV ──
+$('prevM').addEventListener('click',()=>{curr.setMonth(curr.getMonth()-1);buildCal();});
+$('nextM').addEventListener('click',()=>{curr.setMonth(curr.getMonth()+1);buildCal();});
+$('notifDismiss').addEventListener('click',()=>$('notifBanner').style.display='none');
+$('notifAllow').addEventListener('click',()=>enableNotifications());
+
+// ── AUTH ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const us=await getDoc(doc(db,'users',user.uid));
+  if(us.exists()){
+    userData=us.data();
+    $('navAvatar').src=userData.photoURL||user.photoURL||
+      `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userData.name||'user')}`;
+    joinedEvents=userData.joinedEvents||[];
+    if(userData.fcmToken) $('notifBanner').style.display='none';
+  }
+
+  // Load all clubs → all posts
+  allPosts=[];
+  const cs=await getDocs(collection(db,'clubs'));
+  for(const cd of cs.docs){
+    const club=cd.data();
+    try{
+      const ps=await getDocs(collection(db,'clubs',cd.id,'posts'));
+      ps.forEach(pd=>allPosts.push({id:pd.id,clubId:cd.id,clubName:club.name||'Club',...pd.data()}));
+    }catch(e){}
+  }
+
+  buildCal();
+  buildUpcoming();
+
+  // Auto select today
+  selDate(toDateStr(new Date()));
+
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},500);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

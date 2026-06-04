@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>Events | Zwapy</title>
+<link rel="preconnect" href="https://www.gstatic.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.3);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(0,212,255,0.05) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(244,114,182,0.04) 0%,transparent 55%);}
+
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .3s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.load-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:100px;animation:lf .8s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+.layout{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 16px 110px;}
+@media(min-width:600px){.layout{padding:0 22px 110px;}}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:22px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.94);backdrop-filter:blur(24px);margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;gap:10px;flex-wrap:wrap;}
+@media(min-width:600px){.topbar{margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;}}
+.topbar-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:34px;height:34px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.1rem;font-weight:900;font-style:italic;}
+.coins-pill{display:flex;align-items:center;gap:5px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.22);border-radius:100px;padding:5px 12px;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:700;color:var(--amber);}
+.back-btn{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:6px 12px;font-size:.68rem;font-weight:700;color:var(--dim);text-decoration:none;}
+
+.page-head{margin-bottom:18px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:4px;}
+.page-title{font-size:clamp(1.5rem,5vw,2.6rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;}
+.page-title span{color:var(--cyan);}
+.page-sub{font-size:.76rem;color:var(--dim);margin-top:6px;line-height:1.5;}
+
+/* Coin info */
+.coin-info{background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.16);border-radius:13px;padding:12px 16px;margin-bottom:18px;font-size:.74rem;color:var(--dim);line-height:1.7;}
+.coin-info strong{color:white;}
+
+/* Tabs */
+.tab-row{display:flex;gap:0;margin-bottom:18px;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tab-row::-webkit-scrollbar{height:0;}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;padding:9px 14px;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:'Sora',sans-serif;margin-bottom:-1px;white-space:nowrap;flex-shrink:0;}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* Filter */
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.sw{flex:1;min-width:140px;position:relative;}
+.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none;}
+.search-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px 10px 32px;font-size:.82rem;color:white;font-family:'Sora',sans-serif;outline:none;}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{border-color:var(--cyan);}
+.ftabs{display:flex;gap:5px;flex-wrap:wrap;}
+.ftab{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 11px;font-size:.64rem;font-weight:700;cursor:pointer;color:var(--muted);white-space:nowrap;}
+.ftab.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);color:var(--cyan);}
+
+/* Events grid */
+.events-grid{display:grid;grid-template-columns:1fr;gap:13px;}
+@media(min-width:520px){.events-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr));}}
+
+/* Event card */
+.event-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:all .25s;}
+.event-card:hover{border-color:var(--border-h);transform:translateY(-2px);}
+.ev-poster{width:100%;height:140px;object-fit:cover;display:block;}
+.ev-poster-ph{width:100%;height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.ev-body{padding:15px;}
+.ev-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
+.ev-pill{font-family:'Space Mono',monospace;font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:100px;}
+.ev-title{font-size:.9rem;font-weight:800;margin-bottom:3px;line-height:1.25;}
+.ev-org{font-size:.64rem;color:var(--muted);margin-bottom:7px;}
+.ev-meta{display:flex;flex-direction:column;gap:3px;margin-bottom:11px;}
+.emr{display:flex;align-items:center;gap:5px;font-size:.67rem;color:var(--dim);}
+.ev-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.ev-price{font-family:'Space Mono',monospace;font-size:.94rem;font-weight:700;}
+.ev-price.free{color:var(--green);}
+.ev-price-note{font-size:.57rem;color:var(--muted);margin-top:2px;}
+.get-btn{background:linear-gradient(135deg,var(--cyan),#0099bb);color:#000;border:none;border-radius:8px;padding:8px 15px;font-size:.68rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;}
+.get-btn.free{background:linear-gradient(135deg,var(--green),#059669);}
+.get-btn.got{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);color:var(--green);cursor:default;}
+.get-btn.sold{background:rgba(255,255,255,0.05);color:var(--muted);cursor:not-allowed;}
+
+/* TICKET MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(12px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s;overflow-y:auto;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:rgba(2,0,36,0.98);border:1px solid rgba(0,212,255,0.2);border-radius:22px;width:100%;max-width:420px;position:relative;transform:translateY(16px) scale(.97);transition:transform .25s;overflow:hidden;max-height:92vh;overflow-y:auto;margin:auto;}
+.modal-bg.open .modal{transform:translateY(0) scale(1);}
+.modal-stripe{height:3px;background:linear-gradient(90deg,var(--cyan),var(--green));}
+.modal-in{padding:22px;}
+.mc{position:absolute;top:12px;right:12px;width:28px;height:28px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;color:var(--muted);z-index:1;}
+.mc:hover{border-color:var(--red);color:var(--red);}
+.modal-tag{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;}
+.modal-title{font-size:1.05rem;font-weight:900;font-style:italic;margin-bottom:3px;}
+.modal-org{font-size:.68rem;color:var(--muted);margin-bottom:14px;}
+
+/* Price breakdown */
+.price-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:14px;}
+.pb-row{display:flex;align-items:center;justify-content:space-between;font-size:.76rem;margin-bottom:7px;}
+.pb-row:last-child{margin-bottom:0;padding-top:7px;border-top:1px solid rgba(255,255,255,0.07);}
+.pb-label{color:var(--dim);}
+.pb-val{font-weight:700;font-family:'Space Mono',monospace;}
+.pb-green{color:var(--green);}
+.pb-amber{color:var(--amber);}
+.pb-white{color:white;font-size:.88rem;}
+.pb-muted{color:var(--muted);font-size:.68rem;}
+
+/* Coin slider */
+.slider-section{margin-bottom:14px;}
+.sl-head{display:flex;align-items:center;justify-content:space-between;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:8px;}
+.sl-val{font-family:'Space Mono',monospace;color:var(--cyan);}
+.coin-slider{width:100%;-webkit-appearance:none;appearance:none;height:3px;border-radius:100px;background:rgba(255,255,255,0.1);outline:none;}
+.coin-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);cursor:pointer;box-shadow:0 0 8px rgba(0,212,255,.4);}
+.sl-range{display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted);margin-top:4px;}
+.your-bal{font-size:.68rem;color:var(--muted);margin-top:7px;}
+.your-bal span{color:var(--amber);font-weight:700;font-family:'Space Mono',monospace;}
+
+/* UPI / QR section — shows ORGANIZER's QR */
+.upi-box{background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px;margin-bottom:14px;}
+.upi-header{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--green);margin-bottom:10px;}
+.upi-row{display:flex;align-items:center;gap:12px;}
+.upi-qr-el{width:80px;height:80px;background:white;border-radius:8px;padding:3px;flex-shrink:0;}
+.upi-meta{}
+.upi-id-text{font-family:'Space Mono',monospace;font-size:.76rem;font-weight:700;color:white;margin-bottom:3px;word-break:break-all;}
+.upi-name-text{font-size:.64rem;color:var(--muted);margin-bottom:5px;}
+.upi-pay-amount{font-size:.86rem;font-weight:800;color:var(--green);}
+.upi-note{font-size:.62rem;color:var(--muted);margin-top:8px;line-height:1.5;}
+
+/* Commission notice */
+.commission-notice{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:10px;padding:10px 13px;font-size:.66rem;color:var(--dim);line-height:1.5;margin-bottom:12px;}
+.commission-notice strong{color:var(--cyan);}
+
+.confirm-btn{width:100%;background:var(--cyan);color:#000;border:none;border-radius:11px;padding:13px;font-size:.82rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;}
+.confirm-btn:disabled{opacity:.5;cursor:not-allowed;}
+.confirm-btn.free-btn{background:var(--green);}
+
+/* TICKET QR screen */
+.ticket-success{text-align:center;}
+.ts-icon{font-size:2.4rem;margin-bottom:10px;}
+.ts-title{font-size:1.1rem;font-weight:900;font-style:italic;margin-bottom:5px;}
+.ts-sub{font-size:.72rem;color:var(--dim);margin-bottom:16px;line-height:1.6;}
+.ts-qr{width:150px;height:150px;background:white;border-radius:12px;padding:6px;margin:0 auto 12px;}
+.ts-ev{font-size:.86rem;font-weight:800;margin-bottom:4px;}
+.ts-meta{font-size:.66rem;color:var(--muted);line-height:1.7;margin-bottom:5px;}
+.ts-id{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--cyan);margin-bottom:16px;}
+.view-btn{width:100%;background:var(--green);color:#000;border:none;border-radius:11px;padding:12px;font-size:.8rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;}
+
+/* My tickets */
+.ticket-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;}
+.tc-bar{height:3px;}
+.tc-body{padding:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.tc-qr-wrap{width:64px;height:64px;background:white;border-radius:8px;padding:3px;flex-shrink:0;}
+.tc-info{flex:1;min-width:0;}
+.tc-title{font-size:.86rem;font-weight:800;margin-bottom:2px;}
+.tc-meta{font-size:.65rem;color:var(--muted);line-height:1.6;}
+.tc-id{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--cyan);margin-top:2px;}
+.tc-badge{background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:100px;padding:3px 9px;font-size:.56rem;font-weight:700;color:var(--green);flex-shrink:0;}
+
+.empty-state{text-align:center;padding:44px 16px;color:var(--muted);}
+.ei{font-size:2.2rem;margin-bottom:10px;opacity:.28;}
+.et{font-size:.76rem;line-height:1.6;}
+
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(16px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.e{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.28);color:var(--red);}
+
+.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:360px;background:rgba(2,0,36,0.95);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:5px 10px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 28px rgba(0,0,0,.6);}
+.nav-item{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;text-decoration:none;color:var(--muted);font-size:1rem;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-av{width:22px;height:22px;border-radius:50%;border:2px solid rgba(0,212,255,.25);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+.fade-up{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div id="loadScreen"><div class="load-logo">ZWAPY</div><div class="load-bar"><div class="load-fill"></div></div><div class="load-text">Loading events...</div></div>
+<div class="toast" id="toast"></div>
+
+<!-- TICKET MODAL -->
+<div class="modal-bg" id="ticketModal">
+  <div class="modal">
+    <div class="modal-stripe"></div>
+    <div class="modal-in">
+      <button class="mc" id="modalClose">✕</button>
+
+      <!-- STEP 1: Buy ticket -->
+      <div id="step1">
+        <div class="modal-tag">🎟️ Get Your Ticket</div>
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-org" id="mOrg"></div>
+
+        <!-- Price breakdown -->
+        <div class="price-box" id="priceBox"></div>
+
+        <!-- Coin slider (for paid events) -->
+        <div class="slider-section" id="sliderSection">
+          <div class="sl-head">
+            Use Skill Coins for discount
+            <span class="sl-val"><span id="slCoins">0</span> coins = <span id="slPct">0</span>% off</span>
+          </div>
+          <input type="range" class="coin-slider" id="coinSlider" min="0" max="500" step="10" value="0"/>
+          <div class="sl-range"><span>0</span><span>500 coins = 50% off</span></div>
+          <div class="your-bal">Your coins: <span id="yourBal">0</span> · After purchase: <span id="afterBal">0</span></div>
+        </div>
+
+        <!-- Organizer's UPI QR — NOT Zwapy's -->
+        <div class="upi-box" id="upiBox">
+          <div class="upi-header">💳 Pay Organizer via UPI</div>
+          <div class="upi-row">
+            <div class="upi-qr-el" id="upiQREl"></div>
+            <div class="upi-meta">
+              <div class="upi-id-text" id="upiIdText">—</div>
+              <div class="upi-name-text" id="upiOrgName">—</div>
+              <div class="upi-pay-amount">Pay ₹<span id="upiAmt">0</span></div>
+            </div>
+          </div>
+          <div class="upi-note">Pay the organizer first via UPI, then click Confirm. Your ticket is generated instantly.</div>
+        </div>
+
+        <!-- 5% commission notice -->
+        <div class="commission-notice" id="commissionNotice">
+          <strong>ℹ️ Platform fee:</strong> Zwapy charges a 5% platform fee on paid events. The organizer settles this with Zwapy monthly. You pay the organizer's UPI directly.
+        </div>
+
+        <button class="confirm-btn" id="confirmBtn">Confirm & Get Ticket →</button>
+      </div>
+
+      <!-- STEP 2: Ticket QR -->
+      <div id="step2" style="display:none;">
+        <div class="ticket-success">
+          <div class="ts-icon">🎉</div>
+          <div class="ts-title">You're In!</div>
+          <div class="ts-sub">Show this QR at the venue entrance. Also saved in My Tickets.</div>
+          <div class="ts-qr" id="ticketQR"></div>
+          <div class="ts-ev" id="tsEvName"></div>
+          <div class="ts-meta" id="tsMeta"></div>
+          <div class="ts-id" id="tsId"></div>
+          <button class="view-btn" id="viewTicketsBtn">View My Tickets →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-logo">
+      <div class="logo-node"><img src="assets/zwapy-logo.png" style="width:22px;height:22px;object-fit:contain;"></div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div class="coins-pill">💰 <span id="coinsDisplay">—</span></div>
+      <a href="dashboard.html" class="back-btn">← Dashboard</a>
+    </div>
+  </header>
+
+  <div class="page-head fade-up">
+    <div class="page-label">// Campus Events</div>
+    <h1 class="page-title">Events <span>Portal</span></h1>
+    <p class="page-sub">Events, hackathons and workshops from clubs across campus.</p>
+  </div>
+
+  <div class="coin-info fade-up">
+    💡 <strong>10 Skill Coins = 1% discount</strong> on ticket price · Max 500 coins = 50% off ·
+    You pay the <strong>event organizer's UPI</strong> directly · Zwapy collects 5% from organizers monthly.
+  </div>
+
+  <div class="tab-row fade-up">
+    <button class="tab-btn active" onclick="switchTab('browse',this)">🎪 Browse Events</button>
+    <button class="tab-btn" onclick="switchTab('tickets',this)">🎟️ My Tickets</button>
+  </div>
+
+  <div class="tab-content active" id="tab-browse">
+    <div class="filter-bar fade-up">
+      <div class="sw"><span class="si">🔍</span><input class="search-input" id="searchInput" placeholder="Search events..."/></div>
+      <div class="ftabs">
+        <div class="ftab active" data-f="all">All</div>
+        <div class="ftab" data-f="event">Events</div>
+        <div class="ftab" data-f="hackathon">Hackathons</div>
+        <div class="ftab" data-f="free">Free</div>
+      </div>
+    </div>
+    <div class="events-grid fade-up" id="eventsGrid">
+      <div class="empty-state"><div class="ei">🎪</div><p class="et">Loading events...</p></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-tickets">
+    <div id="ticketsList"><div class="empty-state"><div class="ei">🎟️</div><p class="et">No tickets yet.</p></div></div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">🏠</a>
+  <a href="clubs.html" class="nav-item">🏛️</a>
+  <a href="network.html" class="nav-item">🧑‍🤝‍🧑</a>
+  <a href="discover.html" class="nav-item">🔍</a>
+  <a href="profile.html" class="nav-item"><div class="nav-av"><img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""></div></a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+// COIN DISCOUNT RULES
+const COINS_PER_PCT = 10;   // 10 coins = 1% discount
+const MAX_COIN_PCT  = 50;   // max 50% discount
+const MAX_COINS     = 500;  // 500 coins max
+const PLATFORM_FEE  = 5;    // Zwapy 5% commission (tracked, not added to student price)
+
+const app=initializeApp({apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",authDomain:"zwapy-25.firebaseapp.com",projectId:"zwapy-25",storageBucket:"zwapy-25.firebasestorage.app",messagingSenderId:"30612332450",appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"});
+const auth=getAuth(app);const db=getFirestore(app);
+await setPersistence(auth,browserLocalPersistence);
+
+const $=id=>document.getElementById(id);
+function toast(msg,type='s'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.className='toast',3200);}
+function fmt(n){return Number(n||0).toLocaleString('en-IN');}
+function fmtDate(d){if(!d)return'';return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
+function typeColor(t){if(t==='hackathon')return'#f59e0b';if(t==='workshop')return'#818cf8';return'#00D4FF';}
+function typeEmoji(t){if(t==='hackathon')return'💻';if(t==='workshop')return'🎓';return'🎪';}
+function genId(){return'ZWP-'+Math.random().toString(36).substr(2,5).toUpperCase()+'-'+Date.now().toString(36).toUpperCase().slice(-4);}
+
+let allEvents=[],myTickets=[],userCoins=0,currentUser=null,userData={};
+let activeFilter='all',searchQ='',currentEvent=null,upiQRGenerated=false;
+
+window.switchTab=function(tab,el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');$('tab-'+tab).classList.add('active');
+  if(tab==='tickets')renderTickets();
+};
+
+// ── RENDER EVENTS ──
+function renderEvents(){
+  let list=allEvents;
+  if(activeFilter==='free')list=list.filter(e=>!e.price||e.price===0);
+  else if(activeFilter!=='all')list=list.filter(e=>e.type===activeFilter);
+  if(searchQ)list=list.filter(e=>(e.title||'').toLowerCase().includes(searchQ)||(e.venue||'').toLowerCase().includes(searchQ)||(e.organizer||'').toLowerCase().includes(searchQ));
+
+  if(!list.length){$('eventsGrid').innerHTML=`<div class="empty-state"><div class="ei">🎪</div><p class="et">No events found.</p></div>`;return;}
+
+  $('eventsGrid').innerHTML=list.map(ev=>{
+    const col=typeColor(ev.type);
+    const free=!ev.price||ev.price===0;
+    const bought=myTickets.some(t=>t.eventId===ev.id);
+    const soldOut=ev.totalSeats&&(ev.soldCount||0)>=ev.totalSeats;
+    let btnCls='get-btn'+(free?' free':''),btnTxt=free?'Free Ticket →':'Get Ticket →';
+    if(bought){btnCls='get-btn got';btnTxt='✓ Got Ticket';}
+    else if(soldOut){btnCls='get-btn sold';btnTxt='Sold Out';}
+    return`<div class="event-card">
+      ${ev.posterUrl?`<img class="ev-poster" src="${ev.posterUrl}" loading="lazy" alt="" onerror="this.style.display='none'">`
+        :`<div class="ev-poster-ph" style="background:linear-gradient(135deg,${col}18,rgba(2,0,36,.8))">${typeEmoji(ev.type)}</div>`}
+      <div class="ev-body">
+        <div class="ev-top">
+          <span class="ev-pill" style="background:${col}18;border:1px solid ${col}33;color:${col};">${ev.type||'event'}</span>
+          ${ev.totalSeats&&!sold?`<span style="font-size:.58rem;color:var(--muted);">${ev.totalSeats-(ev.soldCount||0)} left</span>`:''}
+        </div>
+        <div class="ev-title">${ev.title}</div>
+        <div class="ev-org">🏛️ ${ev.organizer||'Campus'}</div>
+        <div class="ev-meta">
+          ${ev.date?`<div class="emr">📅 ${fmtDate(ev.date)}${ev.time?' · '+ev.time:''}</div>`:''}
+          ${ev.venue?`<div class="emr">📍 ${ev.venue}</div>`:''}
+          ${ev.desc?`<div class="emr" style="font-size:.63rem;">${ev.desc.substring(0,70)}${ev.desc.length>70?'...':''}</div>`:''}
+        </div>
+        <div class="ev-footer">
+          <div>
+            <div class="ev-price ${free?'free':''}">${free?'FREE':'₹'+fmt(ev.price)}</div>
+            ${!free?`<div class="ev-price-note">Pay organizer · 5% goes to Zwapy</div>`:`<div class="ev-price-note">No charge</div>`}
+          </div>
+          <button class="${btnCls}" ${bought||soldOut?'disabled':''} onclick="openModal('${ev.id}')">${btnTxt}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── OPEN TICKET MODAL ──
+window.openModal=function(eventId){
+  const ev=allEvents.find(e=>e.id===eventId);if(!ev)return;
+  if(myTickets.some(t=>t.eventId===eventId)){toast('You already have a ticket!','s');return;}
+  currentEvent=ev;upiQRGenerated=false;
+  $('step1').style.display='block';$('step2').style.display='none';
+  $('coinSlider').value=0;
+  const free=!ev.price||ev.price===0;
+  $('mTitle').textContent=ev.title;
+  $('mOrg').textContent=(ev.organizer||'Organizer')+(ev.date?' · '+fmtDate(ev.date):'');
+  const maxC=Math.min(userCoins,MAX_COINS);
+  $('coinSlider').max=maxC;
+  $('yourBal').textContent=fmt(userCoins);
+  $('afterBal').textContent=fmt(userCoins);
+  $('sliderSection').style.display=free?'none':'block';
+  $('upiBox').style.display=free?'none':'block';
+  $('commissionNotice').style.display=free?'none':'block';
+  $('confirmBtn').className=free?'confirm-btn free-btn':'confirm-btn';
+  $('confirmBtn').textContent=free?'Get Free Ticket →':"I've Paid — Confirm Ticket →";
+  updateBreakdown();
+  $('ticketModal').classList.add('open');
+};
+
+// ── UPDATE PRICE BREAKDOWN ──
+function updateBreakdown(){
+  const ev=currentEvent;if(!ev)return;
+  const free=!ev.price||ev.price===0;
+  if(free){
+    $('priceBox').innerHTML=`<div class="pb-row"><span class="pb-label">Ticket Price</span><span class="pb-val pb-green">FREE</span></div><div class="pb-row"><span class="pb-label"><strong>You Pay</strong></span><span class="pb-val pb-green">₹0</span></div>`;
+    return;
+  }
+  const coins=parseInt($('coinSlider').value)||0;
+  const discPct=Math.min(coins/COINS_PER_PCT,MAX_COIN_PCT); // 10 coins = 1%
+  const discAmt=Math.round(ev.price*(discPct/100));
+  const youPay=ev.price-discAmt; // student pays discounted price to organizer
+  const zwapyCommission=Math.round(youPay*(PLATFORM_FEE/100)); // 5% of what student pays
+  const orgReceives=youPay-zwapyCommission; // organizer keeps 95%
+
+  $('slCoins').textContent=coins;
+  $('slPct').textContent=discPct.toFixed(0);
+  $('afterBal').textContent=fmt(userCoins-coins);
+  $('upiAmt').textContent=youPay;
+
+  // Show organizer's UPI — NOT Zwapy's
+  const orgUpi=ev.upiId||'';
+  const orgName=ev.organizer||'Organizer';
+  $('upiIdText').textContent=orgUpi||'UPI not set by organizer';
+  $('upiOrgName').textContent=orgName;
+  $('upiAmt').textContent=youPay;
+
+  // Generate QR for organizer's UPI
+  if(!upiQRGenerated&&orgUpi){
+    $('upiQREl').innerHTML='';
+    try{
+      new QRCode($('upiQREl'),{
+        text:`upi://pay?pa=${orgUpi}&pn=${encodeURIComponent(orgName)}&am=${youPay}&cu=INR&tn=Ticket-${(ev.title||'Event').substring(0,18)}`,
+        width:74,height:74,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M
+      });
+    }catch(e){}
+    upiQRGenerated=true;
+  } else if(!orgUpi){
+    $('upiQREl').innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#666;text-align:center;padding:4px;">UPI not set</div>`;
+  }
+
+  $('priceBox').innerHTML=`
+    <div class="pb-row"><span class="pb-label">Original Price</span><span class="pb-val">₹${fmt(ev.price)}</span></div>
+    <div class="pb-row"><span class="pb-label">Coin Discount (${discPct.toFixed(0)}%)</span><span class="pb-val pb-green">−₹${fmt(discAmt)}</span></div>
+    <div class="pb-row"><span class="pb-label"><strong>You Pay Organizer</strong></span><span class="pb-val pb-white">₹${fmt(youPay)}</span></div>
+    <div class="pb-row" style="border-top:none;padding-top:4px;"><span class="pb-label pb-muted">Zwapy platform fee (5% from organizer)</span><span class="pb-val pb-muted">₹${fmt(zwapyCommission)}</span></div>`;
+}
+
+$('coinSlider').addEventListener('input',()=>{upiQRGenerated=false;$('upiQREl').innerHTML='';updateBreakdown();});
+
+// ── CONFIRM TICKET ──
+$('confirmBtn').addEventListener('click',async()=>{
+  const ev=currentEvent;if(!ev)return;
+  const btn=$('confirmBtn');btn.disabled=true;btn.textContent='Processing...';
+  const free=!ev.price||ev.price===0;
+  const coins=free?0:parseInt($('coinSlider').value)||0;
+  const discPct=Math.min(coins/COINS_PER_PCT,MAX_COIN_PCT);
+  const discAmt=free?0:Math.round(ev.price*(discPct/100));
+  const youPay=free?0:(ev.price-discAmt);
+  const zwapyCommission=free?0:Math.round(youPay*(PLATFORM_FEE/100));
+  const orgReceives=free?0:(youPay-zwapyCommission);
+  const ticketId=genId();
+
+  try{
+    // Deduct coins
+    if(coins>0){
+      await updateDoc(doc(db,'users',currentUser.uid),{coins:userCoins-coins});
+      userCoins-=coins;$('coinsDisplay').textContent=fmt(userCoins);
+    }
+
+    // Save ticket under user
+    await addDoc(collection(db,'users',currentUser.uid,'tickets'),{
+      ticketId,eventId:ev.id,eventTitle:ev.title,
+      eventDate:ev.date||'',eventVenue:ev.venue||'',
+      organizer:ev.organizer||'',type:ev.type||'event',
+      coinsUsed:coins,discountPct:discPct,
+      originalPrice:ev.price||0,
+      youPaid:youPay,free,
+      createdAt:serverTimestamp()
+    });
+
+    // Track 5% commission for Zwapy (organizer owes this monthly)
+    if(youPay>0){
+      await addDoc(collection(db,'commissions'),{
+        eventId:ev.id,eventTitle:ev.title,
+        buyerUid:currentUser.uid,buyerName:userData.name||'Student',
+        organizerUid:ev.organizerUid||'',organizerName:ev.organizer||'',
+        organizerUpi:ev.upiId||'',
+        originalPrice:ev.price,discountGiven:discAmt,
+        studentPaid:youPay,
+        zwapyCommission,    // 5% — organizer owes Zwapy this amount
+        orgReceives,        // what organizer keeps after Zwapy's cut
+        createdAt:serverTimestamp()
+      });
+    }
+
+    // Update soldCount on event
+    if(ev.source==='zwapy'){
+      try{await updateDoc(doc(db,'zwapy_events',ev.id),{soldCount:(ev.soldCount||0)+1});}catch(e){}
+    } else if(ev.source==='club'&&ev.clubId){
+      try{await updateDoc(doc(db,'clubs',ev.clubId,'posts',ev.id),{soldCount:(ev.soldCount||0)+1});}catch(e){}
+    }
+
+    // Activity log
+    await addDoc(collection(db,'users',currentUser.uid,'activity'),{
+      title:`🎟️ Ticket: ${ev.title}`,
+      desc:`${free?'Free ticket':`₹${youPay} paid to ${ev.organizer||'organizer'}`}${coins>0?` · ${coins} coins used`:''}`,
+      createdAt:serverTimestamp()
+    });
+
+    myTickets.push({ticketId,eventId:ev.id,eventTitle:ev.title,eventDate:ev.date||'',eventVenue:ev.venue||'',type:ev.type||'event',coinsUsed:coins,youPaid:youPay});
+
+    // Show ticket QR
+    $('step1').style.display='none';$('step2').style.display='block';
+    $('tsEvName').textContent=ev.title;
+    $('tsMeta').innerHTML=`${ev.date?fmtDate(ev.date)+'<br>':''}${ev.venue||''}${coins>0?'<br>'+coins+' coins used':''}${youPay>0?'<br>₹'+fmt(youPay)+' paid to organizer':''}`;
+    $('tsId').textContent=ticketId;
+    $('ticketQR').innerHTML='';
+    try{new QRCode($('ticketQR'),{text:`ZWAPY:${ticketId}:${ev.id}:${currentUser.uid}`,width:138,height:138,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});}catch(e){}
+    renderEvents();
+  }catch(err){
+    toast('Error: '+err.message,'e');
+    btn.disabled=false;btn.textContent=free?'Get Free Ticket →':"I've Paid — Confirm Ticket →";
+  }
+});
+
+$('viewTicketsBtn').addEventListener('click',()=>{$('ticketModal').classList.remove('open');document.querySelectorAll('.tab-btn')[1].click();});
+$('modalClose').addEventListener('click',()=>$('ticketModal').classList.remove('open'));
+$('ticketModal').addEventListener('click',e=>{if(e.target===$('ticketModal'))$('ticketModal').classList.remove('open');});
+
+// ── RENDER MY TICKETS ──
+function renderTickets(){
+  if(!myTickets.length){$('ticketsList').innerHTML=`<div class="empty-state"><div class="ei">🎟️</div><p class="et">No tickets yet.</p></div>`;return;}
+  $('ticketsList').innerHTML=myTickets.map(t=>{
+    const col=typeColor(t.type);
+    const qid='tq'+t.ticketId.replace(/\W/g,'');
+    return`<div class="ticket-card"><div class="tc-bar" style="background:linear-gradient(90deg,${col},transparent)"></div>
+      <div class="tc-body">
+        <div class="tc-qr-wrap" id="${qid}"></div>
+        <div class="tc-info">
+          <div class="tc-title">${t.eventTitle}</div>
+          <div class="tc-meta">${t.eventDate?'📅 '+fmtDate(t.eventDate)+'<br>':''}${t.eventVenue?'📍 '+t.eventVenue+'<br>':''}${t.coinsUsed>0?'💰 '+t.coinsUsed+' coins':''} ${t.youPaid>0?'· ₹'+fmt(t.youPaid)+' paid':t.youPaid===0?'· Free':''}</div>
+          <div class="tc-id">${t.ticketId}</div>
+        </div>
+        <div class="tc-badge">✓ Valid</div>
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{
+    myTickets.forEach(t=>{
+      const el=document.getElementById('tq'+t.ticketId.replace(/\W/g,''));
+      if(el&&!el.children.length){try{new QRCode(el,{text:`ZWAPY:${t.ticketId}`,width:58,height:58,colorDark:'#000',colorLight:'#fff'});}catch(e){}}
+    });
+  },80);
+}
+
+// Filters
+document.querySelectorAll('.ftab').forEach(f=>{
+  f.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('active'));
+    f.classList.add('active');activeFilter=f.dataset.f;renderEvents();
+  });
+});
+let st;
+$('searchInput').addEventListener('input',e=>{clearTimeout(st);st=setTimeout(()=>{searchQ=e.target.value.toLowerCase().trim();renderEvents();},200);});
+
+// ── AUTH + LOAD ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const[us,evSnap,clubsSnap,ticketSnap]=await Promise.all([
+    getDoc(doc(db,'users',user.uid)),
+    getDocs(query(collection(db,'zwapy_events'),orderBy('createdAt','desc'))).catch(()=>({forEach:()=>{}})),
+    getDocs(collection(db,'clubs')).catch(()=>({docs:[]})),
+    getDocs(collection(db,'users',user.uid,'tickets')).catch(()=>({forEach:()=>{}}))
+  ]);
+
+  if(us.exists()){userData=us.data();userCoins=userData.coins||0;$('coinsDisplay').textContent=fmt(userCoins);$('navAvatar').src=userData.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userData.name||'user')}`;}
+
+  // Official Zwapy events
+  allEvents=[];
+  evSnap.forEach(d=>allEvents.push({id:d.id,source:'zwapy',...d.data()}));
+
+  // Club events — load in parallel
+  const clubDocs=clubsSnap.docs||[];
+  const clubEvPromises=clubDocs.map(async cd=>{
+    const club=cd.data();
+    try{
+      const ps=await getDocs(collection(db,'clubs',cd.id,'posts'));
+      const evts=[];
+      ps.forEach(pd=>{
+        const p=pd.data();
+        // Show paid events or hackathons/workshops from clubs
+        if((p.price>0)||(p.type==='hackathon')||(p.type==='workshop')){
+          evts.push({id:pd.id,source:'club',clubId:cd.id,organizer:club.name||club.clubName||'Club',...p});
+        }
+      });
+      return evts;
+    }catch(e){return[];}
+  });
+  const clubEvArrays=await Promise.all(clubEvPromises);
+  clubEvArrays.forEach(arr=>arr.forEach(e=>allEvents.push(e)));
+  allEvents.sort((a,b)=>{if(!a.date)return 1;if(!b.date)return-1;return a.date.localeCompare(b.date);});
+
+  // My tickets
+  myTickets=[];ticketSnap.forEach(d=>myTickets.push({id:d.id,...d.data()}));
+
+  renderEvents();
+  setTimeout(()=>{$('loadScreen').classList.add('hide');setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},400);document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));},500);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<title>Club Dashboard | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--navy:#020024;--border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.35);--muted:#64748b;--dim:#94a3b8;--indigo:#818cf8;--green:#10b981;--amber:#f59e0b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 20%,rgba(99,102,241,0.05) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 80% 80%,rgba(0,212,255,0.04) 0%,transparent 60%);}
+
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--indigo);}
+.load-bar{width:140px;height:2px;background:rgba(129,140,248,0.15);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:var(--indigo);border-radius:100px;animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+.layout{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:0 22px 100px;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid rgba(129,140,248,0.1);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.93);backdrop-filter:blur(24px);margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;flex-wrap:wrap;}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:38px;height:38px;background:rgba(129,140,248,0.08);border:1px solid rgba(129,140,248,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.2rem;font-weight:900;font-style:italic;}
+.portal-badge{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.25);color:var(--indigo);border-radius:100px;padding:5px 12px;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;}
+.switch-btn{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:100px;padding:7px 13px;font-size:.66rem;font-weight:800;color:var(--cyan);cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.switch-btn:hover{background:rgba(0,212,255,0.16);box-shadow:0 0 10px rgba(0,212,255,.15);}
+.switch-btn.green{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);color:var(--green);}
+.switch-btn.green:hover{background:rgba(16,185,129,0.16);}
+.user-name{font-size:.82rem;font-weight:700;display:none;}
+@media(min-width:540px){.user-name{display:block;}}
+.avatar-ring{width:36px;height:36px;border-radius:50%;border:2px solid rgba(129,140,248,0.3);overflow:hidden;flex-shrink:0;}
+.avatar-ring img{width:100%;height:100%;object-fit:cover;}
+.logout-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:7px 14px;font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;}
+.logout-btn:hover{border-color:#ef4444;color:#ef4444;}
+
+/* Page header */
+.page-head{margin-bottom:28px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--indigo);opacity:.7;margin-bottom:5px;}
+.page-title{font-size:clamp(1.5rem,5vw,2.6rem);font-weight:900;font-style:italic;letter-spacing:-.02em;}
+.page-title span{color:var(--indigo);}
+.page-sub{font-size:.8rem;color:var(--dim);margin-top:6px;}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:24px;}
+@media(min-width:580px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:16px;padding:16px 14px;}
+.stat-label{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1;}
+.sv-i{color:var(--indigo);} .sv-c{color:var(--cyan);} .sv-g{color:var(--green);} .sv-a{color:var(--amber);}
+
+/* Grid */
+.main-grid{display:grid;grid-template-columns:1fr;gap:18px;}
+@media(min-width:900px){.main-grid{grid-template-columns:1fr 320px;}}
+
+/* Card */
+.card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:22px;padding:24px;margin-bottom:16px;transition:border-color .3s;}
+.card-title{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);opacity:.7;margin-bottom:18px;}
+
+/* Form */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.62rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:11px 14px;font-size:.86rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--indigo);}
+.field textarea{resize:vertical;min-height:80px;}
+.field select option{background:#020024;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.field-row{grid-template-columns:1fr;}}
+
+.btn-indigo{background:var(--indigo);color:#000;border:none;border-radius:11px;padding:12px 24px;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .25s;font-family:'Sora',sans-serif;}
+.btn-indigo:hover{box-shadow:0 0 20px rgba(129,140,248,.4);transform:translateY(-1px);}
+.btn-indigo:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* Posts */
+.post-item{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.post-item:last-child{border-bottom:none;}
+.post-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.post-dot.event{background:var(--cyan);} .post-dot.hackathon{background:var(--amber);} .post-dot.announcement{background:var(--indigo);}
+.post-info{flex:1;}
+.post-title{font-size:.84rem;font-weight:700;margin-bottom:3px;}
+.post-meta{font-size:.67rem;color:var(--muted);}
+.post-del{background:none;border:1px solid rgba(239,68,68,0.2);border-radius:7px;padding:4px 9px;font-size:.62rem;color:#ef4444;cursor:pointer;flex-shrink:0;font-family:'Sora',sans-serif;transition:all .2s;}
+.post-del:hover{background:rgba(239,68,68,0.1);}
+
+/* Members */
+.member-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.member-item:last-child{border-bottom:none;}
+.mem-av{width:32px;height:32px;border-radius:50%;overflow:hidden;border:2px solid rgba(129,140,248,0.2);flex-shrink:0;}
+.mem-av img{width:100%;height:100%;object-fit:cover;}
+.mem-name{font-size:.82rem;font-weight:700;flex:1;}
+.mem-role{font-size:.62rem;color:var(--muted);}
+
+.empty-state{font-size:.75rem;color:var(--muted);text-align:center;padding:20px 0;font-style:italic;}
+
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,.28);border-radius:100px;padding:10px 22px;font-size:.76rem;font-weight:700;color:var(--indigo);z-index:3000;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(129,140,248,0.2);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div id="loadScreen">
+  <div class="load-logo">ZWAPY</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-text">Loading club portal...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="#" class="topbar-logo">
+      <div class="logo-node">
+        <img src="assets/zwapy-logo.png" style="width:24px;height:24px;object-fit:contain;">
+      </div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <div class="portal-badge">🛡️ Club Portal</div>
+    <div class="topbar-right">
+      <!-- Portal switchers -->
+      <a href="dashboard.html" class="switch-btn">🎓 Student Portal</a>
+      <a href="skill-exchange.html" class="switch-btn green">🔄 Skill Exchange</a>
+      <span class="user-name" id="topName">—</span>
+      <div class="avatar-ring"><img id="topAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=club" alt=""></div>
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- PAGE HEAD -->
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Club Head Portal</div>
+    <h1 class="page-title"><span id="clubNameTitle">Your Club</span></h1>
+    <p class="page-sub" id="clubUni">—</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-up d1">
+    <div class="stat-card"><div class="stat-label">Members</div><div class="stat-value sv-i" id="statMembers">0</div></div>
+    <div class="stat-card"><div class="stat-label">Events</div><div class="stat-value sv-c" id="statEvents">0</div></div>
+    <div class="stat-card"><div class="stat-label">Announcements</div><div class="stat-value sv-g" id="statAnnounce">0</div></div>
+    <div class="stat-card"><div class="stat-label">Hackathons</div><div class="stat-value sv-a" id="statHack">0</div></div>
+  </div>
+
+  <div class="main-grid">
+    <div>
+      <!-- POST FORM -->
+      <div class="card fade-up d2">
+        <div class="card-title">// Create Post</div>
+        <div class="field">
+          <label>Post Type</label>
+          <select id="postType">
+            <option value="event">📅 Event</option>
+            <option value="hackathon">💻 Hackathon</option>
+            <option value="announcement">📢 Announcement</option>
+          </select>
+        </div>
+        <div class="field"><label>Title *</label><input type="text" id="postTitle" placeholder="e.g. Web Dev Workshop 2025"/></div>
+        <div class="field"><label>Description</label><textarea id="postDesc" placeholder="Tell students what this is about..."></textarea></div>
+        <div class="field-row">
+          <div class="field"><label>Date</label><input type="date" id="postDate"/></div>
+          <div class="field"><label>Time</label><input type="time" id="postTime"/></div>
+        </div>
+        <div class="field"><label>Venue / Location</label><input type="text" id="postVenue" placeholder="e.g. Room 301, Block A"/></div>
+        <div class="field">
+          <label>Poster Image URL <span style="font-weight:400;text-transform:none;font-size:.58rem;color:var(--muted)">(optional)</span></label>
+          <input type="url" id="postPoster" placeholder="https://... paste image URL"/>
+        </div>
+        <div class="field">
+          <label>Registration / Info Link <span style="font-weight:400;text-transform:none;font-size:.58rem;color:var(--muted)">(optional)</span></label>
+          <input type="url" id="postLink" placeholder="https://forms.google.com/..."/>
+        </div>
+        <!-- PRICING SECTION — only for paid events/hackathons -->
+        <div style="background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.16);border-radius:12px;padding:14px;margin-bottom:14px;">
+          <div style="font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);opacity:.8;margin-bottom:12px;">// Pricing & Payment (leave blank for free events)</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Ticket Price (₹)</label>
+              <input type="number" id="postPrice" placeholder="0 = Free" min="0"/>
+            </div>
+            <div class="field">
+              <label>Total Seats</label>
+              <input type="number" id="postSeats" placeholder="Leave blank = unlimited" min="1"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Your UPI ID * <span style="font-weight:400;text-transform:none;font-size:.58rem;color:var(--muted)">(students pay directly to you)</span></label>
+            <input type="text" id="postUpiId" placeholder="yourname@upi or yourname@paytm"/>
+          </div>
+          <div style="font-size:.68rem;color:var(--muted);line-height:1.6;margin-top:4px;">
+            💡 Students pay <strong style="color:white;">directly to your UPI</strong>. Zwapy automatically tracks a <strong style="color:var(--green);">5% platform fee</strong> which is settled with you monthly. Students can use Skill Coins for up to 50% discount.
+          </div>
+        </div>
+        <button class="btn-indigo" id="postBtn">Publish Post →</button>
+      </div>
+
+      <!-- POSTS LIST -->
+      <div class="card fade-up d3">
+        <div class="card-title">// Your Posts</div>
+        <div id="postsList"><div class="empty-state">No posts yet — create your first one above</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div>
+      <div class="card fade-up d2">
+        <div class="card-title">// Club Members</div>
+        <div id="membersList"><div class="empty-state">No members yet</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth=getAuth(app);
+const db=getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function fmtDate(d){if(!d)return'';return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});}
+
+$('logoutBtn').addEventListener('click',()=>signOut(auth).then(()=>window.location.href='login.html'));
+
+onAuthStateChanged(auth, async user=>{
+  if(!user){window.location.href='login.html';return;}
+
+  const us=await getDoc(doc(db,'users',user.uid));
+  if(!us.exists()||us.data().role!=='club_head'){window.location.href='dashboard.html';return;}
+
+  const ud=us.data();
+  const av=ud.photoURL||user.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(ud.name||'club')}`;
+  $('topName').textContent=ud.name||'Club Head';
+  $('topAvatar').src=av;
+  $('clubNameTitle').textContent=ud.clubName||'Your Club';
+  $('clubUni').textContent=ud.university||'';
+
+  const postsRef=collection(db,'clubs',user.uid,'posts');
+  const postsQ=query(postsRef,orderBy('createdAt','desc'));
+
+  // Live posts
+  onSnapshot(postsQ, snap=>{
+    let events=0,ann=0,hack=0;
+    const list=$('postsList');
+    if(snap.empty){list.innerHTML='<div class="empty-state">No posts yet</div>';}
+    else{
+      list.innerHTML='';
+      snap.forEach(d=>{
+        const p=d.data();
+        if(p.type==='event') events++;
+        else if(p.type==='announcement') ann++;
+        else if(p.type==='hackathon') hack++;
+        const div=document.createElement('div');
+        div.className='post-item';
+        div.innerHTML=`
+          <div class="post-dot ${p.type||'event'}"></div>
+          <div class="post-info">
+            <div class="post-title">${p.title||'Untitled'}</div>
+            <div class="post-meta">${p.type||'event'}${p.date?' · '+fmtDate(p.date):''}${p.venue?' · '+p.venue:''}</div>
+          </div>
+          <button class="post-del" onclick="delPost('${d.id}')">✕</button>`;
+        list.appendChild(div);
+      });
+    }
+    $('statEvents').textContent=events;
+    $('statAnnounce').textContent=ann;
+    $('statHack').textContent=hack;
+  });
+
+  window.delPost=async function(id){
+    if(!confirm('Delete this post?')) return;
+    await deleteDoc(doc(db,'clubs',user.uid,'posts',id));
+    toast('🗑️ Post deleted');
+  };
+
+  // Members
+  const clubSnap=await getDoc(doc(db,'clubs',user.uid));
+  if(clubSnap.exists()){
+    const members=clubSnap.data().members||[];
+    $('statMembers').textContent=members.length;
+    if(members.length){
+      const ml=$('membersList');ml.innerHTML='';
+      for(const uid of members){
+        const ms=await getDoc(doc(db,'users',uid));
+        if(ms.exists()){
+          const m=ms.data();
+          const div=document.createElement('div');
+          div.className='member-item';
+          div.innerHTML=`
+            <div class="mem-av"><img src="${m.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(m.name||uid)}`}" alt=""></div>
+            <div><div class="mem-name">${m.name||'Student'}</div><div class="mem-role">${m.role||'Student'} · ${m.university||''}</div></div>`;
+          ml.appendChild(div);
+        }
+      }
+    }
+  }
+
+  // Publish post
+  $('postBtn').addEventListener('click', async()=>{
+    const title=$('postTitle').value.trim();
+    if(!title){toast('❌ Please add a title');return;}
+    const btn=$('postBtn');
+    btn.disabled=true;btn.textContent='Publishing...';
+    await addDoc(postsRef,{
+      title,
+      desc:$('postDesc').value.trim(),
+      type:$('postType').value,
+      date:$('postDate').value,
+      time:$('postTime').value,
+      venue:$('postVenue').value.trim(),
+      posterUrl:$('postPoster').value.trim(),
+      link:$('postLink').value.trim(),
+      price:parseFloat($('postPrice').value)||0,
+      totalSeats:parseInt($('postSeats').value)||0,
+      upiId:$('postUpiId').value.trim(),
+      soldCount:0,
+      organizer:ud.clubName||ud.name||'',
+      organizerUid:user.uid,
+      clubName:ud.clubName||'',
+      university:ud.university||'',
+      createdAt:serverTimestamp()
+    });
+    $('postTitle').value='';$('postDesc').value='';$('postDate').value='';
+    $('postTime').value='';$('postVenue').value='';$('postPoster').value='';$('postLink').value='';
+    $('postPrice').value='';$('postSeats').value='';$('postUpiId').value='';
+    btn.disabled=false;btn.textContent='Publish Post →';
+    toast('✅ Post published!');
+  });
+
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},500);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>Quick Setup | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--border:rgba(0,212,255,0.12);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--indigo:#818cf8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(0,212,255,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(16,185,129,0.03) 0%,transparent 60%);}
+.wrap{position:relative;z-index:10;width:100%;max-width:460px;}
+
+/* Header */
+.logo{text-align:center;margin-bottom:32px;}
+.logo-text{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);letter-spacing:-.02em;}
+.logo-sub{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* Welcome block */
+.welcome{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.12);border-radius:18px;padding:20px;margin-bottom:20px;text-align:center;}
+.welcome-emoji{font-size:2rem;margin-bottom:8px;}
+.welcome-title{font-size:1.1rem;font-weight:800;font-style:italic;margin-bottom:5px;}
+.welcome-sub{font-size:.72rem;color:var(--dim);line-height:1.6;}
+.welcome-email{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--cyan);margin-top:6px;opacity:.8;}
+
+/* Progress */
+.progress-bar{height:3px;background:rgba(0,212,255,0.08);border-radius:100px;margin-bottom:22px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:100px;transition:width .4s ease;}
+
+/* Form */
+.form-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:22px;padding:24px;margin-bottom:14px;}
+.field{margin-bottom:16px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.req{color:var(--red);}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:13px 15px;font-size:.9rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.field input::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus{border-color:var(--cyan);background:rgba(0,212,255,0.02);}
+.field input.valid{border-color:var(--green)!important;}
+.field input.invalid{border-color:var(--red)!important;}
+.field select option{background:#020024;}
+.field-hint{font-size:.6rem;color:var(--muted);margin-top:5px;line-height:1.5;}
+.field-hint.ok{color:var(--green);}
+.field-hint.err{color:var(--red);}
+
+/* University email */
+.uni-status{font-size:.64rem;margin-top:5px;display:none;}
+.uni-status.show{display:block;}
+.uni-status.ok{color:var(--green);}
+.uni-status.err{color:var(--red);}
+
+/* Notice */
+.profile-notice{background:rgba(129,140,248,0.06);border:1px solid rgba(129,140,248,0.18);border-radius:14px;padding:13px 15px;margin-bottom:14px;font-size:.7rem;color:var(--dim);line-height:1.6;}
+.profile-notice strong{color:var(--indigo);}
+
+/* Submit */
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--cyan),#0099bb);color:#000;border:none;border-radius:13px;padding:15px;font-size:.9rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;transition:all .25s;position:relative;overflow:hidden;}
+.submit-btn:hover{box-shadow:0 0 28px rgba(0,212,255,.35);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Saving overlay */
+.save-overlay{position:fixed;inset:0;background:rgba(1,1,20,0.9);backdrop-filter:blur(12px);z-index:9000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.save-overlay.show{display:flex;}
+.save-icon{font-size:2.5rem;animation:pulse 1s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+.save-label{font-size:.9rem;font-weight:800;font-style:italic;}
+.save-bar-wrap{width:220px;height:3px;background:rgba(255,255,255,0.07);border-radius:100px;overflow:hidden;}
+.save-bar{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width .3s ease;width:0%;}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.e{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.28);color:var(--red);}
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<div class="save-overlay" id="saveOverlay">
+  <div class="save-icon">⚡</div>
+  <div class="save-label">Setting up your account...</div>
+  <div class="save-bar-wrap"><div class="save-bar" id="saveBar"></div></div>
+</div>
+
+<div class="wrap">
+  <div class="logo">
+    <div class="logo-text">ZWAPY</div>
+    <div class="logo-sub">Campus Skill Network</div>
+  </div>
+
+  <div class="welcome">
+    <div class="welcome-emoji">👋</div>
+    <div class="welcome-title">Welcome to Zwapy!</div>
+    <div class="welcome-sub">Just 4 quick things and you're in. Takes under 60 seconds.</div>
+    <div class="welcome-email" id="welcomeEmail">—</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+
+  <div class="form-card">
+
+    <!-- 1. Full Name -->
+    <div class="field">
+      <label>Your Full Name <span class="req">*</span></label>
+      <input type="text" id="fullName" placeholder=" full name" autocomplete="name" oninput="updateProgress()"/>
+    </div>
+
+    <!-- 2. Phone -->
+    <div class="field">
+      <label>Phone Number <span class="req">*</span></label>
+      <input type="tel" id="phone" placeholder="+91" maxlength="13" oninput="updateProgress()"/>
+      <div class="field-hint">Your own mobile number</div>
+    </div>
+
+    <!-- 3. University -->
+    <div class="field">
+      <label>University <span class="req">*</span></label>
+      <select id="university" onchange="onUniversityChange()">
+        <option value="">Select your university</option>
+        <option value="Presidency University, Bangalore">Presidency University, Bangalore</option>
+        <option value="other">Other University</option>
+      </select>
+    </div>
+    <div id="otherUniField" style="display:none;" class="field">
+      <label>University Name <span class="req">*</span></label>
+      <input type="text" id="otherUniversityName" placeholder="e.g. Reva University, Bangalore" oninput="updateProgress()"/>
+    </div>
+
+    <!-- 4. University Email -->
+    <div class="field">
+      <label>University / College Email <span class="req">*</span></label>
+      <input type="email" id="uniEmail" placeholder="official uni mail id" autocomplete="off" oninput="checkUniEmail()"/>
+      <div class="uni-status" id="uniStatus"></div>
+      <div class="field-hint">Your official college email ID. Not Gmail or personal email.</div>
+    </div>
+
+  </div>
+
+  <div class="profile-notice">
+    <strong>📝 More details later!</strong> Skills, LinkedIn, course, bio and more can be added from your <strong>Profile</strong> inside Zwapy after you're in.
+  </div>
+
+  <button class="submit-btn" id="submitBtn" type="button" onclick="submitProfile()">
+    Enter Zwapy →
+  </button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc,
+  serverTimestamp, collection, getDocs, query, where, increment
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const CURRENT_PROFILE_VERSION = 3; // bumped to 3 — new minimal flow
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+
+const $ = id => document.getElementById(id);
+let currentUser  = null;
+let existingData = {};
+let isNewUser    = false;
+let uniEmailValid = false;
+
+function toast(msg, type='s') {
+  const t=$('toast'); t.textContent=msg; t.className='toast '+type+' show';
+  setTimeout(()=>{ t.className='toast'; }, 3500);
+}
+function setBar(pct) {
+  $('saveOverlay').classList.add('show');
+  $('saveBar').style.width = pct+'%';
+}
+function hideBar() { $('saveOverlay').classList.remove('show'); }
+
+window.updateProgress = function() {
+  const checks = [
+    $('fullName').value,
+    $('phone').value,
+    $('university').value,
+    uniEmailValid ? 'ok' : ''
+  ];
+  $('progressFill').style.width = Math.round((checks.filter(v=>(v||'').trim()).length/checks.length)*100)+'%';
+};
+
+document.querySelectorAll('input,select').forEach(el=>{
+  el.addEventListener('change', updateProgress);
+});
+
+window.onUniversityChange = function() {
+  $('otherUniField').style.display = $('university').value==='other'?'block':'none';
+  updateProgress();
+};
+
+/* ── VALIDATION (obfuscated) ── */
+const _zv=(function(){
+  const _pp=/^[A-Z]+(\.[A-Z]+)*\.20(2[0-9]|3[0-2])[0-9][A-Z]{2,6}[0-9]{3,6}$/;
+  const _pd=['presidencyuniversity.in','presidency.edu.in','presidency.ac.in'];
+  const _bad=['gmail.com','yahoo.com','hotmail.com','outlook.com','icloud.com','rediffmail.com',
+    'ymail.com','live.com','yopmail.com','tempmail.com','mailinator.com','10minutemail.com','aol.com'];
+  return {
+    chk(raw){
+      if(!raw||!raw.includes('@'))return{ok:false,msg:'❌ Invalid email format'};
+      const loc=(raw.split('@')[0]||'').toUpperCase();
+      const dom=(raw.split('@')[1]||'').toLowerCase().trim();
+      if(_bad.includes(dom))return{ok:false,msg:'❌ Use your official college email, not personal email'};
+      const isPres=_pd.some(d=>dom===d||dom.endsWith('.'+d));
+      if(isPres){
+        if(!_pp.test(loc))return{ok:false,msg:'❌ Presidency format: FIRSTNAME.20241CIT0056@presidencyuniversity.in'};
+        return{ok:true,msg:'✅ Valid Presidency University email verified'};
+      }
+      const isEdu=/\.(edu\.in|ac\.in|edu)$/.test(dom);
+      if(!isEdu)return{ok:false,msg:'❌ Must end in .edu.in, .ac.in or .edu — use your official college email'};
+      if(loc.length<3)return{ok:false,msg:'❌ Email username too short'};
+      return{ok:true,msg:'✅ College email accepted'};
+    }
+  };
+})();
+
+window.checkUniEmail = function() {
+  const raw=($('uniEmail').value||'').trim();
+  const inp=$('uniEmail'), st=$('uniStatus');
+  if(!raw){inp.className='';st.className='uni-status';uniEmailValid=false;updateProgress();return;}
+  const r=_zv.chk(raw);
+  inp.className=r.ok?'valid':'invalid';
+  st.className=r.ok?'uni-status ok show':'uni-status err show';
+  st.textContent=r.msg;
+  uniEmailValid=r.ok;
+  updateProgress();
+};
+
+window.submitProfile = async function() {
+  if(!currentUser){toast('Not logged in','e');return;}
+
+  const name         = ($('fullName').value||'').trim();
+  const phone        = ($('phone').value||'').trim();
+  const uniEmail     = ($('uniEmail').value||'').trim();
+  const universityRaw= $('university').value;
+  const university   = universityRaw==='other'
+                       ? ($('otherUniversityName').value||'').trim()
+                       : universityRaw;
+
+  /* Validations */
+  if(!name||name.length<2)                       {toast('Enter your full name','e');return;}
+  if(!/^[A-Za-z\s.'\-]{2,}$/.test(name))        {toast('Name should only have letters','e');return;}
+  const _nl=name.toLowerCase().replace(/\s/g,'');
+  if(/(.{2,})\1{2,}/.test(_nl)||/(.)\1{4,}/.test(_nl)){toast('Enter your real name','e');return;}
+  if(!phone||phone.replace(/\D/g,'').length<10)  {toast('Enter a valid 10-digit phone number','e');return;}
+  if(!university)                                {toast('Select your university','e');return;}
+  if(!uniEmail)                                  {toast('Enter your college email','e');return;}
+  if(!uniEmailValid)                             {toast('Enter a valid college email','e');return;}
+
+  $('submitBtn').disabled=true;
+  setBar(40);
+
+  try{
+    const profileData={
+      name, phone,
+      email:                  currentUser.email,
+      universityEmail:        uniEmail,
+      universityEmailVerified:true,
+      personalEmailVerified:  true,
+      university,
+      // Preserve existing data
+      course:                 existingData.course||'',
+      yearOfPassout:          existingData.yearOfPassout||'',
+      linkedin:               existingData.linkedin||'',
+      skillsKnown:            existingData.skillsKnown||[],
+      skillsLearn:            existingData.skillsLearn||[],
+      startupInterest:        existingData.startupInterest||'',
+      bio:                    existingData.bio||'',
+      dob:                    existingData.dob||'',
+      role:                   existingData.role||'Student',
+      photoURL:               existingData.photoURL||'',
+      coins:                  existingData.coins!==undefined?existingData.coins:0,
+      coinDebt:               existingData.coinDebt||0,
+      exchanges:              existingData.exchanges||0,
+      referrals:              existingData.referrals||0,
+      referralCode:           existingData.referralCode||currentUser.uid.substring(0,8).toUpperCase(),
+      profileVersion:         CURRENT_PROFILE_VERSION,
+      profileComplete:        false,
+      updatedAt:              serverTimestamp()
+    };
+    if(!existingData.createdAt) profileData.createdAt=serverTimestamp();
+
+    setBar(65);
+    await setDoc(doc(db,'users',currentUser.uid), profileData, {merge:true});
+    setBar(85);
+
+    /* Stats — only for truly new users */
+    if(isNewUser){
+      try{
+        await updateDoc(doc(db,'stats','platform'),{totalUsers:increment(1),updatedAt:serverTimestamp()});
+      }catch(e){
+        try{await setDoc(doc(db,'stats','platform'),{totalUsers:1,totalExchanges:0,totalCerts:0,updatedAt:serverTimestamp()});}catch(e2){}
+      }
+    }
+
+    /* ─────────────────────────────────────────────
+       REFERRAL — 3 FIXES APPLIED HERE:
+       FIX 1: localStorage instead of sessionStorage
+               sessionStorage is wiped when Google OAuth
+               redirects away and back. localStorage survives.
+       FIX 2: increment() instead of rDoc.data().coins + 2
+               Atomic — prevents race condition if two people
+               sign up with same ref code at same time.
+       FIX 3: Re-read Firestore doc before awarding coins
+               Prevents double-award if user submits form twice.
+    ───────────────────────────────────────────── */
+    const storedRef = localStorage.getItem('zwapyRef');
+    if(storedRef){
+      try{
+        // FIX 3: fresh read to make sure referredBy is not already set
+        const freshSnap = await getDoc(doc(db,'users',currentUser.uid));
+        const alreadyReferred = freshSnap.exists() && freshSnap.data().referredBy;
+
+        if(!alreadyReferred){
+          const refQ = await getDocs(query(collection(db,'users'),where('referralCode','==',storedRef)));
+          if(!refQ.empty){
+            const rDoc = refQ.docs[0];
+            if(rDoc.id !== currentUser.uid){
+              // FIX 2: atomic increment — no stale read race condition
+              await updateDoc(doc(db,'users',rDoc.id),{
+                coins:     increment(2),   // referrer gets +2
+                referrals: increment(1)
+              });
+              await updateDoc(doc(db,'users',currentUser.uid),{
+                coins:     increment(1),   // new user gets +1
+                referredBy:rDoc.id
+              });
+            }
+          }
+        }
+      }catch(refErr){
+        console.error('[Zwapy Referral]',refErr);
+      }
+      // Always clear so it never fires again
+      localStorage.removeItem('zwapyRef');
+    }
+
+    setBar(100);
+    await new Promise(r=>setTimeout(r,400));
+    hideBar();
+    toast('✅ Welcome to Zwapy!');
+    setTimeout(()=>{ window.location.href = isNewUser ? 'thankyou.html' : 'dashboard.html'; }, 700);
+
+  }catch(err){
+    console.error(err);
+    hideBar();
+    toast('Error: '+err.message,'e');
+    $('submitBtn').disabled=false;
+  }
+};
+
+/* ─────────────────────────────────────────────
+   REFERRAL FROM URL — FIX 1 ALSO HERE
+   Must use localStorage so the ref code survives
+   the Google OAuth redirect (sessionStorage dies).
+   This runs on page load before anything else.
+───────────────────────────────────────────── */
+const refCode = new URLSearchParams(window.location.search).get('ref');
+if(refCode) localStorage.setItem('zwapyRef', refCode);
+
+/* AUTH */
+onAuthStateChanged(auth, async user=>{
+  if(!user){window.location.href='signup.html';return;}
+  currentUser=user;
+  $('welcomeEmail').textContent=user.email||'';
+
+  const snap=await getDoc(doc(db,'users',user.uid));
+  if(snap.exists()){
+    existingData=snap.data();
+    const v=existingData.profileVersion||0;
+    if(v>=CURRENT_PROFILE_VERSION&&existingData.name){
+      window.location.href='dashboard.html';return;
+    }
+    isNewUser=!existingData.name;
+    if(!isNewUser){
+      // Pre-fill if returning
+      if(existingData.name)       $('fullName').value=existingData.name;
+      if(existingData.phone)      $('phone').value=existingData.phone;
+      if(existingData.university) $('university').value=existingData.university;
+      if(existingData.universityEmail){$('uniEmail').value=existingData.universityEmail;checkUniEmail();}
+    }else{isNewUser=true;}
+  }else{isNewUser=true;}
+
+  updateProgress();
+});
+</script>
+</body>
+</html>

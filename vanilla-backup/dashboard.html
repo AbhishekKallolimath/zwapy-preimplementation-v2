@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-THCGY8NH1Z');</script>
+<title>Dashboard | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cyan:#00D4FF;--bg:#010114;--navy:#020024;
+  --border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.3);
+  --muted:#64748b;--dim:#94a3b8;
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--indigo:#818cf8;
+  --gold:#FFB800;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.018) 2px,rgba(0,0,0,0.018) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 10% 10%,rgba(0,212,255,0.05) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 90% 85%,rgba(129,140,248,0.04) 0%,transparent 55%);}
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.ls-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.ls-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.ls-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));animation:lf .9s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.ls-text{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:800;opacity:0;pointer-events:none;transition:opacity .3s;}
+.sidebar-overlay.show{opacity:1;pointer-events:all;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;background:rgba(2,0,36,0.99);border-right:1px solid rgba(0,212,255,0.12);z-index:900;transform:translateX(-100%);transition:transform .32s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.sidebar.open{transform:translateX(0);}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.sb-logo{display:flex;align-items:center;gap:9px;cursor:pointer;}
+.sb-logo-icon{width:34px;height:34px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.sb-logo-text{font-size:1.15rem;font-weight:900;font-style:italic;}
+.sb-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:.8rem;transition:all .2s;}
+.sb-close:hover{background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red);}
+.sb-user{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.sb-avatar{width:44px;height:44px;border-radius:50%;border:2px solid rgba(0,212,255,0.25);object-fit:cover;flex-shrink:0;}
+.sb-user-name{font-size:.86rem;font-weight:800;margin-bottom:2px;}
+.sb-user-role{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);opacity:.7;}
+.sb-portal-row{display:flex;align-items:center;gap:8px;padding:9px 20px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.sb-portal-pill{font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:100px;font-weight:700;}
+.pill-premium{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.28);color:var(--cyan);}
+.pill-public{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.28);color:var(--indigo);}
+.sb-portal-desc{font-size:.6rem;color:var(--muted);}
+.sb-coins{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(245,158,11,0.04);}
+.sb-coins-icon{font-size:1.2rem;}
+.sb-coins-val{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--amber);line-height:1;}
+.sb-coins-label{font-size:.58rem;color:var(--muted);margin-top:1px;}
+.sb-nav{flex:1;padding:12px 10px;overflow-y:auto;}
+.sb-sec-label{font-family:'Space Mono',monospace;font-size:.46rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:8px 10px 5px;opacity:.7;}
+.sb-link{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;text-decoration:none;color:var(--muted);font-size:.82rem;font-weight:600;transition:all .2s;margin-bottom:2px;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Sora',sans-serif;}
+.sb-link:hover{background:rgba(255,255,255,0.04);color:white;}
+.sb-link.active{background:rgba(0,212,255,0.08);color:var(--cyan);border-left:3px solid var(--cyan);padding-left:9px;}
+.sb-link.sb-locked{opacity:.42;cursor:not-allowed;}
+.sb-link-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.sb-link-name{font-weight:700;font-size:.8rem;}
+.sb-link-sub{font-size:.6rem;color:var(--muted);margin-top:1px;}
+.sb-divider{height:1px;background:rgba(255,255,255,0.05);margin:8px 10px;}
+.sb-foot{padding:14px 10px;border-top:1px solid rgba(255,255,255,0.05);}
+.sb-signout{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--red);font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;border:none;background:none;width:100%;font-family:'Sora',sans-serif;}
+.sb-signout:hover{background:rgba(239,68,68,0.08);}
+.sb-signout-icon{width:32px;height:32px;border-radius:9px;background:rgba(239,68,68,0.08);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.layout{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 16px 110px;}
+@media(min-width:700px){.layout{padding:0 28px 110px;}}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.95);backdrop-filter:blur(24px);margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;gap:10px;}
+@media(min-width:700px){.topbar{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px;}}
+.topbar-logo{display:flex;align-items:center;gap:8px;cursor:pointer;transition:opacity .2s;flex-shrink:0;}
+.topbar-logo:hover{opacity:.8;}
+.logo-node{width:32px;height:32px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.15rem;font-weight:900;font-style:italic;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.tb-avatar{width:32px;height:32px;border-radius:50%;border:2px solid rgba(0,212,255,0.22);object-fit:cover;cursor:pointer;}
+.tb-logout{display:flex;align-items:center;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:100px;padding:5px 11px 5px 8px;cursor:pointer;font-family:'Sora',sans-serif;transition:background .2s,border-color .2s;overflow:hidden;min-width:82px;height:34px;}
+.tb-logout:hover:not(:disabled){background:rgba(239,68,68,0.13);border-color:rgba(239,68,68,0.35);}
+.tb-logout:disabled{cursor:not-allowed;}
+.lo-scene{display:flex;align-items:center;gap:3px;width:100%;justify-content:center;}
+.lo-man,.lo-door{font-size:.9rem;display:inline-block;}
+.lo-text{font-size:.64rem;font-weight:700;color:var(--red);white-space:nowrap;}
+.tb-logout.running .lo-text{animation:fadeText .2s ease forwards;}
+.tb-logout.running .lo-man{animation:manRun .65s ease-in forwards;}
+.tb-logout.running .lo-door{animation:doorSlam .25s ease-in forwards;animation-delay:.6s;}
+@keyframes fadeText{to{opacity:0;width:0;overflow:hidden;margin:0;padding:0;}}
+@keyframes manRun{0%{transform:translateX(0) scale(1);}60%{transform:translateX(20px);}85%{transform:translateX(26px) scale(.7);opacity:.6;}100%{transform:translateX(28px) scale(.3);opacity:0;}}
+@keyframes doorSlam{0%{transform:scaleX(1);}40%{transform:scaleX(1.25);}100%{transform:scaleX(1);filter:brightness(.3);}}
+.hero-section{margin-bottom:28px;}
+.greeting-time{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.8;margin-bottom:7px;}
+.greeting-name{font-size:clamp(2.4rem,8vw,3.6rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;margin-bottom:10px;}
+.greeting-name span{color:var(--cyan);}
+.greeting-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.gm-badge{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--dim);}
+.gm-portal{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:100px;font-weight:700;}
+.gm-portal.premium{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);}
+.gm-portal.public{background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.3);color:var(--indigo);}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px;}
+@media(min-width:480px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center;transition:all .25s;}
+.stat-card:hover{border-color:rgba(0,212,255,0.22);transform:translateY(-2px);}
+.sc-val{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1;margin-bottom:4px;}
+.sc-val.c{color:var(--cyan);}.sc-val.g{color:var(--green);}.sc-val.i{color:var(--indigo);}.sc-val.a{color:var(--amber);}
+.sc-label{font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.portal-notice{border-radius:18px;padding:20px;margin-bottom:24px;display:none;}
+.portal-notice.show{display:block;}
+.portal-notice.pub-style{background:rgba(129,140,248,0.06);border:1px solid rgba(129,140,248,0.24);}
+.pn-top{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.pn-icon{font-size:1.4rem;}
+.pn-title{font-size:.95rem;font-weight:800;color:var(--indigo);}
+.pn-body{font-size:.73rem;color:var(--dim);line-height:1.7;}
+.pn-body strong{color:white;}
+.pn-body a{color:var(--indigo);font-weight:700;text-decoration:none;}
+.pn-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.pn-chip{display:flex;align-items:center;gap:5px;border-radius:100px;padding:4px 11px;font-size:.62rem;font-weight:700;}
+.chip-open{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:var(--green);}
+.chip-locked{background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.2);color:var(--muted);}
+.skill-score-card{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.14);border-radius:18px;padding:18px;margin-bottom:20px;display:none;}
+.skill-score-card.show{display:block;}
+.ssc-title{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);opacity:.7;margin-bottom:13px;}
+.skill-score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ssr-name{font-size:.78rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ssr-level{font-family:'Space Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;border-radius:100px;padding:2px 7px;flex-shrink:0;}
+.level-beginner{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.25);color:var(--green);}
+.level-intermediate{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,.25);color:var(--amber);}
+.level-advanced{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.25);color:var(--red);}
+.ssr-bar-wrap{width:70px;height:4px;background:rgba(255,255,255,0.07);border-radius:100px;overflow:hidden;flex-shrink:0;}
+.ssr-bar{height:100%;border-radius:100px;}
+.ssr-pct{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--dim);flex-shrink:0;min-width:28px;text-align:right;}
+.exam-cta{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.18);border-radius:10px;padding:9px;font-size:.7rem;font-weight:800;color:var(--cyan);text-decoration:none;transition:all .2s;}
+.exam-cta:hover{background:rgba(0,212,255,0.13);}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+.section-label{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);opacity:.7;}
+.section-link{font-size:.66rem;font-weight:700;color:var(--dim);text-decoration:none;transition:color .2s;}
+.section-link:hover{color:var(--cyan);}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:10px;}
+@media(min-width:560px){.feature-grid{grid-template-columns:repeat(3,1fr);}}
+.feat-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:18px 15px;cursor:pointer;transition:all .25s;text-decoration:none;display:block;position:relative;overflow:hidden;}
+.feat-card:hover{border-color:var(--border-h);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.feat-card.locked{opacity:.48;cursor:not-allowed;filter:saturate(0.25);}
+.feat-card.locked:hover{transform:none;box-shadow:none;border-color:var(--border);}
+.feat-icon{font-size:1.7rem;margin-bottom:9px;display:block;}
+.feat-uni-label{font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.feat-name{font-size:.85rem;font-weight:800;margin-bottom:3px;color:rgba(255,255,255,0.75);}
+.feat-desc{font-size:.63rem;color:var(--muted);line-height:1.45;}
+.feat-card.locked .feat-name{color:rgba(255,255,255,0.22);}
+.feat-badge{position:absolute;top:10px;right:10px;font-family:'Space Mono',monospace;font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:100px;font-weight:700;}
+.b-live{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.28);color:var(--green);}
+.b-locked{background:rgba(25,25,55,0.85);border:1px solid rgba(255,255,255,0.07);color:rgba(100,116,139,0.55);}
+.locked-panel{background:rgba(129,140,248,0.07);border:1px solid rgba(129,140,248,0.24);border-radius:16px;padding:16px 18px;margin-top:12px;margin-bottom:20px;display:none;}
+.locked-panel.show{display:flex;align-items:flex-start;gap:12px;animation:slideIn .25s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.lp-icon{font-size:1.4rem;flex-shrink:0;margin-top:2px;}
+.lp-title{font-size:.82rem;font-weight:800;color:var(--indigo);margin-bottom:4px;}
+.lp-sub{font-size:.68rem;color:var(--dim);line-height:1.65;}
+.lp-sub strong{color:white;}
+.lp-sub a{color:var(--indigo);font-weight:700;text-decoration:none;}
+.crx-card{background:linear-gradient(135deg,rgba(255,184,0,0.06),rgba(1,1,20,0.96));border:1px solid rgba(255,184,0,0.2);border-radius:18px;padding:18px;margin-bottom:20px;cursor:pointer;transition:all .25s;text-decoration:none;display:block;}
+.crx-card:hover{border-color:rgba(255,184,0,0.4);transform:translateY(-2px);}
+.crx-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.crx-icon{font-size:1.4rem;}
+.crx-suplabel{font-family:'Space Mono',monospace;font-size:.46rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);opacity:.8;margin-bottom:2px;}
+.crx-name{font-size:.9rem;font-weight:800;}
+.crx-soon{margin-left:auto;background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.25);border-radius:100px;padding:3px 10px;font-family:'Space Mono',monospace;font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;flex-shrink:0;}
+.crx-desc{font-size:.7rem;color:var(--dim);line-height:1.5;margin-bottom:10px;}
+.crx-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.crx-tag{background:rgba(255,184,0,0.06);border:1px solid rgba(255,184,0,0.16);border-radius:100px;padding:3px 9px;font-size:.6rem;font-weight:700;color:var(--gold);}
+.ref-strip{background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(1,1,20,0.95));border:1px solid rgba(16,185,129,0.18);border-radius:16px;padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.ref-label{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:3px;}
+.ref-title{font-size:.84rem;font-weight:800;margin-bottom:2px;}
+.ref-sub{font-size:.64rem;color:var(--dim);}
+.ref-btn{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.28);border-radius:10px;padding:9px 16px;font-size:.7rem;font-weight:800;color:var(--green);cursor:pointer;font-family:'Sora',sans-serif;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+.ref-btn:hover{background:rgba(16,185,129,0.2);}
+.activity-wrap{margin-bottom:24px;}
+.activity-empty{text-align:center;padding:28px;color:var(--muted);}
+.ae-icon{font-size:2rem;margin-bottom:8px;opacity:.28;}
+.ae-txt{font-size:.72rem;line-height:1.5;}
+/* Activity item — normal */
+.activity-item{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);border-radius:13px;padding:12px 14px;display:flex;gap:11px;align-items:flex-start;margin-bottom:8px;}
+.act-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:4px;}
+.act-title{font-size:.76rem;font-weight:700;margin-bottom:2px;}
+.act-sub{font-size:.6rem;color:var(--muted);}
+/* Connection request activity item */
+.act-conn-req{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.16);border-radius:13px;padding:12px 14px;display:flex;gap:11px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
+.act-conn-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
+.act-conn-body{flex:1;min-width:0;}
+.act-conn-title{font-size:.76rem;font-weight:700;margin-bottom:2px;}
+.act-conn-sub{font-size:.6rem;color:var(--muted);}
+.act-conn-actions{display:flex;gap:7px;flex-shrink:0;}
+.act-accept-btn{background:var(--cyan);color:#000;border:none;border-radius:8px;padding:6px 13px;font-size:.66rem;font-weight:800;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s;}
+.act-accept-btn:hover{box-shadow:0 0 10px rgba(0,212,255,.4);}
+.act-decline-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 11px;font-size:.66rem;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;color:var(--muted);transition:all .2s;}
+.act-decline-btn:hover{background:rgba(239,68,68,0.08);border-color:var(--red);color:var(--red);}
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.fb-overlay.open{opacity:1;pointer-events:all;}
+.fb-modal{background:rgba(2,0,36,0.99);border:1px solid rgba(0,212,255,0.2);border-radius:22px;width:100%;max-width:400px;overflow:hidden;}
+.fb-stripe{height:3px;background:linear-gradient(90deg,var(--cyan),var(--green));}
+.fb-body{padding:22px;}
+.fb-close-btn{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;transition:color .2s;}
+.fb-close-btn:hover{color:white;}
+.fb-title{font-size:1.05rem;font-weight:900;font-style:italic;margin-bottom:4px;}
+.fb-sub{font-size:.7rem;color:var(--dim);margin-bottom:16px;line-height:1.5;}
+.fb-stars{display:flex;gap:7px;margin-bottom:14px;}
+.fb-star{font-size:1.5rem;cursor:pointer;filter:grayscale(1);transition:all .15s;}
+.fb-star.on{filter:none;transform:scale(1.12);}
+.fb-field{margin-bottom:10px;}
+.fb-field label{display:block;font-size:.56rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+.fb-field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:10px 12px;font-size:.8rem;color:white;font-family:'Sora',sans-serif;outline:none;resize:none;height:68px;line-height:1.5;}
+.fb-field textarea:focus{border-color:var(--cyan);}
+.fb-submit{width:100%;background:var(--cyan);color:#000;border:none;border-radius:10px;padding:11px;font-size:.8rem;font-weight:800;text-transform:uppercase;cursor:pointer;font-family:'Sora',sans-serif;margin-top:4px;}
+.fb-skip-btn{width:100%;background:none;border:none;color:var(--muted);font-size:.66rem;cursor:pointer;margin-top:7px;padding:5px;font-family:'Sora',sans-serif;}
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(14px);border-radius:100px;padding:9px 18px;font-size:.72rem;font-weight:700;z-index:5000;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.s{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);color:var(--green);}
+.toast.e{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.28);color:var(--red);}
+.bottom-nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:360px;background:rgba(2,0,36,0.96);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:5px 10px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 28px rgba(0,0,0,.6);}
+.nav-item{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .2s;text-decoration:none;color:var(--muted);font-size:1rem;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-item:hover{background:rgba(0,212,255,0.07);color:var(--cyan);}
+.nav-av{width:24px;height:24px;border-radius:50%;border:2px solid rgba(0,212,255,.25);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+.fade-up{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}
+.d4{transition-delay:.2s;}.d5{transition-delay:.25s;}.d6{transition-delay:.3s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.14);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div id="loadScreen">
+  <div class="ls-logo">ZWAPY</div>
+  <div class="ls-bar"><div class="ls-fill"></div></div>
+  <div class="ls-text">Loading dashboard...</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo" onclick="closeSidebar();window.location.href='dashboard.html'">
+      <div class="sb-logo-icon"><img src="assets/zwapy-logo.png" style="width:20px;height:20px;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <span class="sb-logo-text">ZWAPY</span>
+    </div>
+    <button class="sb-close" onclick="closeSidebar()">✕</button>
+  </div>
+  <div class="sb-user">
+    <img id="sbAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" class="sb-avatar" alt=""/>
+    <div>
+      <div class="sb-user-name" id="sbName">—</div>
+      <div class="sb-user-role" id="sbRole">Student</div>
+    </div>
+  </div>
+  <div class="sb-portal-row">
+    <span class="sb-portal-pill" id="sbPortalPill">—</span>
+    <span class="sb-portal-desc" id="sbPortalDesc">—</span>
+  </div>
+  <div class="sb-coins">
+    <div class="sb-coins-icon">💰</div>
+    <div>
+      <div class="sb-coins-val" id="sbCoins">0</div>
+      <div class="sb-coins-label">Skill Coins</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec-label">Navigation</div>
+    <a href="dashboard.html" class="sb-link active" onclick="closeSidebar()">
+      <div class="sb-link-icon" style="background:rgba(0,212,255,0.08);">🏠</div>
+      <div><div class="sb-link-name">Dashboard</div><div class="sb-link-sub">Your home</div></div>
+    </a>
+    <a href="skill-exchange.html" class="sb-link" onclick="closeSidebar()">
+      <div class="sb-link-icon" style="background:rgba(0,212,255,0.08);">🔄</div>
+      <div><div class="sb-link-name">Skill Exchange</div><div class="sb-link-sub">All universities</div></div>
+    </a>
+    <a href="network.html" class="sb-link" onclick="closeSidebar()">
+      <div class="sb-link-icon" style="background:rgba(16,185,129,0.08);">💬</div>
+      <div><div class="sb-link-name">Network</div><div class="sb-link-sub">Connect with students</div></div>
+    </a>
+    <a href="discover.html" class="sb-link" onclick="closeSidebar()">
+      <div class="sb-link-icon" style="background:rgba(245,158,11,0.08);">🔍</div>
+      <div><div class="sb-link-name">Discover</div><div class="sb-link-sub">Find people &amp; skills</div></div>
+    </a>
+    <a id="sbEventsLink" class="sb-link">
+      <div class="sb-link-icon" style="background:rgba(244,114,182,0.08);">🎪</div>
+      <div><div class="sb-link-name">Events</div><div class="sb-link-sub" id="sbEventsSub">Campus events</div></div>
+    </a>
+    <a id="sbClubsLink" class="sb-link">
+      <div class="sb-link-icon" style="background:rgba(129,140,248,0.08);">🛡️</div>
+      <div><div class="sb-link-name">Clubs</div><div class="sb-link-sub" id="sbClubsSub">Campus clubs</div></div>
+    </a>
+    <div class="sb-divider"></div>
+    <div class="sb-sec-label">Account</div>
+    <a href="profile.html" class="sb-link" onclick="closeSidebar()">
+      <div class="sb-link-icon" style="background:rgba(255,255,255,0.04);">👤</div>
+      <div><div class="sb-link-name">Profile</div><div class="sb-link-sub">Your info &amp; skills</div></div>
+    </a>
+    <button class="sb-link" onclick="showFeedback()">
+      <div class="sb-link-icon" style="background:rgba(0,212,255,0.06);">💬</div>
+      <div><div class="sb-link-name">Give Feedback</div><div class="sb-link-sub">Help us improve</div></div>
+    </button>
+  </nav>
+  <div class="sb-foot">
+    <button class="sb-signout" id="signOutBtn">
+      <div class="sb-signout-icon">🚪</div>Sign Out
+    </button>
+  </div>
+</aside>
+<div class="fb-overlay" id="fbOverlay">
+  <div class="fb-modal">
+    <div class="fb-stripe"></div>
+    <div class="fb-body">
+      <button class="fb-close-btn" onclick="closeFeedback()">✕</button>
+      <div class="fb-title">Quick Feedback 💬</div>
+      <p class="fb-sub">Help us build Zwapy better. 30 seconds. Anonymous.</p>
+      <div class="fb-stars" id="fbStars">
+        <span class="fb-star" onclick="setRating(1)">⭐</span><span class="fb-star" onclick="setRating(2)">⭐</span>
+        <span class="fb-star" onclick="setRating(3)">⭐</span><span class="fb-star" onclick="setRating(4)">⭐</span>
+        <span class="fb-star" onclick="setRating(5)">⭐</span>
+      </div>
+      <div class="fb-field"><label>What do you like most?</label><textarea id="fbLike" placeholder="e.g. Skill exchange idea is great..."></textarea></div>
+      <div class="fb-field"><label>What should we improve?</label><textarea id="fbImprove" placeholder="e.g. Make it easier to find people..."></textarea></div>
+      <button class="fb-submit" onclick="submitFeedback()">Send Feedback →</button>
+      <button class="fb-skip-btn" onclick="closeFeedback()">Skip for now</button>
+    </div>
+  </div>
+</div>
+<div class="layout">
+  <header class="topbar">
+    <div class="topbar-logo" onclick="openSidebar()">
+      <div class="logo-node"><img src="assets/zwapy-logo.png" style="width:20px;height:20px;object-fit:contain;" onerror="this.style.display='none'"/></div>
+      <span class="logo-text">ZWAPY</span>
+    </div>
+    <div class="topbar-right">
+      <img id="topAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" class="tb-avatar" alt="" onclick="window.location.href='profile.html'"/>
+      <button class="tb-logout" id="topLogoutBtn" onclick="animateLogout()">
+        <span class="lo-scene"><span class="lo-man">🏃‍➡️</span><span class="lo-door">🚪</span><span class="lo-text">Logout</span></span>
+      </button>
+    </div>
+  </header>
+  <div class="hero-section fade-up d1">
+    <div class="greeting-time" id="greetingTime">Good morning,</div>
+    <div class="greeting-name"><span id="greetingName">—</span></div>
+    <div class="greeting-meta">
+      <span class="gm-badge" id="gmUni">—</span>
+      <span class="gm-badge" id="gmCourse">—</span>
+      <span class="gm-portal" id="gmPortal"></span>
+    </div>
+  </div>
+  <div class="stats-row fade-up d2">
+    <div class="stat-card"><div class="sc-val c" id="statCoins">0</div><div class="sc-label">Skill Coins</div></div>
+    <div class="stat-card"><div class="sc-val g" id="statExchanges">0</div><div class="sc-label">Exchanges</div></div>
+    <div class="stat-card"><div class="sc-val i" id="statRank">#—</div><div class="sc-label">Network Rank</div></div>
+    <div class="stat-card" id="statScoreCard" style="display:none;"><div class="sc-val a" id="statScore">—</div><div class="sc-label">Exam Score</div></div>
+  </div>
+  <div class="portal-notice fade-up d2" id="portalNotice">
+    <div class="pn-top"><div class="pn-icon">🌐</div><div class="pn-title" id="pnTitle">Public Portal</div></div>
+    <div class="pn-body" id="pnBody"></div>
+    <div class="pn-chips">
+      <span class="pn-chip chip-open">✅ Skill Exchange — open to all</span>
+      <span class="pn-chip chip-locked">🔒 Clubs — your uni only (coming soon)</span>
+      <span class="pn-chip chip-locked">🔒 Events — your uni only (coming soon)</span>
+    </div>
+  </div>
+  <div class="skill-score-card" id="skillScoreCard">
+    <div class="ssc-title">// Your Verified Skill Scores</div>
+    <div id="skillScoreList"></div>
+    <a href="exam.html" class="exam-cta" id="examCta" style="display:none;">🔄 Retake Exam to Improve Score</a>
+  </div>
+  <div class="section-hd fade-up d3">
+    <div class="section-label">// Features</div>
+  </div>
+  <div class="feature-grid fade-up d3" id="featureGrid"></div>
+  <div class="locked-panel" id="lockedPanel">
+    <div class="lp-icon">🔒</div>
+    <div>
+      <div class="lp-title">Not available for your university yet</div>
+      <div class="lp-sub">
+        Please wait until we collaborate with <strong id="lpUniName">your university</strong> to unlock Clubs and Events.<br>
+        <strong>Skill Exchange is open for everyone right now! 🎉</strong><br>
+        Ask your student council to <a href="mailto:partner@zwapy.com">partner with us →</a>
+      </div>
+    </div>
+  </div>
+  <a href="creagenix.html" class="crx-card fade-up d4">
+    <div class="crx-top">
+      <div class="crx-icon">🎬</div>
+      <div><div class="crx-suplabel">Coming Soon · Official Partnership</div><div class="crx-name">Creagenix × Zwapy</div></div>
+      <div class="crx-soon">Coming Soon</div>
+    </div>
+    <div class="crx-desc">Professional video editing, photo editing and content creation — taught by Creagenix inside Zwapy. Earn real certificates. Build your personal brand.</div>
+    <div class="crx-tags">
+      <span class="crx-tag">🎬 Video Editing</span><span class="crx-tag">📸 Photo Editing</span>
+      <span class="crx-tag">🎨 Graphic Design</span><span class="crx-tag">🚀 Personal Brand</span>
+    </div>
+  </a>
+  <div class="ref-strip fade-up d4">
+    <div>
+      <div class="ref-label">// Invite &amp; Earn</div>
+      <div class="ref-title">Invite friends, earn coins</div>
+      <div class="ref-sub">+2 coins when a friend joins through your link</div>
+    </div>
+    <button class="ref-btn" id="refBtn">📋 Copy Invite Link</button>
+  </div>
+  <div class="section-hd fade-up d5">
+    <div class="section-label">// Recent Activity</div>
+    <a href="profile.html" class="section-link">See all →</a>
+  </div>
+  <div class="activity-wrap fade-up d5" id="activityWrap">
+    <div class="activity-empty"><div class="ae-icon">⚡</div><p class="ae-txt">No activity yet.<br>Do your first skill exchange to get started.</p></div>
+  </div>
+</div>
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item active">🏠</a>
+  <a id="navClubs" class="nav-item">🏛️</a>
+  <a href="network.html" class="nav-item">🧑‍🤝‍🧑</a>
+  <a href="discover.html" class="nav-item">🔍</a>
+  <a href="profile.html" class="nav-item"><div class="nav-av"><img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""/></div></a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, getDocs, collection,
+  addDoc, updateDoc, serverTimestamp, orderBy, limit, query, where,
+  arrayUnion
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const PRESIDENCY_DOMAINS = ['presidencyuniversity.in','presidency.edu.in','presidency.ac.in'];
+
+function resolvePortal(ud) {
+  const rawEmail = (ud.universityEmail||'').toLowerCase().trim();
+  const uniName  = (ud.university||'').toLowerCase().trim();
+  const atIdx    = rawEmail.lastIndexOf('@');
+  const domain   = atIdx>=0 ? rawEmail.slice(atIdx+1) : '';
+  const emailMatch = domain && PRESIDENCY_DOMAINS.some(d=>domain===d||domain.endsWith('.'+d));
+  const nameMatch  = !domain && (uniName==='presidency university, bangalore'||uniName.startsWith('presidency'));
+  return (emailMatch||nameMatch) ? 'premium' : 'public';
+}
+
+// ── FIXED: version bumped to 3 to match new extra-details flow ──
+// Old users with version 2 are still let in if they have a name
+const CURRENT_PROFILE_VERSION = 3;
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const $    = id => document.getElementById(id);
+
+let currentUser=null, userData={}, feedbackRating=0, referralCode='';
+
+function toast(msg,type='s'){
+  const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;
+  setTimeout(()=>{t.className='toast';},3200);
+}
+window.toast=toast;
+const fmt=n=>Number(n||0).toLocaleString();
+window.openSidebar =()=>{$('sidebar').classList.add('open');$('sbOverlay').classList.add('show');};
+window.closeSidebar=()=>{$('sidebar').classList.remove('open');$('sbOverlay').classList.remove('show');};
+
+function setGreeting(){
+  const h=new Date().getHours();
+  $('greetingTime').textContent=h<12?'Good morning,':h<17?'Good afternoon,':'Good evening,';
+}
+
+window.animateLogout=function(){
+  const btn=$('topLogoutBtn');
+  if(btn.classList.contains('running'))return;
+  btn.classList.add('running');btn.disabled=true;
+  setTimeout(async()=>{try{await signOut(auth);}catch(e){}window.location.href='login.html';},1100);
+};
+
+let lockTimer=null;
+function showLockedPanel(){
+  const p=$('lockedPanel');p.classList.add('show');
+  p.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(lockTimer)clearTimeout(lockTimer);
+  lockTimer=setTimeout(()=>p.classList.remove('show'),6000);
+}
+window.showLockedPanel=showLockedPanel;
+
+// ── ACCEPT CONNECTION REQUEST ──
+window.acceptConnection=async function(activityDocId, senderId, senderName, btn){
+  if(!currentUser)return;
+  btn.disabled=true;btn.textContent='Accepting...';
+  try{
+    // 1. Add each other to friends list
+    await updateDoc(doc(db,'users',currentUser.uid),{ friends: arrayUnion(senderId) });
+    await updateDoc(doc(db,'users',senderId),{ friends: arrayUnion(currentUser.uid) });
+
+    // 2. Update the connection doc status to 'connected'
+    const connSnap=await getDocs(query(
+      collection(db,'connections'),
+      where('senderId','==',senderId),
+      where('receiverId','==',currentUser.uid),
+      where('status','==','pending')
+    ));
+    connSnap.forEach(async d=>{
+      await updateDoc(doc(db,'connections',d.id),{status:'connected'});
+    });
+
+    // 3. Update activity doc status
+    await updateDoc(doc(db,'users',currentUser.uid,'activity',activityDocId),{
+      status:'accepted',title:`Connected with ${senderName}`
+    });
+
+    // 4. Notify sender that request was accepted
+    await addDoc(collection(db,'users',senderId,'activity'),{
+      type:'connection_accepted',
+      title:`${userData.name||'Someone'} accepted your request`,
+      desc:'You are now connected on Zwapy!',
+      createdAt:serverTimestamp()
+    });
+
+    toast(`✅ Connected with ${senderName}!`);
+    // Reload activity feed
+    await loadActivity(currentUser.uid);
+  }catch(e){
+    console.error('Accept error:',e);
+    toast('Error accepting request','e');
+    btn.disabled=false;btn.textContent='Accept';
+  }
+};
+
+// ── DECLINE CONNECTION REQUEST ──
+window.declineConnection=async function(activityDocId, senderId, btn){
+  if(!currentUser)return;
+  btn.disabled=true;
+  try{
+    await updateDoc(doc(db,'users',currentUser.uid,'activity',activityDocId),{
+      status:'declined'
+    });
+    const connSnap=await getDocs(query(
+      collection(db,'connections'),
+      where('senderId','==',senderId),
+      where('receiverId','==',currentUser.uid),
+      where('status','==','pending')
+    ));
+    connSnap.forEach(async d=>{
+      await updateDoc(doc(db,'connections',d.id),{status:'declined'});
+    });
+    toast('Request declined');
+    await loadActivity(currentUser.uid);
+  }catch(e){
+    console.error('Decline error:',e);
+    btn.disabled=false;
+  }
+};
+
+function buildGrid(portal){
+  const prem=portal==='premium';
+  const features=[
+    {href:'skill-exchange.html',icon:'🔄',label:'All Universities',name:'Skill Exchange',desc:'Trade skills with students from every university',badge:'Live',bc:'b-live',locked:false},
+    {href:prem?'event.html':'#',icon:'🎪',label:prem?'Presidency':'Locked',name:'Events',desc:prem?'Hackathons, workshops and campus events':'Unlocks when Zwapy collaborates with your university',badge:prem?'Live':'Locked',bc:prem?'b-live':'b-locked',locked:!prem},
+    {href:prem?'clubs.html':'#',icon:'🛡️',label:prem?'Presidency':'Locked',name:'Clubs',desc:prem?'Join campus clubs and groups':'Unlocks when Zwapy collaborates with your university',badge:prem?'Live':'Locked',bc:prem?'b-live':'b-locked',locked:!prem}
+  ];
+  $('featureGrid').innerHTML=features.map(f=>`
+    <a href="${f.href}" class="feat-card${f.locked?' locked':''}"
+       ${f.locked?'onclick="event.preventDefault();showLockedPanel()"':''}>
+      <span class="feat-badge ${f.bc}">${f.badge}</span>
+      <span class="feat-icon">${f.icon}</span>
+      <div class="feat-uni-label">${f.label}</div>
+      <div class="feat-name">${f.name}</div>
+      <div class="feat-desc">${f.desc}</div>
+    </a>`).join('');
+
+  const nc=$('navClubs');
+  if(prem){nc.href='clubs.html';}
+  else{nc.href='#';nc.style.opacity='.32';nc.onclick=e=>{e.preventDefault();showLockedPanel();};}
+
+  const se=$('sbEventsLink'),sc=$('sbClubsLink');
+  if(prem){
+    se.href='event.html';sc.href='clubs.html';
+    $('sbEventsSub').textContent='Campus events';$('sbClubsSub').textContent='Campus clubs';
+  }else{
+    se.removeAttribute('href');sc.removeAttribute('href');
+    se.classList.add('sb-locked');sc.classList.add('sb-locked');
+    se.onclick=e=>{e.preventDefault();closeSidebar();setTimeout(showLockedPanel,260);};
+    sc.onclick=e=>{e.preventDefault();closeSidebar();setTimeout(showLockedPanel,260);};
+    $('sbEventsSub').textContent='Coming to your uni';$('sbClubsSub').textContent='Coming to your uni';
+  }
+}
+
+function buildSkillScores(ud){
+  const skills=ud.skillsKnown||[];
+  if(!skills.length)return;
+  $('skillScoreCard').classList.add('show');
+  const bd=(ud.examScores?.skillBreakdown)||[];
+  $('skillScoreList').innerHTML=skills.map(sk=>{
+    const sd=bd.find(b=>b.skill===sk.name);
+    const pct=sd?sd.pct:null;
+    const col=pct==null?'rgba(255,255,255,0.1)':pct>=70?'#10b981':pct>=40?'#f59e0b':'#ef4444';
+    return`<div class="skill-score-row">
+      <span class="ssr-name">${sk.name}</span>
+      <span class="ssr-level level-${sk.level}">${sk.level}</span>
+      ${pct!=null?`<div class="ssr-bar-wrap"><div class="ssr-bar" style="width:${pct}%;background:${col};"></div></div><span class="ssr-pct">${pct}%</span>`:''}
+    </div>`;
+  }).join('');
+  if(ud.examTaken)$('examCta').style.display='flex';
+}
+
+// ── ACTIVITY FEED with connection request support ──
+async function loadActivity(uid){
+  try{
+    const snap=await getDocs(query(collection(db,'users',uid,'activity'),orderBy('createdAt','desc'),limit(8)));
+    if(snap.empty){
+      $('activityWrap').innerHTML='<div class="activity-empty"><div class="ae-icon">⚡</div><p class="ae-txt">No activity yet.<br>Do your first skill exchange to get started.</p></div>';
+      return;
+    }
+    const items=[];snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    $('activityWrap').innerHTML=items.map(item=>{
+      // Connection request — show Accept/Decline buttons
+      if(item.type==='connection_request'&&item.status==='pending'){
+        return`<div class="act-conn-req">
+          <div class="act-conn-dot"></div>
+          <div class="act-conn-body">
+            <div class="act-conn-title">${item.title||'Connection Request'}</div>
+            <div class="act-conn-sub">${item.desc||''}</div>
+          </div>
+          <div class="act-conn-actions">
+            <button class="act-accept-btn" onclick="acceptConnection('${item.id}','${item.senderId}','${(item.senderName||'').replace(/'/g,"\\'")}',this)">Accept</button>
+            <button class="act-decline-btn" onclick="declineConnection('${item.id}','${item.senderId}',this)">Decline</button>
+          </div>
+        </div>`;
+      }
+      // Normal activity item
+      return`<div class="activity-item">
+        <div class="act-dot"></div>
+        <div><div class="act-title">${item.title||'Activity'}</div><div class="act-sub">${item.desc||''}</div></div>
+      </div>`;
+    }).join('');
+  }catch(e){console.error('Activity load error:',e);}
+}
+
+window.showFeedback=()=>{closeSidebar();setTimeout(()=>$('fbOverlay').classList.add('open'),200);};
+window.closeFeedback=()=>{$('fbOverlay').classList.remove('open');localStorage.setItem('zwapyFbShown',Date.now().toString());};
+window.setRating=n=>{feedbackRating=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('on',i<n));};
+window.submitFeedback=async()=>{
+  if(!feedbackRating){toast('Give a star rating first','e');return;}
+  try{
+    await addDoc(collection(db,'feedback'),{
+      rating:feedbackRating,
+      like:$('fbLike').value||'',
+      improve:$('fbImprove').value||'',
+      userId:auth.currentUser?auth.currentUser.uid:'anonymous',
+      university:userData.university||'unknown',
+      createdAt:serverTimestamp()
+    });
+    closeFeedback();toast('✅ Thanks for your feedback!');
+  }catch(e){toast('Error: '+e.message,'e');}
+};
+function maybeShowFeedback(){
+  const last=localStorage.getItem('zwapyFbShown');
+  if(last&&(Date.now()-parseInt(last))<7*24*60*60*1000)return;
+  setTimeout(()=>$('fbOverlay').classList.add('open'),3*60*1000);
+}
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+  setGreeting();
+
+  const snap=await getDoc(doc(db,'users',user.uid));
+
+  // ── FIXED: only redirect if no name at all
+  // version 2 users still valid — don't redirect them
+  if(!snap.exists()||!snap.data().name){window.location.href='extra-details.html';return;}
+  userData=snap.data();
+
+  const portal=resolvePortal(userData);
+  const isPremium=portal==='premium';
+
+  const allSnap=await getDocs(collection(db,'users'));
+  const name=userData.name||user.displayName||'Student';
+  const coins=userData.coins||0;
+  const exchanges=userData.exchanges||0;
+  const photo=userData.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
+  referralCode=userData.referralCode||user.uid.substring(0,8).toUpperCase();
+
+  $('greetingName').textContent=name.split(' ')[0];
+  $('gmUni').textContent=userData.university||'Zwapy';
+  $('gmCourse').textContent=userData.course||'Student';
+  const gp=$('gmPortal');
+  gp.textContent=isPremium?'⭐ Premium Portal':'🌐 Public Portal';
+  gp.className=isPremium?'gm-portal premium':'gm-portal public';
+
+  const pill=$('sbPortalPill'),desc=$('sbPortalDesc');
+  pill.textContent=isPremium?'Premium':'Public';
+  pill.className=isPremium?'sb-portal-pill pill-premium':'sb-portal-pill pill-public';
+  desc.textContent=isPremium?'Full access':'Skill Exchange only';
+
+  [$('topAvatar'),$('navAvatar'),$('sbAvatar')].forEach(el=>{if(el)el.src=photo;});
+  $('sbName').textContent=name;
+  $('sbRole').textContent=userData.role||'Student';
+  $('sbCoins').textContent=fmt(coins);
+  $('statCoins').textContent=fmt(coins);
+  $('statExchanges').textContent=fmt(exchanges);
+  let rank=1;allSnap.forEach(d=>{if(d.id!==user.uid&&(d.data().coins||0)>coins)rank++;});
+  $('statRank').textContent='#'+rank;
+  if(userData.examScores?.overall){$('statScoreCard').style.display='block';$('statScore').textContent=userData.examScores.overall+'%';}
+
+  if(!isPremium){
+    const uniName=userData.university||'your university';
+    $('pnBody').innerHTML=`You're on Zwapy's <strong>Public Portal</strong>. <strong>Skill Exchange</strong> is fully live — browse and trade skills with students from <strong>all universities including Presidency University</strong>.<br><br><strong>Clubs</strong> and <strong>Events</strong> are campus-specific and will unlock the moment Zwapy officially collaborates with <strong>${uniName}</strong>. Ask your student council to <a href="mailto:partner@zwapy.com">partner with us →</a>`;
+    $('portalNotice').classList.add('show','pub-style');
+    $('lpUniName').textContent=uniName;
+  }
+
+  buildGrid(portal);
+  buildSkillScores(userData);
+  await loadActivity(user.uid);
+  maybeShowFeedback();
+
+  $('refBtn').addEventListener('click',()=>{
+    const link=`https://zwapy.com/signup.html?ref=${referralCode}`;
+    try{navigator.clipboard.writeText(link);}catch(e){
+      const ta=document.createElement('textarea');ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    }
+    toast('✅ Invite link copied!');
+  });
+  $('signOutBtn').addEventListener('click',async()=>{await signOut(auth);window.location.href='login.html';});
+
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{try{$('loadScreen').remove();}catch(e){}},400);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

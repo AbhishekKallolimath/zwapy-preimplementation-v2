@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>404 | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--muted:#64748b;--dim:#94a3b8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:0;}
+.glow{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(0,212,255,0.04) 0%,transparent 70%);z-index:0;}
+.wrap{position:relative;z-index:1;text-align:center;max-width:480px;}
+.logo{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:40px;text-decoration:none;}
+.logo span{font-size:1.3rem;font-weight:900;font-style:italic;}
+.code{font-family:'Space Mono',monospace;font-size:8rem;font-weight:700;color:var(--cyan);line-height:1;opacity:.08;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;z-index:0;}
+.content{position:relative;z-index:1;}
+.err-tag{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);opacity:.65;margin-bottom:14px;}
+.err-title{font-size:clamp(2rem,8vw,3.5rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;margin-bottom:14px;}
+.err-title span{color:var(--cyan);}
+.err-sub{font-size:.85rem;color:var(--dim);line-height:1.7;margin-bottom:32px;}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:var(--cyan);color:#000;border:none;border-radius:12px;padding:13px 28px;font-size:.82rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .25s;display:inline-block;}
+.btn-primary:hover{box-shadow:0 0 22px rgba(0,212,255,.4);transform:translateY(-1px);}
+.btn-ghost{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:13px 28px;font-size:.82rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .25s;display:inline-block;}
+.btn-ghost:hover{border-color:rgba(0,212,255,0.3);color:white;}
+/* Floating dots */
+.dot{position:fixed;border-radius:50%;background:var(--cyan);opacity:.06;pointer-events:none;animation:float linear infinite;}
+@keyframes float{0%{transform:translateY(100vh) rotate(0deg);}100%{transform:translateY(-100px) rotate(720deg);}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="dot" style="width:6px;height:6px;left:15%;animation-duration:12s;animation-delay:0s;"></div>
+<div class="dot" style="width:4px;height:4px;left:35%;animation-duration:17s;animation-delay:3s;"></div>
+<div class="dot" style="width:8px;height:8px;left:60%;animation-duration:10s;animation-delay:1s;"></div>
+<div class="dot" style="width:5px;height:5px;left:80%;animation-duration:14s;animation-delay:5s;"></div>
+<div class="dot" style="width:3px;height:3px;left:50%;animation-duration:20s;animation-delay:2s;"></div>
+
+<div class="wrap">
+  <a href="index.html" class="logo">
+    <img src="assets/zwapy-logo.png" style="width:30px;height:30px;object-fit:contain;">
+    <span>ZWAPY</span>
+  </a>
+
+  <div class="code">404</div>
+
+  <div class="content">
+    <div class="err-tag">// Error 404</div>
+    <h1 class="err-title">Page <span>Not</span><br>Found</h1>
+    <p class="err-sub">This page doesn't exist or has been moved.<br>Let's get you back to the network.</p>
+    <div class="btns">
+      <a href="dashboard.html" class="btn-primary">Go to Dashboard</a>
+      <a href="index.html" class="btn-ghost">Back to Home</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

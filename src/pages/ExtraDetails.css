@@ -1,0 +1,296 @@
+.setup-body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+}
+
+.setup-body .bg-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(ellipse 60% 50% at 30% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 40% at 80% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 60%);
+}
+
+.setup-body .wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 460px;
+}
+
+/* Header */
+.setup-body .logo {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.setup-body .logo-text {
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--cyan);
+  letter-spacing: -0.02em;
+}
+
+.setup-body .logo-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Welcome block */
+.setup-body .welcome {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.12);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.setup-body .welcome-emoji {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.setup-body .welcome-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.setup-body .welcome-sub {
+  font-size: 0.72rem;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+.setup-body .welcome-email {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--cyan);
+  margin-top: 6px;
+  opacity: 0.8;
+}
+
+/* Progress bar */
+.setup-body .progress-bar {
+  height: 3px;
+  background: rgba(0, 212, 255, 0.08);
+  border-radius: 100px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.setup-body .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+}
+
+/* Form card */
+.setup-body .form-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.setup-body .field {
+  margin-bottom: 16px;
+}
+
+.setup-body .field:last-child {
+  margin-bottom: 0;
+}
+
+.setup-body .field label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+
+.setup-body .req {
+  color: var(--red);
+}
+
+.setup-body .field input, .setup-body .field select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 11px;
+  padding: 13px 15px;
+  font-size: 0.9rem;
+  color: white;
+  font-family: 'Sora', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.setup-body .field input::placeholder {
+  color: var(--muted);
+}
+
+.setup-body .field input:focus, .setup-body .field select:focus {
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.02);
+}
+
+.setup-body .field input.valid {
+  border-color: var(--green) !important;
+}
+
+.setup-body .field input.invalid {
+  border-color: var(--red) !important;
+}
+
+.setup-body .field select option {
+  background: #020024;
+}
+
+.setup-body .field-hint {
+  font-size: 0.6rem;
+  color: var(--muted);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.setup-body .field-hint.ok {
+  color: var(--green);
+}
+
+.setup-body .field-hint.err {
+  color: var(--red);
+}
+
+/* University email status alerts */
+.setup-body .uni-status {
+  font-size: 0.64rem;
+  margin-top: 5px;
+  display: none;
+}
+
+.setup-body .uni-status.show {
+  display: block;
+}
+
+.setup-body .uni-status.ok {
+  color: var(--green);
+}
+
+.setup-body .uni-status.err {
+  color: var(--red);
+}
+
+/* Onboarding alert notice */
+.setup-body .profile-notice {
+  background: rgba(129, 140, 248, 0.06);
+  border: 1px solid rgba(129, 140, 248, 0.18);
+  border-radius: 14px;
+  padding: 13px 15px;
+  margin-bottom: 14px;
+  font-size: 0.7rem;
+  color: var(--dim);
+  line-height: 1.6;
+  text-align: left;
+}
+
+.setup-body .profile-notice strong {
+  color: var(--indigo);
+}
+
+/* Submit trigger */
+.setup-body .submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--cyan), #0099bb);
+  color: #000;
+  border: none;
+  border-radius: 13px;
+  padding: 15px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.setup-body .submit-btn:hover {
+  box-shadow: 0 0 28px rgba(0, 212, 255, 0.35);
+}
+
+.setup-body .submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Saving progress bar screen */
+.setup-body .save-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(1, 1, 20, 0.9);
+  backdrop-filter: blur(12px);
+  z-index: 9000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.setup-body .save-overlay.show {
+  display: flex;
+}
+
+.setup-body .save-icon {
+  font-size: 2.5rem;
+  animation: pulse 1s ease infinite;
+}
+
+.setup-body .save-label {
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.setup-body .save-bar-wrap {
+  width: 220px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.setup-body .save-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}

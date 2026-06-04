@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<title>Discover | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.1);--bg:#010114;--border:rgba(0,212,255,0.1);--border-h:rgba(0,212,255,0.3);--muted:#64748b;--dim:#94a3b8;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;--pink:#f472b6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+::selection{background:var(--cyan);color:#000;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(0,212,255,0.05) 0%,transparent 60%);}
+
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--cyan);}
+.load-bar{width:140px;height:2px;background:rgba(0,212,255,0.1);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:var(--cyan);border-radius:100px;animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+.layout{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:0 22px 120px;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,212,255,0.06);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.93);backdrop-filter:blur(24px);margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;gap:12px;}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:38px;height:38px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.25rem;font-weight:900;font-style:italic;}
+.back-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:100px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--dim);text-decoration:none;transition:all .2s;}
+.back-btn:hover{border-color:var(--border-h);color:white;}
+
+/* Page head */
+.page-head{margin-bottom:24px;text-align:center;}
+.page-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:8px;}
+.page-title{font-size:clamp(2rem,6vw,3.2rem);font-weight:900;font-style:italic;letter-spacing:-.03em;line-height:1;margin-bottom:8px;}
+.page-title span{color:var(--cyan);}
+.page-sub{font-size:.82rem;color:var(--dim);}
+
+/* BIG SEARCH BAR */
+.search-section{margin-bottom:28px;}
+.big-search-wrap{position:relative;margin-bottom:14px;}
+.search-icon-big{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:1.2rem;pointer-events:none;}
+.big-search{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:18px 20px 18px 52px;font-size:1rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;}
+.big-search::placeholder{color:var(--muted);}
+.big-search:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(0,212,255,0.08),0 0 24px rgba(0,212,255,0.1);}
+
+/* Filter tabs */
+.filter-tabs{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
+.ftab{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:8px 16px;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted);white-space:nowrap;}
+.ftab.active{background:rgba(0,212,255,0.1);border-color:rgba(0,212,255,0.3);color:var(--cyan);}
+.ftab:hover:not(.active){border-color:rgba(255,255,255,0.2);color:white;}
+
+/* Trending skills section */
+.trending-section{margin-bottom:28px;}
+.ts-label{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);opacity:.6;margin-bottom:12px;}
+.trending-skills{display:flex;flex-wrap:wrap;gap:8px;}
+.ts-pill{background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:100px;padding:7px 14px;font-size:.72rem;font-weight:700;color:var(--cyan);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.ts-pill:hover{background:rgba(0,212,255,0.14);border-color:var(--cyan);}
+.ts-count{font-family:'Space Mono',monospace;font-size:.55rem;opacity:.6;}
+
+/* Results */
+.results-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.results-title{font-size:.88rem;font-weight:800;font-style:italic;text-transform:uppercase;}
+.results-count{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.12em;background:var(--cyan-dim);border:1px solid rgba(0,212,255,.16);color:var(--cyan);border-radius:100px;padding:3px 9px;}
+
+/* People results */
+.person-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:all .3s;cursor:pointer;}
+.person-card:hover{border-color:var(--border-h);transform:translateX(4px);}
+.pc-av{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid rgba(0,212,255,0.2);flex-shrink:0;}
+.pc-av img{width:100%;height:100%;object-fit:cover;}
+.pc-info{flex:1;min-width:0;}
+.pc-name{font-size:.88rem;font-weight:800;margin-bottom:2px;}
+.pc-role{font-size:.64rem;color:var(--cyan);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
+.pc-skills{display:flex;flex-wrap:wrap;gap:5px;}
+.pc-skill{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.14);color:var(--cyan);}
+.pc-skill.match{background:rgba(0,212,255,0.15);border-color:var(--cyan);font-weight:700;}
+.pc-coins{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);flex-shrink:0;}
+
+/* Event results */
+.event-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:10px;transition:all .3s;cursor:pointer;}
+.event-card:hover{border-color:var(--border-h);}
+.ec-bar{height:3px;}
+.ec-body{padding:16px 18px;}
+.ec-type{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px;display:inline-block;margin-bottom:8px;}
+.ec-title{font-size:.9rem;font-weight:800;margin-bottom:4px;}
+.ec-club{font-size:.66rem;color:var(--muted);margin-bottom:6px;}
+.ec-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.ec-meta span{font-size:.68rem;color:var(--muted);display:flex;align-items:center;gap:4px;}
+
+/* Exchange results */
+.ex-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:16px 18px;margin-bottom:10px;transition:all .3s;}
+.ex-card:hover{border-color:var(--border-h);}
+.ex-swap{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ex-side{flex:1;min-width:0;}
+.ex-lbl{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.ex-skill{font-size:.88rem;font-weight:800;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ex-arr{font-size:1rem;opacity:.3;flex-shrink:0;}
+.ex-by{font-size:.66rem;color:var(--muted);}
+
+/* Empty */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:.3;}
+.empty-text{font-size:.8rem;line-height:1.6;}
+
+/* Initial state */
+.initial-state{text-align:center;padding:40px 20px;}
+.is-icon{font-size:3rem;margin-bottom:16px;opacity:.2;}
+.is-text{font-size:.84rem;color:var(--muted);line-height:1.7;}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;background:rgba(2,0,36,0.95);backdrop-filter:blur(28px);border:1px solid rgba(0,212,255,0.14);border-radius:100px;padding:7px 12px;display:flex;justify-content:space-around;align-items:center;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.nav-item{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .22s;text-decoration:none;color:var(--muted);font-size:1.1rem;position:relative;}
+.nav-item.active{background:rgba(0,212,255,0.11);color:var(--cyan);}
+.nav-item:hover{background:rgba(0,212,255,0.08);color:var(--cyan);}
+.nav-badge{position:absolute;top:6px;right:6px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:2px solid var(--bg);}
+.nav-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(0,212,255,.28);overflow:hidden;}
+.nav-av img{width:100%;height:100%;object-fit:cover;}
+
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.16);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div id="loadScreen">
+  <div class="load-logo">ZWAPY</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-text">Loading discover...</div>
+</div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="dashboard.html" class="topbar-logo">
+      <div class="logo-node">
+        <img src="assets/zwapy-logo.png" style="width:26px;height:26px;object-fit:contain;">
+      </div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+  </header>
+
+  <!-- PAGE HEAD -->
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Search Everything</div>
+    <h1 class="page-title">🔍 <span>Discover</span></h1>
+    <p class="page-sub">Search for students, skills, events, clubs and exchanges across the entire campus network.</p>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-section fade-up d2">
+    <div class="big-search-wrap">
+      <span class="search-icon-big">🔍</span>
+      <input class="big-search" id="bigSearch" placeholder="Search skills, names, events, clubs..." autocomplete="off"/>
+    </div>
+    <div class="filter-tabs">
+      <div class="ftab active" data-f="all">✦ All</div>
+      <div class="ftab" data-f="people">👤 People</div>
+      <div class="ftab" data-f="skills">🛠 Skills</div>
+      <div class="ftab" data-f="events">📅 Events</div>
+      <div class="ftab" data-f="exchanges">🔄 Exchanges</div>
+    </div>
+  </div>
+
+  <!-- TRENDING SKILLS -->
+  <div class="trending-section fade-up d3" id="trendingSection">
+    <div class="ts-label">🔥 Trending Skills on Campus</div>
+    <div class="trending-skills" id="trendingSkills"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsSection" style="display:none;">
+    <div class="results-head">
+      <div class="results-title" id="resultsTitle">Results</div>
+      <div class="results-count" id="resultsCount">0</div>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <!-- INITIAL STATE -->
+  <div class="initial-state fade-up d3" id="initialState">
+    <div class="is-icon">✨</div>
+    <p class="is-text">
+      Type anything above to search.<br><br>
+      Find <strong style="color:white;">students</strong> by name or skill.<br>
+      Find <strong style="color:white;">events</strong> and hackathons.<br>
+      Find <strong style="color:white;">skill exchanges</strong> you can join.<br>
+      Find <strong style="color:white;">clubs</strong> to be part of.
+    </p>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item">🏠</a>
+  <a href="clubs.html" class="nav-item">🏛️</a>
+  <a href="network.html" class="nav-item">🧑‍🤝‍🧑</a>
+  <a href="discover.html" class="nav-item active">🔍</a>
+  <a href="profile.html" class="nav-item">
+    <div class="nav-av"><img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt=""></div>
+  </a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth=getAuth(app);
+const db=getFirestore(app);
+await setPersistence(auth,browserLocalPersistence);
+
+const $=id=>document.getElementById(id);
+
+function typeColor(t){
+  if(t==='hackathon') return '#f59e0b';
+  if(t==='announcement') return '#818cf8';
+  return '#10b981';
+}
+
+let allPeople=[], allEvents=[], allExchanges=[], allClubs=[];
+let activeFilter='all';
+let currentUser=null;
+
+// ── TRENDING SKILLS ──
+function buildTrending(){
+  const map={};
+  allPeople.forEach(p=>(p.skills||[]).forEach(s=>{
+    const k=s.toLowerCase();map[k]=(map[k]||0)+1;
+  }));
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  $('trendingSkills').innerHTML=sorted.map(([skill,count])=>
+    `<div class="ts-pill" onclick="searchSkill('${skill}')">
+      ${skill.charAt(0).toUpperCase()+skill.slice(1)}
+      <span class="ts-count">${count}</span>
+    </div>`
+  ).join('');
+}
+
+window.searchSkill=function(skill){
+  $('bigSearch').value=skill;
+  doSearch(skill);
+};
+
+// ── SEARCH ──
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  if(!q){
+    $('resultsSection').style.display='none';
+    $('initialState').style.display='block';
+    $('trendingSection').style.display='block';
+    return;
+  }
+  $('initialState').style.display='none';
+  $('trendingSection').style.display='none';
+  $('resultsSection').style.display='block';
+
+  let results=[];
+
+  // People (by name OR skill match)
+  if(activeFilter==='all'||activeFilter==='people'||activeFilter==='skills'){
+    allPeople.filter(p=>p.uid!==currentUser?.uid).forEach(p=>{
+      const nameMatch=(p.name||'').toLowerCase().includes(q);
+      const skillMatch=(p.skills||[]).some(s=>s.toLowerCase().includes(q));
+      const bioMatch=(p.bio||'').toLowerCase().includes(q);
+      if(nameMatch||skillMatch||bioMatch){
+        results.push({...p,_type:'person',_skillMatch:skillMatch,_nameMatch:nameMatch});
+      }
+    });
+  }
+
+  // Events
+  if(activeFilter==='all'||activeFilter==='events'){
+    allEvents.forEach(e=>{
+      if((e.title||'').toLowerCase().includes(q)||
+         (e.desc||'').toLowerCase().includes(q)||
+         (e.clubName||'').toLowerCase().includes(q)||
+         (e.venue||'').toLowerCase().includes(q)){
+        results.push({...e,_type:'event'});
+      }
+    });
+  }
+
+  // Exchanges
+  if(activeFilter==='all'||activeFilter==='exchanges'){
+    allExchanges.forEach(e=>{
+      if((e.offer||'').toLowerCase().includes(q)||
+         (e.need||'').toLowerCase().includes(q)||
+         (e.name||'').toLowerCase().includes(q)){
+        results.push({...e,_type:'exchange'});
+      }
+    });
+  }
+
+  $('resultsTitle').textContent=`Results for "${q}"`;
+  $('resultsCount').textContent=results.length;
+
+  if(!results.length){
+    $('resultsList').innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><p class="empty-text">No results found for "${q}".<br>Try a different skill or name.</p></div>`;
+    return;
+  }
+
+  $('resultsList').innerHTML=results.map(r=>{
+    if(r._type==='person'){
+      const av=r.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(r.name||r.uid)}`;
+      const skills=(r.skills||[]).slice(0,4);
+      const qLow=q.toLowerCase();
+      return `
+      <div class="person-card" onclick="window.location.href='network.html'">
+        <div class="pc-av"><img src="${av}" alt="" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">${r.name||'Student'}</div>
+          <div class="pc-role">${r.role||'Student'} · ${r.university||''}</div>
+          <div class="pc-skills">
+            ${skills.map(s=>`<span class="pc-skill ${s.toLowerCase().includes(qLow)?'match':''}">${s}</span>`).join('')}
+          </div>
+        </div>
+        <div class="pc-coins">💰 ${r.coins||0}</div>
+      </div>`;
+    }
+    if(r._type==='event'){
+      const col=typeColor(r.type);
+      return `
+      <div class="event-card" onclick="window.location.href='clubs.html'">
+        <div class="ec-bar" style="background:linear-gradient(90deg,${col},transparent)"></div>
+        <div class="ec-body">
+          <span class="ec-type" style="background:${col}18;border:1px solid ${col}33;color:${col};">${r.type||'event'}</span>
+          <div class="ec-title">${r.title||'Untitled'}</div>
+          <div class="ec-club">🛡️ ${r.clubName||'Club'}</div>
+          <div class="ec-meta">
+            ${r.date?`<span>📅 ${r.date}</span>`:''}
+            ${r.venue?`<span>📍 ${r.venue}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }
+    if(r._type==='exchange'){
+      return `
+      <div class="ex-card" onclick="window.location.href='skill-exchange.html'">
+        <div class="ex-swap">
+          <div class="ex-side"><div class="ex-lbl">Offering</div><div class="ex-skill">${r.offer||'—'}</div></div>
+          <div class="ex-arr">⇄</div>
+          <div class="ex-side"><div class="ex-lbl">Needs</div><div class="ex-skill">${r.need||'—'}</div></div>
+        </div>
+        <div class="ex-by">by ${r.name||'Student'} · ${r.level||''} · ${r.duration||''}</div>
+      </div>`;
+    }
+    return '';
+  }).join('');
+}
+
+// Filter tabs
+document.querySelectorAll('.ftab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active'); activeFilter=t.dataset.f;
+    doSearch($('bigSearch').value);
+  });
+});
+
+// Search input
+let debounce;
+$('bigSearch').addEventListener('input',e=>{
+  clearTimeout(debounce);
+  debounce=setTimeout(()=>doSearch(e.target.value),250);
+});
+
+// Enter key
+$('bigSearch').addEventListener('keydown',e=>{
+  if(e.key==='Enter') doSearch($('bigSearch').value);
+});
+
+// ── AUTH + LOAD ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='login.html';return;}
+  currentUser=user;
+
+  const us=await getDoc(doc(db,'users',user.uid));
+  if(us.exists()){
+    const ud=us.data();
+    $('navAvatar').src=ud.photoURL||user.photoURL||
+      `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(ud.name||'user')}`;
+  }
+
+  // Load all people
+  const usSnap=await getDocs(collection(db,'users'));
+  allPeople=[];
+  usSnap.forEach(d=>{
+    const ud=d.data();
+    if(ud.role!=='super_admin') allPeople.push({uid:d.id,...ud});
+  });
+
+  // Load exchanges
+  try{
+    const es=await getDocs(query(collection(db,'exchanges'),orderBy('createdAt','desc')));
+    allExchanges=[];es.forEach(d=>allExchanges.push({id:d.id,...d.data()}));
+  }catch(e){}
+
+  // Load club posts
+  allEvents=[];
+  try{
+    const cs=await getDocs(collection(db,'clubs'));
+    for(const cd of cs.docs){
+      const club=cd.data();
+      const ps=await getDocs(collection(db,'clubs',cd.id,'posts'));
+      ps.forEach(pd=>allEvents.push({id:pd.id,clubId:cd.id,clubName:club.name,...pd.data()}));
+    }
+  }catch(e){}
+
+  buildTrending();
+
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},500);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+    // Auto focus search
+    $('bigSearch').focus();
+  },600);
+});
+</script>
+</body>
+</html>

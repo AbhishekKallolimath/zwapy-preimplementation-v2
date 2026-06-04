@@ -1,0 +1,183 @@
+.club-setup-body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+}
+
+.club-setup-body .glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+  z-index: 0;
+}
+
+.club-setup-body .card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  background: rgba(2, 0, 36, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 36px 32px;
+  backdrop-filter: blur(20px);
+  text-align: left;
+}
+
+.club-setup-body .card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.club-setup-body .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  color: white;
+}
+
+.club-setup-body .logo span {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.club-setup-body .badge {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8;
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.club-setup-body .card h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.club-setup-body .card .sub {
+  font-size: 0.76rem;
+  color: var(--dim);
+  margin-bottom: 24px;
+}
+
+.club-setup-body .field {
+  margin-bottom: 16px;
+}
+
+.club-setup-body .field label {
+  display: block;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+
+.club-setup-body .field input,
+.club-setup-body .field select,
+.club-setup-body .field textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 0.88rem;
+  color: white;
+  font-family: 'Sora', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.club-setup-body .field input::placeholder,
+.club-setup-body .field textarea::placeholder {
+  color: var(--muted);
+}
+
+.club-setup-body .field input:focus,
+.club-setup-body .field select:focus,
+.club-setup-body .field textarea:focus {
+  border-color: var(--cyan);
+}
+
+.club-setup-body .field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.club-setup-body .field select option {
+  background: #020024;
+}
+
+.club-setup-body .btn {
+  width: 100%;
+  background: var(--cyan);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 4px;
+}
+
+.club-setup-body .btn:hover {
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.club-setup-body .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.club-setup-body .msg {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.club-setup-body .msg.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.club-setup-body .msg.success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #10b981;
+}

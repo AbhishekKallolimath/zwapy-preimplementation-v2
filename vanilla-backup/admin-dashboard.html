@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-THCGY8NH1Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-THCGY8NH1Z');
+</script>
+<title>Admin | Zwapy</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--cyan:#00D4FF;--bg:#010114;--border:rgba(0,212,255,0.1);--muted:#64748b;--dim:#94a3b8;--red:#ef4444;--green:#10b981;--amber:#f59e0b;--indigo:#818cf8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:white;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.022) 2px,rgba(0,0,0,0.022) 4px);pointer-events:none;z-index:9999;}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(239,68,68,0.04) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 80% 80%,rgba(0,212,255,0.03) 0%,transparent 60%);}
+
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s;}
+#loadScreen.hide{opacity:0;pointer-events:none;}
+.load-logo{font-size:2rem;font-weight:900;font-style:italic;color:var(--red);}
+.load-bar{width:140px;height:2px;background:rgba(239,68,68,0.12);border-radius:100px;overflow:hidden;}
+.load-fill{height:100%;background:var(--red);border-radius:100px;animation:lf 1s ease forwards;}
+@keyframes lf{from{width:0}to{width:100%}}
+.load-text{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+.layout{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:0 22px 100px;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid rgba(239,68,68,0.1);margin-bottom:28px;position:sticky;top:0;z-index:200;background:rgba(1,1,20,0.95);backdrop-filter:blur(24px);margin-left:-22px;margin-right:-22px;padding-left:22px;padding-right:22px;flex-wrap:wrap;}
+.topbar-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.logo-node{width:38px;height:38px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.logo-text{font-size:1.2rem;font-weight:900;font-style:italic;}
+.admin-badge{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);border-radius:100px;padding:5px 12px;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;}
+.switch-btn{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);border-radius:100px;padding:7px 14px;font-size:.68rem;font-weight:800;color:var(--cyan);cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.switch-btn:hover{background:rgba(0,212,255,0.16);box-shadow:0 0 12px rgba(0,212,255,.18);}
+.logout-btn{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:7px 14px;font-size:.68rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* Page header */
+.page-head{margin-bottom:24px;}
+.page-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:5px;}
+.page-title{font-size:clamp(1.4rem,5vw,2.4rem);font-weight:900;font-style:italic;}
+.page-title span{color:var(--red);}
+
+/* Tab navigation */
+.tab-nav{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:0;}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;padding:10px 16px;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif;margin-bottom:-1px;white-space:nowrap;}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-btn:hover:not(.active){color:white;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:24px;}
+@media(min-width:580px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+.stat-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:16px;padding:16px 14px;}
+.stat-label{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-family:'Space Mono',monospace;font-size:1.6rem;font-weight:700;line-height:1;}
+.sv-r{color:var(--red);} .sv-c{color:var(--cyan);} .sv-g{color:var(--green);} .sv-a{color:var(--amber);}
+
+/* Card */
+.card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;}
+.card-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:18px;}
+
+/* Form fields */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.63rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:12px 14px;font-size:.86rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red);}
+.field textarea{resize:vertical;min-height:80px;}
+.field select option{background:#020024;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.field-row{grid-template-columns:1fr;}}
+
+.btn-red{background:var(--red);color:white;border:none;border-radius:11px;padding:12px 24px;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .25s;font-family:'Sora',sans-serif;}
+.btn-red:hover{box-shadow:0 0 18px rgba(239,68,68,.35);transform:translateY(-1px);}
+.btn-red:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* Search */
+.search-bar{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;font-size:.86rem;color:white;font-family:'Sora',sans-serif;outline:none;transition:border-color .2s;margin-bottom:16px;}
+.search-bar:focus{border-color:var(--red);}
+.search-bar::placeholder{color:var(--muted);}
+
+/* Tabs for filter */
+.filter-row{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.ftab{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 13px;font-size:.68rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--muted);}
+.ftab.active{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:var(--red);}
+
+/* User table */
+.user-table{width:100%;border-collapse:collapse;overflow-x:auto;display:block;}
+.user-table th{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:0 12px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);white-space:nowrap;}
+.user-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.78rem;white-space:nowrap;}
+.user-table tr:last-child td{border-bottom:none;}
+.user-table tr:hover td{background:rgba(255,255,255,0.02);}
+.user-av{width:26px;height:26px;border-radius:50%;overflow:hidden;border:1px solid rgba(255,255,255,0.1);display:inline-block;vertical-align:middle;}
+.user-av img{width:100%;height:100%;object-fit:cover;}
+.role-pill{display:inline-block;border-radius:100px;padding:3px 9px;font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
+.rp-student{background:rgba(0,212,255,0.08);color:var(--cyan);border:1px solid rgba(0,212,255,0.2);}
+.rp-club_head{background:rgba(129,140,248,0.1);color:var(--indigo);border:1px solid rgba(129,140,248,0.25);}
+.rp-super_admin{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.25);}
+.action-btn{background:none;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 10px;font-size:.62rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif;color:var(--muted);margin-right:4px;}
+.action-btn:hover{border-color:var(--red);color:var(--red);}
+.action-btn.green{color:var(--green);border-color:rgba(16,185,129,0.2);}
+.action-btn.green:hover{border-color:var(--green);background:rgba(16,185,129,0.08);}
+
+/* Events list */
+.event-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.event-item:last-child{margin-bottom:0;}
+.ei-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ei-info{flex:1;min-width:0;}
+.ei-title{font-size:.84rem;font-weight:700;margin-bottom:3px;}
+.ei-meta{font-size:.66rem;color:var(--muted);}
+.ei-del{background:none;border:1px solid rgba(239,68,68,0.2);border-radius:7px;padding:4px 9px;font-size:.62rem;color:var(--red);cursor:pointer;flex-shrink:0;font-family:'Sora',sans-serif;transition:all .2s;}
+.ei-del:hover{background:rgba(239,68,68,0.1);}
+
+/* Role modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:rgba(2,0,36,0.98);border:1px solid rgba(239,68,68,0.2);border-radius:22px;padding:28px;width:100%;max-width:380px;transform:translateY(20px);transition:transform .3s;}
+.modal-bg.open .modal{transform:translateY(0);}
+.modal h3{font-size:1.1rem;font-weight:900;font-style:italic;margin-bottom:6px;}
+.modal p{font-size:.76rem;color:var(--dim);margin-bottom:18px;}
+.modal select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:12px 14px;font-size:.86rem;color:white;font-family:'Sora',sans-serif;outline:none;margin-bottom:16px;}
+.modal select option{background:#020024;}
+.modal-actions{display:flex;gap:10px;}
+.modal-cancel{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px;font-size:.76rem;font-weight:700;color:var(--dim);cursor:pointer;font-family:'Sora',sans-serif;}
+.modal-save{flex:2;background:var(--red);border:none;border-radius:10px;padding:11px;font-size:.76rem;font-weight:800;color:white;cursor:pointer;font-family:'Sora',sans-serif;transition:all .2s;}
+.modal-save:hover{box-shadow:0 0 14px rgba(239,68,68,.35);}
+
+.empty-state{text-align:center;padding:28px;color:var(--muted);font-size:.76rem;font-style:italic;}
+
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,.28);border-radius:100px;padding:10px 22px;font-size:.76rem;font-weight:700;color:var(--green);z-index:4000;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.05s;}.d2{transition-delay:.1s;}.d3{transition-delay:.15s;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(239,68,68,0.2);border-radius:100px;}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<div id="loadScreen">
+  <div class="load-logo">ZWAPY ADMIN</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-text">Loading command center...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Role edit modal -->
+<div class="modal-bg" id="roleModal">
+  <div class="modal">
+    <h3>Edit User Role</h3>
+    <p id="modalUserName">—</p>
+    <select id="modalRole">
+      <option value="student">Student</option>
+      <option value="club_head">Club Head</option>
+      <option value="super_admin">Super Admin</option>
+    </select>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modalCancel">Cancel</button>
+      <button class="modal-save" id="modalSave">Save Role</button>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <header class="topbar">
+    <a href="#" class="topbar-logo">
+      <div class="logo-node">
+        <img src="assets/zwapy-logo.png" style="width:24px;height:24px;object-fit:contain;">
+      </div>
+      <span class="logo-text">ZWAPY</span>
+    </a>
+    <div class="admin-badge">⚡ Super Admin</div>
+    <div class="topbar-right">
+      <a href="dashboard.html" class="switch-btn">🎓 Student Portal</a>
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="page-head fade-up d1">
+    <div class="page-label">// Super Admin — Zwapy Command Center</div>
+    <h1 class="page-title">Command <span>Center</span></h1>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-up d1">
+    <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value sv-r" id="statTotal">0</div></div>
+    <div class="stat-card"><div class="stat-label">Students</div><div class="stat-value sv-c" id="statStudents">0</div></div>
+    <div class="stat-card"><div class="stat-label">Club Heads</div><div class="stat-value sv-g" id="statClubHeads">0</div></div>
+    <div class="stat-card"><div class="stat-label">Total Coins</div><div class="stat-value sv-a" id="statCoins">0</div></div>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="tab-nav fade-up d2">
+    <button class="tab-btn active" onclick="switchTab('users',this)">👥 Users</button>
+    <button class="tab-btn" onclick="switchTab('events',this)">📅 Post Events</button>
+    <button class="tab-btn" onclick="switchTab('clubs',this)">🛡️ Clubs</button>
+    <button class="tab-btn" onclick="switchTab('exchanges',this)">🔄 Exchanges</button>
+    <button class="tab-btn" onclick="switchTab('announce',this)">📢 Announcements</button>
+  </div>
+
+  <!-- TAB: USERS -->
+  <div class="tab-content active fade-up d3" id="tab-users">
+    <div class="card">
+      <div class="card-title">// All Users</div>
+      <div class="filter-row">
+        <div class="ftab active" onclick="filterUsers('all',this)">All</div>
+        <div class="ftab" onclick="filterUsers('student',this)">Students</div>
+        <div class="ftab" onclick="filterUsers('club_head',this)">Club Heads</div>
+        <div class="ftab" onclick="filterUsers('super_admin',this)">Admins</div>
+      </div>
+      <input class="search-bar" id="userSearch" placeholder="Search by name or email..." oninput="renderUsers()"/>
+      <div style="overflow-x:auto;">
+        <table class="user-table">
+          <thead><tr>
+            <th></th><th>Name</th><th>Email</th><th>University</th>
+            <th>Role</th><th>Coins</th><th>Joined</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="usersBody"><tr><td colspan="8"><div class="empty-state">Loading...</div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: POST EVENTS (Zwapy official events) -->
+  <div class="tab-content" id="tab-events">
+    <div class="card">
+      <div class="card-title">// Post Official Zwapy Event</div>
+      <p style="font-size:.76rem;color:var(--dim);margin-bottom:18px;">These events appear on the campus calendar for all students — posted by Zwapy team directly.</p>
+      <div class="field-row">
+        <div class="field"><label>Event Type</label>
+          <select id="evType">
+            <option value="event">📅 Event</option>
+            <option value="hackathon">💻 Hackathon</option>
+            <option value="announcement">📢 Announcement</option>
+          </select>
+        </div>
+        <div class="field"><label>Title</label><input type="text" id="evTitle" placeholder="e.g. Zwapy Launch Party"/></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="evDesc" placeholder="Tell students about this event..."></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="evDate"/></div>
+        <div class="field"><label>Time</label><input type="time" id="evTime"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Venue</label><input type="text" id="evVenue" placeholder="e.g. Main Auditorium"/></div>
+        <div class="field"><label>Registration Link</label><input type="url" id="evLink" placeholder="https://..."/></div>
+      </div>
+      <div class="field"><label>Poster Image URL (optional)</label><input type="url" id="evPoster" placeholder="https://... paste image link"/></div>
+      <!-- Pricing for admin events -->
+      <div style="background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.16);border-radius:11px;padding:13px;margin-bottom:14px;">
+        <div style="font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;color:#10b981;opacity:.8;margin-bottom:10px;">// Pricing (leave blank for free)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div class="field"><label>Ticket Price (₹)</label><input type="number" id="evPrice" placeholder="0 = Free" min="0"/></div>
+          <div class="field"><label>Total Seats</label><input type="number" id="evSeats" placeholder="Unlimited" min="1"/></div>
+        </div>
+        <div class="field"><label>Zwapy UPI ID <span style="font-weight:400;text-transform:none;font-size:.58rem;color:var(--muted)">(students pay Zwapy for official events)</span></label><input type="text" id="evUpiId" placeholder="zwapyteam@upi"/></div>
+        <div style="font-size:.67rem;color:var(--muted);line-height:1.5;">Students pay your UPI directly. 5% platform fee tracked automatically per ticket sold.</div>
+      </div>
+      <button class="btn-red" id="postEvBtn">Post Event to Campus →</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">// Zwapy Official Events</div>
+      <div id="officialEvents"><div class="empty-state">No official events posted yet.</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: CLUBS -->
+  <div class="tab-content" id="tab-clubs">
+    <div class="card">
+      <div class="card-title">// All Clubs on Platform</div>
+      <div id="allClubsList"><div class="empty-state">Loading clubs...</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: EXCHANGES -->
+  <div class="tab-content" id="tab-exchanges">
+    <div class="card">
+      <div class="card-title">// All Skill Exchanges</div>
+      <input class="search-bar" id="exSearch" placeholder="Search exchanges..." oninput="renderExchanges()"/>
+      <div id="exchangesList"><div class="empty-state">Loading exchanges...</div></div>
+    </div>
+  </div>
+
+  <!-- TAB: ANNOUNCEMENTS -->
+  <div class="tab-content" id="tab-announce">
+    <div class="card">
+      <div class="card-title">// Send Platform Announcement</div>
+      <p style="font-size:.76rem;color:var(--dim);margin-bottom:18px;">This will appear in every student's activity feed immediately.</p>
+      <div class="field"><label>Announcement Title</label><input type="text" id="annTitle" placeholder="e.g. New Feature: Skill Exchange is Live!"/></div>
+      <div class="field"><label>Message</label><textarea id="annDesc" placeholder="Write your announcement..."></textarea></div>
+      <button class="btn-red" id="postAnnBtn">Send to All Students →</button>
+    </div>
+    <div class="card">
+      <div class="card-title">// Past Announcements</div>
+      <div id="annList"><div class="empty-state">No announcements yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+import {
+  getFirestore, collection, getDocs, doc, updateDoc,
+  deleteDoc, addDoc, serverTimestamp, setDoc, getDoc, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+const SUPER_ADMIN_UID = 'MsCKd4jawaahdCaAGNN1LnticUE2';
+
+const app = initializeApp({
+  apiKey:"AIzaSyBazCIc5vdQInSwvqvohIcbPToTjnw7KJI",
+  authDomain:"zwapy-25.firebaseapp.com",
+  projectId:"zwapy-25",
+  storageBucket:"zwapy-25.firebasestorage.app",
+  messagingSenderId:"30612332450",
+  appId:"1:30612332450:web:9e23f36a69f89dbb325cfb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+await setPersistence(auth, browserLocalPersistence);
+
+const $ = id => document.getElementById(id);
+const fmt = n => Number(n||0).toLocaleString();
+
+function toast(msg, col='#10b981'){
+  const t=$('toast');t.textContent=msg;t.style.color=col;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+function fmtDate(ts){
+  if(!ts) return '—';
+  return new Date(ts.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+
+let allUsers=[], allExchanges=[], allClubs=[], officialEvents=[], announcements=[];
+let userFilter='all', editingUid=null;
+
+// ── TAB SWITCHING ──
+window.switchTab = function(tab, el){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  $('tab-'+tab).classList.add('active');
+};
+
+// ── USERS ──
+window.filterUsers = function(filter, el){
+  userFilter=filter;
+  document.querySelectorAll('.ftab').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  renderUsers();
+};
+
+window.renderUsers = function(){
+  const q=$('userSearch').value.toLowerCase();
+  let list=allUsers;
+  if(userFilter!=='all') list=list.filter(u=>(u.role||'student')===userFilter);
+  if(q) list=list.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q));
+
+  const body=$('usersBody');
+  if(!list.length){body.innerHTML='<tr><td colspan="8"><div class="empty-state">No users found</div></td></tr>';return;}
+  body.innerHTML=list.map(u=>{
+    const av=u.photoURL||`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.name||u.uid)}`;
+    const role=u.role||'student';
+    return `<tr>
+      <td><div class="user-av"><img src="${av}" alt=""></div></td>
+      <td><strong>${u.name||'—'}</strong></td>
+      <td style="color:var(--dim);font-size:.72rem;">${u.email||'—'}</td>
+      <td style="color:var(--dim);font-size:.72rem;">${u.university||'—'}</td>
+      <td><span class="role-pill rp-${role}">${role}</span></td>
+      <td style="font-family:'Space Mono',monospace;">${fmt(u.coins)}</td>
+      <td style="font-size:.68rem;color:var(--muted);">${fmtDate(u.createdAt)}</td>
+      <td>
+        <button class="action-btn green" onclick="openRoleModal('${u.uid}','${(u.name||'').replace(/'/g,"\\'")}','${role}')">Role</button>
+        ${u.uid!==SUPER_ADMIN_UID?`<button class="action-btn" onclick="deleteUser('${u.uid}')">Delete</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+window.openRoleModal = function(uid,name,role){
+  editingUid=uid;
+  $('modalUserName').textContent=name;
+  $('modalRole').value=role;
+  $('roleModal').classList.add('open');
+};
+window.deleteUser = async function(uid){
+  if(!confirm('Delete this user permanently?')) return;
+  await deleteDoc(doc(db,'users',uid));
+  allUsers=allUsers.filter(u=>u.uid!==uid);
+  renderUsers(); loadStats();
+  toast('🗑️ User deleted','#ef4444');
+};
+$('modalCancel').addEventListener('click',()=>$('roleModal').classList.remove('open'));
+$('roleModal').addEventListener('click',e=>{if(e.target===$('roleModal'))$('roleModal').classList.remove('open');});
+$('modalSave').addEventListener('click', async()=>{
+  if(!editingUid) return;
+  const r=$('modalRole').value;
+  await updateDoc(doc(db,'users',editingUid),{role:r});
+  const u=allUsers.find(x=>x.uid===editingUid);
+  if(u) u.role=r;
+  renderUsers(); $('roleModal').classList.remove('open');
+  toast('✅ Role updated'); loadStats();
+});
+
+// ── POST OFFICIAL EVENT ──
+$('postEvBtn').addEventListener('click', async()=>{
+  const btn=$('postEvBtn');
+  const title=$('evTitle').value.trim();
+  const desc=$('evDesc').value.trim();
+  const type=$('evType').value;
+  const date=$('evDate').value;
+  const time=$('evTime').value;
+  const venue=$('evVenue').value.trim();
+  const link=$('evLink').value.trim();
+  const poster=$('evPoster').value.trim();
+  if(!title){toast('❌ Please add a title','#ef4444');return;}
+  btn.disabled=true;btn.textContent='Posting...';
+  await addDoc(collection(db,'zwapy_events'),{
+    title,desc,type,date,time,venue,
+    link:link||'',posterUrl:poster||'',
+    price:parseFloat($('evPrice').value)||0,
+    totalSeats:parseInt($('evSeats').value)||0,
+    upiId:$('evUpiId').value.trim()||'zwapyteam@upi',
+    soldCount:0,
+    organizer:'Zwapy Team',
+    organizerUid:'zwapy_official',
+    postedBy:'Zwapy Team',
+    createdAt:serverTimestamp()
+  });
+  $('evTitle').value='';$('evDesc').value='';$('evDate').value='';
+  $('evTime').value='';$('evVenue').value='';$('evLink').value='';$('evPoster').value='';
+  $('evPrice').value='';$('evSeats').value='';$('evUpiId').value='';
+  btn.disabled=false;btn.textContent='Post Event to Campus →';
+  toast('✅ Event posted!');
+  loadOfficialEvents();
+});
+
+async function loadOfficialEvents(){
+  const snap=await getDocs(query(collection(db,'zwapy_events'),orderBy('createdAt','desc'),limit(10)));
+  officialEvents=[];
+  snap.forEach(d=>officialEvents.push({id:d.id,...d.data()}));
+  const el=$('officialEvents');
+  if(!officialEvents.length){el.innerHTML='<div class="empty-state">No official events posted yet.</div>';return;}
+  el.innerHTML=officialEvents.map(e=>{
+    const col=e.type==='hackathon'?'#f59e0b':e.type==='announcement'?'#818cf8':'#00D4FF';
+    return `<div class="event-item">
+      <div class="ei-dot" style="background:${col}"></div>
+      <div class="ei-info">
+        <div class="ei-title">${e.title}</div>
+        <div class="ei-meta">${e.type} ${e.date?'· '+e.date:''} ${e.venue?'· '+e.venue:''}</div>
+      </div>
+      <button class="ei-del" onclick="delOfficialEvent('${e.id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+window.delOfficialEvent = async function(id){
+  if(!confirm('Delete this event?')) return;
+  await deleteDoc(doc(db,'zwapy_events',id));
+  toast('🗑️ Deleted','#ef4444'); loadOfficialEvents();
+};
+
+// ── CLUBS ──
+function renderClubs(){
+  const el=$('allClubsList');
+  if(!allClubs.length){el.innerHTML='<div class="empty-state">No clubs created yet.</div>';return;}
+  el.innerHTML=allClubs.map(c=>`
+    <div class="event-item">
+      <div class="ei-dot" style="background:var(--indigo)"></div>
+      <div class="ei-info">
+        <div class="ei-title">${c.name||'Unnamed Club'}</div>
+        <div class="ei-meta">${c.category||''} · ${(c.members||[]).length} members · ${c.university||''}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── EXCHANGES ──
+window.renderExchanges = function(){
+  const q=$('exSearch').value.toLowerCase();
+  let list=allExchanges;
+  if(q) list=list.filter(e=>(e.offer||'').toLowerCase().includes(q)||(e.need||'').toLowerCase().includes(q)||(e.name||'').toLowerCase().includes(q));
+  const el=$('exchangesList');
+  if(!list.length){el.innerHTML='<div class="empty-state">No exchanges found.</div>';return;}
+  el.innerHTML=list.map(e=>`
+    <div class="event-item">
+      <div class="ei-dot" style="background:var(--cyan)"></div>
+      <div class="ei-info">
+        <div class="ei-title">${e.offer||'?'} ↔ ${e.need||'?'}</div>
+        <div class="ei-meta">by ${e.name||'Student'} · ${e.level||''} · ${e.duration||''}</div>
+      </div>
+      <button class="ei-del" onclick="delExchange('${e.id}')">✕</button>
+    </div>`).join('');
+};
+window.delExchange = async function(id){
+  if(!confirm('Remove this exchange?')) return;
+  await deleteDoc(doc(db,'exchanges',id));
+  allExchanges=allExchanges.filter(e=>e.id!==id);
+  renderExchanges(); toast('🗑️ Removed','#ef4444');
+};
+
+// ── ANNOUNCEMENTS ──
+$('postAnnBtn').addEventListener('click', async()=>{
+  const btn=$('postAnnBtn');
+  const title=$('annTitle').value.trim();
+  const desc=$('annDesc').value.trim();
+  if(!title||!desc){toast('❌ Fill in both fields','#ef4444');return;}
+  btn.disabled=true;btn.textContent='Sending...';
+
+  // Add to every student's activity feed
+  const students=allUsers.filter(u=>(u.role||'student')==='student');
+  for(const u of students){
+    await addDoc(collection(db,'users',u.uid,'activity'),{
+      title:`📢 Zwapy: ${title}`,
+      desc:`— ${desc}`,
+      createdAt:serverTimestamp()
+    });
+  }
+
+  // Save announcement
+  await addDoc(collection(db,'announcements'),{title,desc,createdAt:serverTimestamp()});
+  $('annTitle').value='';$('annDesc').value='';
+  btn.disabled=false;btn.textContent='Send to All Students →';
+  toast(`✅ Sent to ${students.length} students!`);
+  loadAnnouncements();
+});
+
+async function loadAnnouncements(){
+  const snap=await getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc'),limit(10)));
+  const el=$('annList');
+  if(snap.empty){el.innerHTML='<div class="empty-state">No announcements yet.</div>';return;}
+  let html='';
+  snap.forEach(d=>{
+    const a=d.data();
+    html+=`<div class="event-item">
+      <div class="ei-dot" style="background:var(--indigo)"></div>
+      <div class="ei-info">
+        <div class="ei-title">${a.title}</div>
+        <div class="ei-meta">${a.desc}</div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function loadStats(){
+  let total=0,students=0,clubHeads=0,coins=0;
+  allUsers.forEach(u=>{total++;if((u.role||'student')==='student')students++;if(u.role==='club_head')clubHeads++;coins+=(u.coins||0);});
+  $('statTotal').textContent=total;
+  $('statStudents').textContent=students;
+  $('statClubHeads').textContent=clubHeads;
+  $('statCoins').textContent=fmt(coins);
+}
+
+$('logoutBtn').addEventListener('click',()=>signOut(auth).then(()=>window.location.href='index.html'));
+
+onAuthStateChanged(auth, async user=>{
+  if(!user||user.uid!==SUPER_ADMIN_UID){
+    window.location.href=user?'dashboard.html':'login.html';
+    return;
+  }
+
+  // Load users
+  const snap=await getDocs(collection(db,'users'));
+  allUsers=[];
+  snap.forEach(d=>allUsers.push({uid:d.id,...d.data()}));
+  allUsers.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+  // Load exchanges
+  try{
+    const es=await getDocs(query(collection(db,'exchanges'),orderBy('createdAt','desc')));
+    allExchanges=[];
+    es.forEach(d=>allExchanges.push({id:d.id,...d.data()}));
+  }catch(e){}
+
+  // Load clubs
+  try{
+    const cs=await getDocs(collection(db,'clubs'));
+    allClubs=[];
+    cs.forEach(d=>allClubs.push({id:d.id,...d.data()}));
+  }catch(e){}
+
+  loadStats();
+  renderUsers();
+  renderClubs();
+  renderExchanges();
+  loadOfficialEvents();
+  loadAnnouncements();
+
+  setTimeout(()=>{
+    $('loadScreen').classList.add('hide');
+    setTimeout(()=>{if($('loadScreen'))$('loadScreen').remove();},500);
+    document.querySelectorAll('.fade-up').forEach(el=>el.classList.add('in'));
+  },600);
+});
+</script>
+</body>
+</html>

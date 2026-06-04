@@ -1,0 +1,13 @@
+@import "./Privacy.css";
+
+.legal-body .highlight {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid rgba(0, 212, 255, 0.14);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.legal-body .highlight p {
+  margin-bottom: 0;
+}
