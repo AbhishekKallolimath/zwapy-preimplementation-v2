@@ -399,7 +399,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <Link to="#" className="crx-card fade-up d4 in" style={{ cursor: "default" }} onClick={(e) => e.preventDefault()}>
+       <Link to="/creagenix/workshops" className="crx-card fade-up d4 in">
           <div className="crx-top">
             <div className="crx-icon">🎬</div>
             <div>
