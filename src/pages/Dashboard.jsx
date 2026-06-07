@@ -399,7 +399,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-       <Link to="/creagenix/workshops" className="crx-card fade-up d4 in">
+       <Link to="/creagenix/editx" className="crx-card fade-up d4 in">
           <div className="crx-top">
             <div className="crx-icon">🎬</div>
             <div>
