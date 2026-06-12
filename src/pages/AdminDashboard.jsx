@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { doc, collection, getDocs, updateDoc, deleteDoc, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
-import { supabase } from "../supabase";
 import { useAuth } from "../context/AuthContext";
 import "./AdminDashboard.css";
 
@@ -22,12 +21,6 @@ export default function AdminDashboard() {
   const [allClubs, setAllClubs] = useState([]);
   const [officialEvents, setOfficialEvents] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
-
-  const [creaRegistrations, setCreaRegistrations] = useState([]);
-  const [creaFilterWorkshop, setCreaFilterWorkshop] = useState("all");
-  const [creaFilterBatch, setCreaFilterBatch] = useState("all");
-  const [creaLoading, setCreaLoading] = useState(false);
-  const [updatingStatus, setUpdatingStatus] = useState(null);
 
   const [evType, setEvType] = useState("event");
   const [evTitle, setEvTitle] = useState("");
@@ -54,11 +47,6 @@ export default function AdminDashboard() {
   const [toastMsg, setToastMsg] = useState("");
   const [toastColor, setToastColor] = useState("#10b981");
   const [pageLoading, setPageLoading] = useState(true);
-
-  const [tracksheetModalOpen, setTracksheetModalOpen] = useState(false);
-  const [selectedRegistration, setSelectedRegistration] = useState(null);
-  const [studentTopics, setStudentTopics] = useState([]);
-  const [loadingTopics, setLoadingTopics] = useState(false);
 
   const showToast = (msg, col = "#10b981") => {
     setToastMsg(msg);
@@ -124,49 +112,6 @@ export default function AdminDashboard() {
     }
     loadData();
   }, [currentUser]);
-
-  useEffect(() => {
-    if (activeTab === "creagenix" && currentUser) {
-      fetchCreagenixRegistrations();
-    }
-  }, [activeTab, currentUser]);
-
-  async function fetchCreagenixRegistrations() {
-    setCreaLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("workshop_registrations")
-        .select("*")
-        .order("registered_at", { ascending: false });
-      if (error) throw error;
-      setCreaRegistrations(data || []);
-    } catch (err) {
-      console.error(err);
-      showToast("❌ Could not load workshop registrations", "#ef4444");
-    } finally {
-      setCreaLoading(false);
-    }
-  }
-
-  async function updateCreaStatus(id, newStatus) {
-    setUpdatingStatus(id);
-    try {
-      const { error } = await supabase
-        .from("workshop_registrations")
-        .update({ status: newStatus })
-        .eq("id", id);
-      if (error) throw error;
-      setCreaRegistrations(prev =>
-        prev.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-      );
-      showToast(`✅ Registration ${newStatus}`);
-    } catch (err) {
-      console.error(err);
-      showToast("❌ Failed to update status", "#ef4444");
-    } finally {
-      setUpdatingStatus(null);
-    }
-  }
 
   const calculateStats = (users) => {
     let total = 0, students = 0, clubHeads = 0, coins = 0;
@@ -339,54 +284,6 @@ export default function AdminDashboard() {
     return !q || (e.offer || "").toLowerCase().includes(q) || (e.need || "").toLowerCase().includes(q) || (e.name || "").toLowerCase().includes(q);
   });
 
-  const creaWorkshopOptions = [...new Set(creaRegistrations.map(r => r.workshop_id))];
-  const creaBatchOptions = [...new Set(creaRegistrations.filter(r => r.batch_preference).map(r => r.batch_preference))];
-  const filteredCrea = creaRegistrations.filter(r => {
-    if (creaFilterWorkshop !== "all" && r.workshop_id !== creaFilterWorkshop) return false;
-    if (creaFilterBatch !== "all" && r.batch_preference !== creaFilterBatch) return false;
-    return true;
-  });
-
-  async function openTracksheetModal(registration) {
-    setSelectedRegistration(registration);
-    setTracksheetModalOpen(true);
-    setLoadingTopics(true);
-    try {
-      const { data: topics, error } = await supabase
-        .from("student_progress")
-        .select(`
-          id,
-          completed,
-          tracksheet_topics (id, module_name, topic_name, order_index)
-        `)
-        .eq("workshop_registration_id", registration.id)
-        .order("tracksheet_topics(order_index)");
-      if (error) throw error;
-      setStudentTopics(topics || []);
-    } catch (err) {
-      console.error(err);
-      showToast("❌ Failed to load tracksheet", "#ef4444");
-    } finally {
-      setLoadingTopics(false);
-    }
-  }
-
-  async function toggleTopicCompletion(progressId, currentStatus) {
-    const newStatus = !currentStatus;
-    const { error } = await supabase
-      .from("student_progress")
-      .update({ completed: newStatus, completed_at: newStatus ? new Date().toISOString() : null })
-      .eq("id", progressId);
-    if (error) {
-      showToast("❌ Update failed", "#ef4444");
-      return;
-    }
-    setStudentTopics(prev =>
-      prev.map(t => t.id === progressId ? { ...t, completed: newStatus } : t)
-    );
-    showToast(`✅ Topic marked ${newStatus ? "complete" : "incomplete"}`);
-  }
-
   if (loading || pageLoading) {
     return (
       <div id="loadScreen">
@@ -452,7 +349,6 @@ export default function AdminDashboard() {
           <button className={`tab-btn ${activeTab === "clubs" ? "active" : ""}`} onClick={() => setActiveTab("clubs")}>🛡️ Clubs</button>
           <button className={`tab-btn ${activeTab === "exchanges" ? "active" : ""}`} onClick={() => setActiveTab("exchanges")}>🔄 Exchanges</button>
           <button className={`tab-btn ${activeTab === "announce" ? "active" : ""}`} onClick={() => setActiveTab("announce")}>📢 Announcements</button>
-          <button className={`tab-btn ${activeTab === "creagenix" ? "active" : ""}`} onClick={() => setActiveTab("creagenix")}>🎬 Creagenix</button>
         </div>
 
         {/* USERS TAB */}
@@ -563,146 +459,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-
-        {/* CREAGENIX TAB */}
-        {activeTab === "creagenix" && (
-          <div className="tab-content active">
-            <div className="card">
-              <div className="card-title">// Creagenix × Zwapy – Workshop Registrations</div>
-              <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
-                <select
-                  value={creaFilterWorkshop}
-                  onChange={(e) => setCreaFilterWorkshop(e.target.value)}
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: "#1e1e3a",
-                    color: "white",
-                    border: "1px solid #00D4FF",
-                    borderRadius: "8px",
-                    width: "auto",
-                    minWidth: "180px",
-                    cursor: "pointer"
-                  }}
-                >
-                  <option value="all">All Workshops</option>
-                  {creaWorkshopOptions.map(ws => <option key={ws} value={ws}>{ws}</option>)}
-                </select>
-                <select
-                  value={creaFilterBatch}
-                  onChange={(e) => setCreaFilterBatch(e.target.value)}
-                  style={{
-                    padding: "0.5rem 1rem",
-                    background: "#1e1e3a",
-                    color: "white",
-                    border: "1px solid #00D4FF",
-                    borderRadius: "8px",
-                    width: "auto",
-                    minWidth: "180px",
-                    cursor: "pointer"
-                  }}
-                >
-                  <option value="all">All Batches</option>
-                  {creaBatchOptions.map(b => <option key={b} value={b}>{b}</option>)}
-                </select>
-              </div>
-              {creaLoading ? (
-                <div className="empty-state">Loading registrations...</div>
-              ) : filteredCrea.length === 0 ? (
-                <div className="empty-state">No workshop registrations found.</div>
-              ) : (
-                <div style={{ overflowX: "auto" }}>
-                  <table className="user-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th><th>Roll No</th><th>College</th><th>Workshop</th><th>Batch</th><th>PC Needed</th><th>UTR</th><th>Registered</th><th>Status</th>
-                        <th>Action</th>
-                        <th>Tracksheet</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredCrea.map(reg => (
-                        <tr key={reg.id}>
-                          <td><strong>{reg.name}</strong></td>
-                          <td>{reg.roll_no}</td>
-                          <td>{reg.college_name}</td>
-                          <td>{reg.workshop_id}</td>
-                          <td>{reg.batch_preference || "—"}</td>
-                          <td>{reg.need_pc ? "Yes" : "No"}</td>
-                          <td>{reg.payment_utr}</td>
-                          <td>{new Date(reg.registered_at).toLocaleDateString()}</td>
-                          <td><span style={{ color: reg.status === "pending" ? "#f59e0b" : "#10b981" }}>{reg.status}</span></td>
-                          <td>
-                            {reg.status === "pending" && (
-                              <button
-                                className="action-btn green"
-                                onClick={() => updateCreaStatus(reg.id, "approved")}
-                                disabled={updatingStatus === reg.id}
-                              >
-                                {updatingStatus === reg.id ? "..." : "Approve"}
-                              </button>
-                            )}
-                          </td>
-                          <td>
-                            <button
-                              className="action-btn"
-                              onClick={() => openTracksheetModal(reg)}
-                            >
-                              📋 Tracksheet
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
       </div>
-
-      {/* Tracksheet Modal (placed outside the tabs to avoid nesting issues) */}
-      {tracksheetModalOpen && selectedRegistration && (
-        <div className="modal-bg open" onClick={() => setTracksheetModalOpen(false)}>
-          <div className="modal" style={{ maxWidth: "600px", width: "90%" }} onClick={e => e.stopPropagation()}>
-            <h3>Tracksheet: {selectedRegistration.name}</h3>
-            <p><strong>Workshop:</strong> {selectedRegistration.workshop_id}</p>
-            {loadingTopics ? (
-              <div className="empty-state">Loading topics...</div>
-            ) : studentTopics.length === 0 ? (
-              <div className="empty-state">No topics found. Did you run the SQL to insert tracksheet_topics?</div>
-            ) : (
-              <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
-                {studentTopics.map(t => (
-                  <div key={t.id} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px", padding: "8px", background: "rgba(0,0,0,0.2)", borderRadius: "8px" }}>
-                    <button
-                      onClick={() => toggleTopicCompletion(t.id, t.completed)}
-                      style={{
-                        background: t.completed ? "#10b981" : "#2d3a5e",
-                        border: "none",
-                        borderRadius: "20px",
-                        padding: "4px 12px",
-                        color: "white",
-                        cursor: "pointer",
-                        minWidth: "80px"
-                      }}
-                    >
-                      {t.completed ? "✅ Done" : "⏳ Mark"}
-                    </button>
-                    <div>
-                      <div style={{ fontSize: "0.7rem", color: "#00D4FF" }}>{t.tracksheet_topics.module_name}</div>
-                      <div>{t.tracksheet_topics.topic_name}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div className="modal-actions">
-              <button className="modal-cancel" onClick={() => setTracksheetModalOpen(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
