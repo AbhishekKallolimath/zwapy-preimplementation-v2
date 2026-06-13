@@ -10,11 +10,10 @@ import "./Dashboard.css";
 import MeetingLinkButton from "../components/MeetingLinkButton";
 import { supabase } from "../supabase";
 
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const { currentUser, userData, portal, loading, refreshUserData } = useAuth();
-  
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [recentActivities, setRecentActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(true);
@@ -22,28 +21,30 @@ export default function Dashboard() {
   const [lockedPanelVisible, setLockedPanelVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
-  const [isWinner, setIsWinner] = useState(false);
-  const [winnerMonthYear, setWinnerMonthYear] = useState("");
   const [winnerMonthYear, setWinnerMonthYear] = useState("");
 
-useEffect(() => {
-  if (!currentUser) return;
-  const now = new Date();
-  supabase
-    .from("monthly_winners")
-    .select("month, year")
-    .eq("student_id", currentUser.id)
-    .eq("month", now.getMonth() + 1)
-    .eq("year", now.getFullYear())
-    .maybeSingle()
-    .then(({ data, error }) => {
-      if (!error && data) {
-        setIsWinner(true);
-        setWinnerMonthYear(`${new Date(0, data.month-1).toLocaleString('default', { month: 'long' })} ${data.year}`);
-      }
-    });
-}, [currentUser]);
+  // Check if user is monthly best performer
+  useEffect(() => {
+    if (!currentUser) return;
+    const now = new Date();
+    supabase
+      .from("monthly_winners")
+      .select("month, year")
+      .eq("student_id", currentUser.id)
+      .eq("month", now.getMonth() + 1)
+      .eq("year", now.getFullYear())
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!error && data) {
+          setIsWinner(true);
+          setWinnerMonthYear(`${new Date(0, data.month - 1).toLocaleString('default', { month: 'long' })} ${data.year}`);
+        } else {
+          setIsWinner(false);
+        }
+      });
+  }, [currentUser]);
 
+  // Security check: redirect to onboarding if incomplete
   useEffect(() => {
     if (!loading) {
       if (!currentUser) {
@@ -61,6 +62,7 @@ useEffect(() => {
     }
   }, [currentUser, userData, loading, navigate]);
 
+  // Load Rank & recent activities
   useEffect(() => {
     if (!currentUser || !userData) return;
 
@@ -75,24 +77,6 @@ useEffect(() => {
           }
         });
         setRank(computedRank);
-
-        useEffect(() => {
-  if (!currentUser) return;
-  const now = new Date();
-  supabase
-    .from("monthly_winners")
-    .select("month, year")
-    .eq("student_id", currentUser.id)
-    .eq("month", now.getMonth() + 1)
-    .eq("year", now.getFullYear())
-    .maybeSingle()
-    .then(({ data, error }) => {
-      if (!error && data) {
-        setIsWinner(true);
-        setWinnerMonthYear(`${new Date(0, data.month-1).toLocaleString('default', { month: 'long' })} ${data.year}`);
-      }
-    });
-}, [currentUser]);
 
         const q = query(
           collection(db, "users", currentUser.uid, "activity"),
@@ -118,7 +102,7 @@ useEffect(() => {
   const handleCopyInvite = () => {
     const referralCode = userData?.referralCode || currentUser?.uid?.substring(0, 8).toUpperCase();
     const link = `https://zwapy.com/signup?ref=${referralCode}`;
-    
+
     try {
       navigator.clipboard.writeText(link);
     } catch (e) {
@@ -139,9 +123,10 @@ useEffect(() => {
     setTimeout(() => setLockedPanelVisible(false), 6000);
   };
 
+  // Accept peer connection request
   const handleAcceptConnection = async (activityId, senderId, senderName) => {
     if (!currentUser || !userData) return;
-    
+
     try {
       await updateDoc(doc(db, "users", currentUser.uid), {
         friends: arrayUnion(senderId)
@@ -175,7 +160,7 @@ useEffect(() => {
       });
 
       alert(`✅ Connected with ${senderName}!`);
-      
+
       await refreshUserData();
       const q = query(
         collection(db, "users", currentUser.uid, "activity"),
@@ -192,13 +177,14 @@ useEffect(() => {
     }
   };
 
+  // Decline peer connection request
   const handleDeclineConnection = async (activityId, senderId) => {
     if (!currentUser) return;
     try {
       await updateDoc(doc(db, "users", currentUser.uid, "activity", activityId), {
         status: "declined"
       });
-      
+
       const connSnap = await getDocs(
         query(
           collection(db, "connections"),
@@ -212,7 +198,7 @@ useEffect(() => {
       });
 
       alert("Request declined");
-      
+
       const q = query(
         collection(db, "users", currentUser.uid, "activity"),
         orderBy("createdAt", "desc"),
@@ -289,7 +275,7 @@ useEffect(() => {
   return (
     <div className="dashboard-body">
       <div className="bg-glow"></div>
-      
+
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -313,17 +299,17 @@ useEffect(() => {
           </div>
         </div>
 
+        {isWinner && (
+          <div className="winner-badge fade-up d2" style={{ background: "#FFD700", color: "#000", padding: "10px 20px", borderRadius: "40px", textAlign: "center", marginBottom: "20px" }}>
+            🏆 Monthly Best Performer – {winnerMonthYear}! 🎉
+          </div>
+        )}
+
         <div className="stats-row fade-up d2 in">
           <div className="stat-card">
             <div className="sc-val c">{Number(coins).toLocaleString()}</div>
             <div className="sc-label">Skill Coins</div>
-
           </div>
-          {isWinner && (
-  <div className="winner-badge fade-up d2" style={{ background: "#FFD700", color: "#000", padding: "10px 20px", borderRadius: "40px", textAlign: "center", marginBottom: "20px" }}>
-    🏆 Monthly Best Performer – {winnerMonthYear}! 🎉
-  </div>
-)}
           <div className="stat-card">
             <div className="sc-val g">{Number(exchanges).toLocaleString()}</div>
             <div className="sc-label">Exchanges</div>
@@ -457,7 +443,7 @@ useEffect(() => {
           </div>
         </Link>
 
-        {/* Meeting Link Button – shows only if an approved registration has a meeting link */}
+        {/* Meeting Link Button */}
         <MeetingLinkButton />
 
         <div className="ref-strip fade-up d4 in">
