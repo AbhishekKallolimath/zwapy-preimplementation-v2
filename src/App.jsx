@@ -29,9 +29,12 @@ import Workshops from "./pages/creagenix/Workshops";
 import MyWorkshops from "./pages/creagenix/MyWorkshops";
 import AdminRegistrations from "./pages/creagenix/AdminRegistrations";
 import Tracksheet from "./pages/creagenix/Tracksheet";
+import CreagenixAdminPanel from "./pages/creagenix/AdminPanel";
 
 import WorkshopRegistration from "./pages/WorkshopRegistration";
 import EditXProgram from "./pages/creagenix/EditXProgram";
+import Tracksheet from "./pages/creagenix/Tracksheet";
+import Placements from "./pages/creagenix/Placements";
 
 function App() {
   return (
@@ -76,6 +79,9 @@ function App() {
           <Route path="/creagenix/editx" element={<EditXProgram />} />
           <Route path="/creagenix/admin-registrations" element={<AdminRegistrations />} />
           <Route path="/creagenix/tracksheet/:registrationId" element={<Tracksheet />} />
+          <Route path="/creagenix/admin" element={<CreagenixAdminPanel />} />
+          <Route path="/creagenix/tracksheet/:registrationId" element={<Tracksheet />} />
+          <Route path="/creagenix/placements" element={<Placements />} />
 
           
 

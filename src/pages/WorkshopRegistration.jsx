@@ -81,11 +81,42 @@ export default function WorkshopRegistration() {
         insertData.need_pc = formData.needPc;
       }
 
-      const { error: insertError } = await supabase
+      // Insert registration and return the inserted record (to get the ID)
+      const { data: inserted, error: insertError } = await supabase
         .from("workshop_registrations")
-        .insert(insertData);
+        .insert(insertData)
+        .select();
 
       if (insertError) throw insertError;
+
+      const registrationId = inserted?.[0]?.id;
+      if (!registrationId) throw new Error("Failed to retrieve registration ID");
+
+      // ✅ Auto‑create progress records for offline workshops
+      if (isOffline && registrationId) {
+        // Fetch all topics for this workshop
+        const { data: topics, error: topicsError } = await supabase
+          .from("tracksheet_topics")
+          .select("id")
+          .eq("workshop_id", workshopId);
+
+        if (topicsError) {
+          console.error("Error fetching topics:", topicsError);
+        } else if (topics && topics.length > 0) {
+          // Prepare progress inserts
+          const progressInserts = topics.map(topic => ({
+            student_id: currentUser?.id,
+            workshop_registration_id: registrationId,
+            topic_id: topic.id,
+            completed: false,
+          }));
+          // Insert all progress records (fail silently but log)
+          const { error: progressError } = await supabase
+            .from("student_progress")
+            .insert(progressInserts);
+          if (progressError) console.error("Progress insert error:", progressError);
+        }
+      }
 
       setSuccess(true);
       setTimeout(() => navigate("/dashboard"), 3000);

@@ -7,6 +7,9 @@ import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
 import BottomNav from "../components/BottomNav";
 import "./Dashboard.css";
+import MeetingLinkButton from "../components/MeetingLinkButton";
+import { supabase } from "../supabase";
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -18,8 +21,29 @@ export default function Dashboard() {
   const [rank, setRank] = useState("—");
   const [lockedPanelVisible, setLockedPanelVisible] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isWinner, setIsWinner] = useState(false);
+  const [isWinner, setIsWinner] = useState(false);
+  const [winnerMonthYear, setWinnerMonthYear] = useState("");
+  const [winnerMonthYear, setWinnerMonthYear] = useState("");
 
-  // Security check: redirect to onboarding if incomplete
+useEffect(() => {
+  if (!currentUser) return;
+  const now = new Date();
+  supabase
+    .from("monthly_winners")
+    .select("month, year")
+    .eq("student_id", currentUser.id)
+    .eq("month", now.getMonth() + 1)
+    .eq("year", now.getFullYear())
+    .maybeSingle()
+    .then(({ data, error }) => {
+      if (!error && data) {
+        setIsWinner(true);
+        setWinnerMonthYear(`${new Date(0, data.month-1).toLocaleString('default', { month: 'long' })} ${data.year}`);
+      }
+    });
+}, [currentUser]);
+
   useEffect(() => {
     if (!loading) {
       if (!currentUser) {
@@ -37,13 +61,11 @@ export default function Dashboard() {
     }
   }, [currentUser, userData, loading, navigate]);
 
-  // Load Rank & recent activities
   useEffect(() => {
     if (!currentUser || !userData) return;
 
     async function loadStatsAndActivities() {
       try {
-        // Compute Network Rank based on user coins count
         const allSnap = await getDocs(collection(db, "users"));
         const coins = userData.coins || 0;
         let computedRank = 1;
@@ -54,7 +76,24 @@ export default function Dashboard() {
         });
         setRank(computedRank);
 
-        // Load recent activity from Firestore
+        useEffect(() => {
+  if (!currentUser) return;
+  const now = new Date();
+  supabase
+    .from("monthly_winners")
+    .select("month, year")
+    .eq("student_id", currentUser.id)
+    .eq("month", now.getMonth() + 1)
+    .eq("year", now.getFullYear())
+    .maybeSingle()
+    .then(({ data, error }) => {
+      if (!error && data) {
+        setIsWinner(true);
+        setWinnerMonthYear(`${new Date(0, data.month-1).toLocaleString('default', { month: 'long' })} ${data.year}`);
+      }
+    });
+}, [currentUser]);
+
         const q = query(
           collection(db, "users", currentUser.uid, "activity"),
           orderBy("createdAt", "desc"),
@@ -100,12 +139,10 @@ export default function Dashboard() {
     setTimeout(() => setLockedPanelVisible(false), 6000);
   };
 
-  // Accept peer connection request
   const handleAcceptConnection = async (activityId, senderId, senderName) => {
     if (!currentUser || !userData) return;
     
     try {
-      // 1. Mutually insert friends fields
       await updateDoc(doc(db, "users", currentUser.uid), {
         friends: arrayUnion(senderId)
       });
@@ -113,7 +150,6 @@ export default function Dashboard() {
         friends: arrayUnion(currentUser.uid)
       });
 
-      // 2. Resolve connections records to status 'connected'
       const connSnap = await getDocs(
         query(
           collection(db, "connections"),
@@ -126,13 +162,11 @@ export default function Dashboard() {
         await updateDoc(doc(db, "connections", d.id), { status: "connected" });
       });
 
-      // 3. Mark the activity document as accepted
       await updateDoc(doc(db, "users", currentUser.uid, "activity", activityId), {
         status: "accepted",
         title: `Connected with ${senderName}`
       });
 
-      // 4. Dispatch a success notice to the sender
       await addDoc(collection(db, "users", senderId, "activity"), {
         type: "connection_accepted",
         title: `${userData.name || "Someone"} accepted your request`,
@@ -142,7 +176,6 @@ export default function Dashboard() {
 
       alert(`✅ Connected with ${senderName}!`);
       
-      // Refresh user details and activity stream
       await refreshUserData();
       const q = query(
         collection(db, "users", currentUser.uid, "activity"),
@@ -159,7 +192,6 @@ export default function Dashboard() {
     }
   };
 
-  // Decline peer connection request
   const handleDeclineConnection = async (activityId, senderId) => {
     if (!currentUser) return;
     try {
@@ -217,7 +249,6 @@ export default function Dashboard() {
   const coins = userData?.coins || 0;
   const exchanges = userData?.exchanges || 0;
 
-  // Features list mapping
   const features = [
     {
       href: "/skill-exchange",
@@ -286,7 +317,13 @@ export default function Dashboard() {
           <div className="stat-card">
             <div className="sc-val c">{Number(coins).toLocaleString()}</div>
             <div className="sc-label">Skill Coins</div>
+
           </div>
+          {isWinner && (
+  <div className="winner-badge fade-up d2" style={{ background: "#FFD700", color: "#000", padding: "10px 20px", borderRadius: "40px", textAlign: "center", marginBottom: "20px" }}>
+    🏆 Monthly Best Performer – {winnerMonthYear}! 🎉
+  </div>
+)}
           <div className="stat-card">
             <div className="sc-val g">{Number(exchanges).toLocaleString()}</div>
             <div className="sc-label">Exchanges</div>
@@ -399,7 +436,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-       <Link to="/creagenix/editx" className="crx-card fade-up d4 in">
+        {/* Creagenix Card */}
+        <Link to="/creagenix/editx" className="crx-card fade-up d4 in">
           <div className="crx-top">
             <div className="crx-icon">🎬</div>
             <div>
@@ -418,6 +456,9 @@ export default function Dashboard() {
             <span className="crx-tag">🚀 Personal Brand</span>
           </div>
         </Link>
+
+        {/* Meeting Link Button – shows only if an approved registration has a meeting link */}
+        <MeetingLinkButton />
 
         <div className="ref-strip fade-up d4 in">
           <div>
