@@ -12,11 +12,11 @@ export default function CreagenixAdminPanel() {
   const [editingLink, setEditingLink] = useState(null);
   const [tempLink, setTempLink] = useState("");
 
-  //useEffect(() => {
-   //  if (!loading && (!currentUser || userData?.role !== "super_admin")) {
-     // navigate("/dashboard");
-    // }
-  // }, [currentUser, userData, loading, navigate]);
+  useEffect(() => {
+    if (!loading && (!currentUser || userData?.role !== "super_admin")) {
+      navigate("/dashboard");
+     }
+   }, [currentUser, userData, loading, navigate]);
 
   useEffect(() => {
     fetchApprovedRegistrations();
